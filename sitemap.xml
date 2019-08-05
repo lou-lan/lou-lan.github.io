@@ -2,17 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2019-08-04T00:33:29+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/</loc>
+    <loc>http://localhost:1313/tags/golang/</loc>
+    <lastmod>2019-08-04T00:33:29+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/post/go-shutdown-signal-gracefully/</loc>
+    <lastmod>2019-08-04T00:33:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/post/</loc>
+    <lastmod>2019-08-04T00:33:29+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2019-08-04T00:33:29+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/tags/git/</loc>
+    <lastmod>2019-08-04T00:31:23+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/post/git-tips/</loc>
+    <lastmod>2019-08-04T00:31:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/post/wire-dependency-injection-for-go-tutorial/</loc>
+    <lastmod>2019-08-03T22:14:31+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/categories/</loc>
     <priority>0</priority>
   </url>
   

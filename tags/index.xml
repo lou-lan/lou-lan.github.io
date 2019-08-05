@@ -6,9 +6,28 @@
     <description>Recent content in Tags on Even - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
+    <lastBuildDate>Sun, 04 Aug 2019 00:33:29 +0800</lastBuildDate>
     
 	<atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Golang</title>
+      <link>http://localhost:1313/tags/golang/</link>
+      <pubDate>Sun, 04 Aug 2019 00:33:29 +0800</pubDate>
+      
+      <guid>http://localhost:1313/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>http://localhost:1313/tags/git/</link>
+      <pubDate>Sun, 04 Aug 2019 00:31:23 +0800</pubDate>
+      
+      <guid>http://localhost:1313/tags/git/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>
