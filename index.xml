@@ -6,10 +6,19 @@
     <description>Recent content on 楼兰志</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 04 Aug 2019 00:33:29 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 05 Aug 2019 21:52:47 +0800</lastBuildDate>
     
 	<atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 05 Aug 2019 21:52:47 +0800</pubDate>
+      
+      <guid>http://localhost:1313/about/</guid>
+      <description>关于 嗨，我是楼兰。长于日照，求学青岛。目前专注于容器开发，编程方面以 Go 语言为主力，我还对 Swift 语言感兴趣。</description>
+    </item>
     
     <item>
       <title>Golang 优雅退出</title>
