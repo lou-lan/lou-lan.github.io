@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>楼兰志</title>
+    <title>Tags on 楼兰志</title>
     <link>http://localhost:1313/tags/</link>
-    <description>Recent content on 楼兰志</description>
+    <description>Recent content in Tags on 楼兰志</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 05 Aug 2019 21:52:47 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 11 Oct 2019 22:48:27 +0800</lastBuildDate>
     
 	<atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>About</title>
-      <link>http://localhost:1313/about/</link>
-      <pubDate>Mon, 05 Aug 2019 21:52:47 +0800</pubDate>
+      <title>Knative</title>
+      <link>http://localhost:1313/tags/knative/</link>
+      <pubDate>Fri, 11 Oct 2019 22:48:27 +0800</pubDate>
       
-      <guid>http://localhost:1313/about/</guid>
-      <description>关于 嗨，我是楼兰。长于日照，求学青岛。目前专注于容器开发，编程方面以 Go 语言为主力，我还对 Swift 语言感兴趣。</description>
+      <guid>http://localhost:1313/tags/knative/</guid>
+      <description></description>
     </item>
     
-  </channel>
-</rss>http://localhost:1313/tags/golang/</guid>
+    <item>
+      <title>Golang</title>
+      <link>http://localhost:1313/tags/golang/</link>
+      <pubDate>Fri, 11 Oct 2019 22:22:26 +0800</pubDate>
+      
+      <guid>http://localhost:1313/tags/golang/</guid>
       <description></description>
     </item>
     

@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.56.3 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.58.3 with even 4.0.0" />
 
 
 
@@ -40,7 +40,7 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.7aaec29d.min.css" rel="stylesheet">
+<link href="/dist/even.5b44f693.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
@@ -78,9 +78,14 @@
 <body>
   <nav class="nav">
     <ul class="menu nav-container">
+        <li class="menu-item">
+            <a class="menu-item-link nav-logo-link" href="/">
+                <span class="nav-logo-title">
+                    首页
+                </span>
+            </a>
+        </li>
         <li class="nav-height">
-                <a href="/">首页</a>
-            </li><li class="nav-height">
                 <a href="/post/">归档</a>
             </li><li class="nav-height">
                 <a href="/tags/">标签</a>
@@ -89,22 +94,28 @@
             </li>
     </ul>
 </nav>
-  <div class="container">
-        <div class="content-wrapper">
-            <div id="content" class="content">
-                <article class="post">
-                    
-                    <header class="post-header">
-                        <h1 class="post-title">Git 奇淫巧技</h1>
+  <div class="main main-post">
+        <section class="section blog-body">
+            <div class="body-content">
+                <div class="container">
+                    <div class="content-wrapper">
+                        <div id="content" class="content">
+                            <article class="post">
+                                
+                                <header class="post-header">
+                                    <div class="post-tags">
+                                            <a href="/tags/git/">Git</a>
+                                            </div><div class="post-meta">
+                                        <span class="post-time"> 2019-08-04 </span>
+                                        
+                                        
+                                    </div>
 
-                        <div class="post-meta">
-                            <span class="post-time"> 2019-08-04 </span>
-                            
-                            
-                        </div>
-                    </header>
-
-                    <div class="post-toc" id="post-toc">
+                                    <h1 class="post-title">Git 奇淫巧技</h1>
+                                    
+                                </header>
+        
+                                <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
@@ -121,8 +132,8 @@
 </nav>
   </div>
 </div>
-                    <div class="post-content">
-                        
+                                <div class="post-content">
+                                    
 
 <h3 id="回滚">回滚</h3>
 <div class="highlight"><div class="chroma">
@@ -144,9 +155,9 @@ git push origin HEAD --force</code></pre></td></tr></table>
 <pre class="chroma"><code class="language-bash" data-lang="bash">git cherry-pick &lt;commit id&gt;</code></pre></td></tr></table>
 </div>
 </div>
-                    </div>
-
-                    <div class="post-copyright">
+                                </div>
+        
+                                <div class="post-copyright">
   <p class="copyright-item">
     <span class="item-title">文章作者</span>
     <span class="item-content">楼兰</span>
@@ -162,25 +173,27 @@ git push origin HEAD --force</code></pre></td></tr></table>
   
 </div>
 <footer class="post-footer">
-                        <div class="post-tags">
-                                <a href="/tags/git/">Git</a>
-                                </div>
-                        <nav class="post-nav">
-                            <a class="prev" href="/post/go-shutdown-signal-gracefully/">
-                                    <i class="iconfont icon-left"></i>
-                                    <span class="prev-text nav-default">Golang 优雅退出</span>
-                                    <span class="prev-text nav-mobile">上一篇</span>
-                                </a>
-                            <a class="next" href="/post/wire-dependency-injection-for-go-tutorial/">
-                                    <span class="next-text nav-default">Wire 依赖注入指南</span>
-                                    <span class="next-text nav-mobile">下一篇</span>
-                                    <i class="iconfont icon-right"></i>
-                                </a>
-                        </nav>
-                    </footer>
-                </article>
+        
+                                    
+                                    <nav class="post-nav">
+                                        <a class="prev" href="/post/go-shutdown-signal-gracefully/">
+                                                <i class="iconfont icon-left"></i>
+                                                <span class="prev-text nav-default">Golang 优雅退出</span>
+                                                <span class="prev-text nav-mobile">上一篇</span>
+                                            </a>
+                                        <a class="next" href="/post/wire-dependency-injection-for-go-tutorial/">
+                                                <span class="next-text nav-default">Wire 依赖注入指南</span>
+                                                <span class="next-text nav-mobile">下一篇</span>
+                                                <i class="iconfont icon-right"></i>
+                                            </a>
+                                    </nav>
+                                </footer>
+                            </article>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
     </div>
   
 
