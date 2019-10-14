@@ -2,39 +2,39 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Golang on 楼兰志</title>
-    <link>http://localhost:1313/tags/golang/</link>
+    <link>https://loulan.me/tags/golang/</link>
     <description>Recent content in Golang on 楼兰志</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Fri, 11 Oct 2019 22:22:26 +0800</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://loulan.me/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Knative Serving Hello World</title>
-      <link>http://localhost:1313/post/knative-serving-hello-world/</link>
+      <link>https://loulan.me/post/knative-serving-hello-world/</link>
       <pubDate>Fri, 11 Oct 2019 22:22:26 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/knative-serving-hello-world/</guid>
+      <guid>https://loulan.me/post/knative-serving-hello-world/</guid>
       <description>一个 Go 语言编写的极简 web 应用，用于测试。它读取环境变量 TARGET 并打印 Hello ${TARGET}!。如果未指定 TARGET，将 TARGET 内容替换为 World 。 可以按照下面的</description>
     </item>
     
     <item>
       <title>Golang 优雅退出</title>
-      <link>http://localhost:1313/post/go-shutdown-signal-gracefully/</link>
+      <link>https://loulan.me/post/go-shutdown-signal-gracefully/</link>
       <pubDate>Sun, 04 Aug 2019 00:33:29 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/go-shutdown-signal-gracefully/</guid>
+      <guid>https://loulan.me/post/go-shutdown-signal-gracefully/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Wire 依赖注入指南</title>
-      <link>http://localhost:1313/post/wire-dependency-injection-for-go-tutorial/</link>
+      <link>https://loulan.me/post/wire-dependency-injection-for-go-tutorial/</link>
       <pubDate>Sat, 03 Aug 2019 22:14:31 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/wire-dependency-injection-for-go-tutorial/</guid>
+      <guid>https://loulan.me/post/wire-dependency-injection-for-go-tutorial/</guid>
       <description>基础 Wire 有两个核心概念：providers 和 injectors. Providers 定义 Wire 中的主要机制是 providers: 一个可以产生值的函数。这些函数是普通的 Go 代码。 1 2 3 4 5 6 7 8 9 10 package foobarbaz type</description>
     </item>
     

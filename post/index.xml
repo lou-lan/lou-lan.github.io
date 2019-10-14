@@ -2,57 +2,57 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on 楼兰志</title>
-    <link>http://localhost:1313/post/</link>
+    <link>https://loulan.me/post/</link>
     <description>Recent content in Posts on 楼兰志</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Fri, 11 Oct 2019 22:48:27 +0800</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://loulan.me/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Knative 自定义 Ingress 网关</title>
-      <link>http://localhost:1313/post/knative-setting-up-custom-ingress-gateway/</link>
+      <link>https://loulan.me/post/knative-setting-up-custom-ingress-gateway/</link>
       <pubDate>Fri, 11 Oct 2019 22:48:27 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/knative-setting-up-custom-ingress-gateway/</guid>
+      <guid>https://loulan.me/post/knative-setting-up-custom-ingress-gateway/</guid>
       <description>Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，该服务网格是knative-serving 命名空间下的 knative-ingress-gateway 网关。默认情况下，我们在 istio-system 名</description>
     </item>
     
     <item>
       <title>Knative Serving Hello World</title>
-      <link>http://localhost:1313/post/knative-serving-hello-world/</link>
+      <link>https://loulan.me/post/knative-serving-hello-world/</link>
       <pubDate>Fri, 11 Oct 2019 22:22:26 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/knative-serving-hello-world/</guid>
+      <guid>https://loulan.me/post/knative-serving-hello-world/</guid>
       <description>一个 Go 语言编写的极简 web 应用，用于测试。它读取环境变量 TARGET 并打印 Hello ${TARGET}!。如果未指定 TARGET，将 TARGET 内容替换为 World 。 可以按照下面的</description>
     </item>
     
     <item>
       <title>Golang 优雅退出</title>
-      <link>http://localhost:1313/post/go-shutdown-signal-gracefully/</link>
+      <link>https://loulan.me/post/go-shutdown-signal-gracefully/</link>
       <pubDate>Sun, 04 Aug 2019 00:33:29 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/go-shutdown-signal-gracefully/</guid>
+      <guid>https://loulan.me/post/go-shutdown-signal-gracefully/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Git 奇淫巧技</title>
-      <link>http://localhost:1313/post/git-tips/</link>
+      <link>https://loulan.me/post/git-tips/</link>
       <pubDate>Sun, 04 Aug 2019 00:31:23 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/git-tips/</guid>
+      <guid>https://loulan.me/post/git-tips/</guid>
       <description>回滚 1 2 git reset --hard a1c86bc3 git push origin HEAD --force 遴选 1 git cherry-pick &amp;lt;commit id&amp;gt;</description>
     </item>
     
     <item>
       <title>Wire 依赖注入指南</title>
-      <link>http://localhost:1313/post/wire-dependency-injection-for-go-tutorial/</link>
+      <link>https://loulan.me/post/wire-dependency-injection-for-go-tutorial/</link>
       <pubDate>Sat, 03 Aug 2019 22:14:31 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/wire-dependency-injection-for-go-tutorial/</guid>
+      <guid>https://loulan.me/post/wire-dependency-injection-for-go-tutorial/</guid>
       <description>基础 Wire 有两个核心概念：providers 和 injectors. Providers 定义 Wire 中的主要机制是 providers: 一个可以产生值的函数。这些函数是普通的 Go 代码。 1 2 3 4 5 6 7 8 9 10 package foobarbaz type</description>
     </item>
     
