@@ -121,7 +121,7 @@
 
 <p>Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，该服务网格是<code>knative-serving</code> 命名空间下的 <code>knative-ingress-gateway</code> 网关。默认情况下，我们在 <code>istio-system</code> 名称空间下使用 Istio 网关服务 <code>istio-ingressgateway</code> 作为其基础服务。可以按以下方式用自己的服务替换该服务。</p>
 
-<h2 id="步骤1-创建网关服务和部署实例">步骤1：创建网关服务和部署实例</h2>
+<h3 id="步骤1-创建网关服务和部署实例">步骤1：创建网关服务和部署实例</h3>
 
 <p>需要首先创建网关服务和部署实例来处理流量。最简单的方式应该在模板中，<a href="https://github.com/istio/istio/releases">Istio release</a>。</p>
 
@@ -510,7 +510,7 @@
 </span><span class="w">                      </span>-<span class="w"> </span>s390x</code></pre></td></tr></table>
 </div>
 </div>
-<h2 id="步骤2-更新-knative-gateway">步骤2：更新 Knative Gateway</h2>
+<h3 id="步骤2-更新-knative-gateway">步骤2：更新 Knative Gateway</h3>
 
 <p>在 <code>knative-serving</code> namespace 下更新网关实例 <code>knative-ingress-gateway</code>：</p>
 <div class="highlight"><div class="chroma">
@@ -541,7 +541,7 @@
 </div>
 <p>如果服务端口发生了变化（与 <code>istio-ingressgateway</code> 相比），请相应地更新网关中的端口信息。</p>
 
-<h2 id="步骤3-更新-gateway-configmap">步骤3：更新 Gateway Configmap</h2>
+<h3 id="步骤3-更新-gateway-configmap">步骤3：更新 Gateway Configmap</h3>
 
 <p>在 <code>knative-serving</code> namespace 下更新网关 configmap <code>config-istio</code>：</p>
 <div class="highlight"><div class="chroma">
