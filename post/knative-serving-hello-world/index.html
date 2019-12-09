@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.58.3 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.59.1 with even 4.0.0" />
 
 
 
@@ -40,7 +40,7 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.e33cb351.min.css" rel="stylesheet">
+<link href="/dist/even.873d2b97.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
@@ -56,7 +56,7 @@
 
 <meta itemprop="datePublished" content="2019-10-11T22:22:26&#43;08:00" />
 <meta itemprop="dateModified" content="2019-10-11T22:22:26&#43;08:00" />
-<meta itemprop="wordCount" content="1338">
+<meta itemprop="wordCount" content="1339">
 
 
 
@@ -255,11 +255,11 @@
 </span><span class="err">
 </span><span class="err"></span><span class="c"># 检索应用依赖项。</span><span class="err">
 </span><span class="err"></span><span class="c"># 这允许容器构建重用缓存的依赖项。</span><span class="err">
-</span><span class="err"></span>COPY go.* ./<span class="err">
+</span><span class="err"></span><span class="k">COPY</span> go.* ./<span class="err">
 </span><span class="err"></span><span class="k">RUN</span> go mod download<span class="err">
 </span><span class="err">
 </span><span class="err"></span><span class="c"># 将本地代码复制到容器镜像。</span><span class="err">
-</span><span class="err"></span>COPY . ./<span class="err">
+</span><span class="err"></span><span class="k">COPY</span> . ./<span class="err">
 </span><span class="err">
 </span><span class="err"></span><span class="c"># 编译二进制</span><span class="err">
 </span><span class="err"></span><span class="k">RUN</span> <span class="nv">CGO_ENABLED</span><span class="o">=</span><span class="m">0</span> <span class="nv">GOOS</span><span class="o">=</span>linux go build -mod<span class="o">=</span><span class="nb">readonly</span> -v -o server<span class="err">
@@ -271,10 +271,10 @@
 </span><span class="err"></span><span class="k">RUN</span> apk add --no-cache ca-certificates<span class="err">
 </span><span class="err">
 </span><span class="err"></span><span class="c"># 从 builder 阶段拷贝二进制到生产镜像</span><span class="err">
-</span><span class="err"></span>COPY --from<span class="o">=</span>builder /app/server /server<span class="err">
+</span><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>builder /app/server /server<span class="err">
 </span><span class="err">
 </span><span class="err"></span><span class="c"># 启动时运行 web service</span><span class="err">
-</span><span class="err"></span><span class="k">CMD</span><span class="s"> [&#34;/server&#34;]</span></code></pre></td></tr></table>
+</span><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;/server&#34;</span><span class="p">]</span></code></pre></td></tr></table>
 </div>
 </div></li>
 
