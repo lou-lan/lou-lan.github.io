@@ -40,7 +40,7 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.0e11951f.min.css" rel="stylesheet">
+<link href="/dist/even.3ecac137.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
@@ -97,27 +97,26 @@
   <div class="main main-post">
         <section class="section blog-body">
             <div class="body-content">
-                <div class="container">
-                    <div class="content-wrapper">
-                        <div id="content" class="content">
-                            <article class="post">
+    
+                <div id="content" class="content">
+                    <article class="post">
+                        
+                        <header class="post-header">
+                            <div class="post-tags">
+                                    <a href="/tags/golang/">Golang</a>
+                                    </div><div class="post-meta">
+                                <span class="post-time"> 2019-10-11 </span>
                                 
-                                <header class="post-header">
-                                    <div class="post-tags">
-                                            <a href="/tags/golang/">Golang</a>
-                                            </div><div class="post-meta">
-                                        <span class="post-time"> 2019-10-11 </span>
-                                        
-                                        
-                                    </div>
+                                
+                            </div>
 
-                                    <h1 class="post-title">Knative Serving Hello World</h1>
-                                    
-                                </header>
-        
-                                
-                                <div class="post-content">
-                                    
+                            <h1 class="post-title">Knative Serving Hello World</h1>
+                            
+                        </header>
+
+                        
+                        <div class="post-content">
+                            
 
 <p>一个 Go 语言编写的极简 web 应用，用于测试。它读取环境变量 <code>TARGET</code> 并打印 <code>Hello ${TARGET}!</code>。如果未指定 <code>TARGET</code>，将 <code>TARGET</code> 内容替换为 <code>World</code> 。</p>
 
@@ -473,9 +472,9 @@ kubectl get svc <span class="nv">$INGRESSGATEWAY</span> --namespace istio-system
 
 <p>检查 isito ingressgateway 是否为 pending 状态，如果是有 2 种方法，给设置个外部 IP 或者 NodePort 方式访问。</p>
 
-                                </div>
-        
-                                <div class="post-copyright">
+                        </div>
+
+                        <div class="post-copyright">
   <p class="copyright-item">
     <span class="item-title">文章作者</span>
     <span class="item-content">楼兰</span>
@@ -491,25 +490,24 @@ kubectl get svc <span class="nv">$INGRESSGATEWAY</span> --namespace istio-system
   
 </div>
 <footer class="post-footer">
-        
-                                    
-                                    <nav class="post-nav">
-                                        <a class="prev" href="https://loulan.me/post/knative-setting-up-custom-ingress-gateway/">
-                                                <i class="iconfont icon-left"></i>
-                                                <span class="prev-text nav-default">Knative 自定义 Ingress 网关</span>
-                                                <span class="prev-text nav-mobile">上一篇</span>
-                                            </a>
-                                        <a class="next" href="https://loulan.me/post/go-shutdown-signal-gracefully/">
-                                                <span class="next-text nav-default">Golang 优雅退出</span>
-                                                <span class="next-text nav-mobile">下一篇</span>
-                                                <i class="iconfont icon-right"></i>
-                                            </a>
-                                    </nav>
-                                </footer>
-                            </article>
-                        </div>
-                    </div>
+
+                            
+                            <nav class="post-nav">
+                                <a class="prev" href="https://loulan.me/post/knative-setting-up-custom-ingress-gateway/">
+                                        <i class="iconfont icon-left"></i>
+                                        <span class="prev-text nav-default">Knative 自定义 Ingress 网关</span>
+                                        <span class="prev-text nav-mobile">上一篇</span>
+                                    </a>
+                                <a class="next" href="https://loulan.me/post/go-shutdown-signal-gracefully/">
+                                        <span class="next-text nav-default">Golang 优雅退出</span>
+                                        <span class="next-text nav-mobile">下一篇</span>
+                                        <i class="iconfont icon-right"></i>
+                                    </a>
+                            </nav>
+                        </footer>
+                    </article>
                 </div>
+
             </div>
         </section>
     </div>
