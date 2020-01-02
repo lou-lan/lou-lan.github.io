@@ -56,7 +56,7 @@
 
 <meta itemprop="datePublished" content="2019-10-11T22:22:26&#43;08:00" />
 <meta itemprop="dateModified" content="2019-10-11T22:22:26&#43;08:00" />
-<meta itemprop="wordCount" content="1339">
+<meta itemprop="wordCount" content="1337">
 
 
 
@@ -179,32 +179,32 @@
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="p">(</span>
- <span class="s">&#34;fmt&#34;</span>
- <span class="s">&#34;log&#34;</span>
- <span class="s">&#34;net/http&#34;</span>
- <span class="s">&#34;os&#34;</span>
+<span class="s">&#34;fmt&#34;</span>
+<span class="s">&#34;log&#34;</span>
+<span class="s">&#34;net/http&#34;</span>
+<span class="s">&#34;os&#34;</span>
 <span class="p">)</span>
 
 <span class="kd">func</span> <span class="nf">handler</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
- <span class="nx">log</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="s">&#34;Hello world received a request.&#34;</span><span class="p">)</span>
- <span class="nx">target</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;TARGET&#34;</span><span class="p">)</span>
- <span class="k">if</span> <span class="nx">target</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
-   <span class="nx">target</span> <span class="p">=</span> <span class="s">&#34;World&#34;</span>
- <span class="p">}</span>
- <span class="nx">fmt</span><span class="p">.</span><span class="nf">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Hello %s!\n&#34;</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span>
+<span class="nx">log</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="s">&#34;Hello world received a request.&#34;</span><span class="p">)</span>
+<span class="nx">target</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;TARGET&#34;</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">target</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+<span class="nx">target</span> <span class="p">=</span> <span class="s">&#34;World&#34;</span>
+<span class="p">}</span>
+<span class="nx">fmt</span><span class="p">.</span><span class="nf">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Hello %s!\n&#34;</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span>
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
- <span class="nx">log</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="s">&#34;Hello world sample started.&#34;</span><span class="p">)</span>
+<span class="nx">log</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="s">&#34;Hello world sample started.&#34;</span><span class="p">)</span>
 
- <span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
+<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
 
- <span class="nx">port</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;PORT&#34;</span><span class="p">)</span>
- <span class="k">if</span> <span class="nx">port</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
-   <span class="nx">port</span> <span class="p">=</span> <span class="s">&#34;8080&#34;</span>
- <span class="p">}</span>
+<span class="nx">port</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;PORT&#34;</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">port</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+<span class="nx">port</span> <span class="p">=</span> <span class="s">&#34;8080&#34;</span>
+<span class="p">}</span>
 
- <span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;:%s&#34;</span><span class="p">,</span> <span class="nx">port</span><span class="p">),</span> <span class="kc">nil</span><span class="p">))</span>
+<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;:%s&#34;</span><span class="p">,</span> <span class="nx">port</span><span class="p">),</span> <span class="kc">nil</span><span class="p">))</span>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -298,16 +298,16 @@
 <pre class="chroma"><code class="language-yaml" data-lang="yaml">apiVersion<span class="p">:</span><span class="w"> </span>serving.knative.dev/v1alpha1<span class="w">
 </span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>Service<span class="w">
 </span><span class="w"></span>metadata<span class="p">:</span><span class="w">
-</span><span class="w"> </span>name<span class="p">:</span><span class="w"> </span>helloworld-go<span class="w">
-</span><span class="w"> </span>namespace<span class="p">:</span><span class="w"> </span>default<span class="w">
+</span><span class="w"></span>name<span class="p">:</span><span class="w"> </span>helloworld-go<span class="w">
+</span><span class="w"></span>namespace<span class="p">:</span><span class="w"> </span>default<span class="w">
 </span><span class="w"></span>spec<span class="p">:</span><span class="w">
-</span><span class="w"> </span>template<span class="p">:</span><span class="w">
-</span><span class="w">   </span>spec<span class="p">:</span><span class="w">
-</span><span class="w">     </span>containers<span class="p">:</span><span class="w">
-</span><span class="w">       </span>-<span class="w"> </span>image<span class="p">:</span><span class="w"> </span>docker.io/{username}/helloworld-go<span class="w">
-</span><span class="w">         </span>env<span class="p">:</span><span class="w">
-</span><span class="w">           </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>TARGET<span class="w">
-</span><span class="w">             </span>value<span class="p">:</span><span class="w"> </span><span class="s2">&#34;Go Sample v1&#34;</span></code></pre></td></tr></table>
+</span><span class="w"></span>template<span class="p">:</span><span class="w">
+</span><span class="w"></span>spec<span class="p">:</span><span class="w">
+</span><span class="w">  </span>containers<span class="p">:</span><span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>image<span class="p">:</span><span class="w"> </span>docker.io/{username}/helloworld-go<span class="w">
+</span><span class="w">      </span>env<span class="p">:</span><span class="w">
+</span><span class="w">        </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>TARGET<span class="w">
+</span><span class="w">          </span>value<span class="p">:</span><span class="w"> </span><span class="s2">&#34;Go Sample v1&#34;</span></code></pre></td></tr></table>
 </div>
 </div></li>
 
@@ -359,7 +359,7 @@ docker push <span class="o">{</span>username<span class="o">}</span>/helloworld-
 
 <ul>
 <li>为此版本的应用程序创建一个新的不可变版本。</li>
-<li>为您的应用创建路由（route）、入口（ingress）、服务（service）和负载均衡（load balance）的网络编程。</li>
+<li>为应用创建路由（route）、入口（ingress）、服务（service）和负载均衡（load balance）的网络编程。</li>
 <li>自动缩放你的Pod（包括活动的 Pod 为零）。</li>
 </ul></li>
 
@@ -386,26 +386,24 @@ docker push <span class="o">{</span>username<span class="o">}</span>/helloworld-
 <span class="c1"># Use `istio-ingressgateway` instead, since `knative-ingressgateway`</span>
 <span class="c1"># will be removed in Knative v0.4.</span>
 <span class="k">if</span> kubectl get configmap config-istio -n knative-serving <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
-   <span class="nv">INGRESSGATEWAY</span><span class="o">=</span>istio-ingressgateway
+    <span class="nv">INGRESSGATEWAY</span><span class="o">=</span>istio-ingressgateway
 <span class="k">fi</span>
 
 kubectl get svc <span class="nv">$INGRESSGATEWAY</span> --namespace istio-system</code></pre></td></tr></table>
 </div>
-</div></li>
-</ol>
-
-<p>示例:</p>
+</div>
+<p>示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">   NAME                     TYPE           CLUSTER-IP     EXTERNAL-IP      PORT<span class="o">(</span>S<span class="o">)</span>                                      AGE
-   xxxxxxx-ingressgateway   LoadBalancer   <span class="m">10</span>.23.247.74   <span class="m">35</span>.203.155.229   <span class="m">80</span>:32380/TCP,443:32390/TCP,32400:32400/TCP   2d</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">NAME                     TYPE           CLUSTER-IP     EXTERNAL-IP      PORT<span class="o">(</span>S<span class="o">)</span>                                      AGE
+xxxxxxx-ingressgateway   LoadBalancer   <span class="m">10</span>.23.247.74   <span class="m">35</span>.203.155.229   <span class="m">80</span>:32380/TCP,443:32390/TCP,32400:32400/TCP   2d</code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div></li>
+
 <li><p>运行以下命令来找到 service 的域名 URL：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -414,21 +412,19 @@ kubectl get svc <span class="nv">$INGRESSGATEWAY</span> --namespace istio-system
 <td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get ksvc helloworld-go --output<span class="o">=</span>custom-columns<span class="o">=</span>NAME:.metadata.name,URL:.status.url</code></pre></td></tr></table>
 </div>
-</div></li>
-</ol>
-
-<p>示例:</p>
+</div>
+<p>示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">    NAME                URL
-    helloworld-go       http://helloworld-go.default.example.com</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">NAME                URL
+helloworld-go       http://helloworld-go.default.example.com</code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div></li>
+
 <li><p>通过发送请求来测试应用。将以下 <code>curl</code> 命令与在上一个域中获取的域 URL <code>helloworld-go.default.example.com</code> 和 <code>EXTERNAL-IP</code> 地址一起使用脚步：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -437,23 +433,22 @@ kubectl get svc <span class="nv">$INGRESSGATEWAY</span> --namespace istio-system
 <td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell">curl -H <span class="s2">&#34;Host: helloworld-go.default.example.com&#34;</span> http://<span class="o">{</span>EXTERNAL_IP_ADDRESS<span class="o">}</span></code></pre></td></tr></table>
 </div>
-</div></li>
-</ol>
-
-<p>示例:</p>
+</div>
+<p>示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">   curl -H <span class="s2">&#34;Host: helloworld-go.default.example.com&#34;</span> http://35.203.155.229
-   Hello Go Sample v1!</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">curl -H <span class="s2">&#34;Host: helloworld-go.default.example.com&#34;</span> http://35.203.155.229
+Hello Go Sample v1!</code></pre></td></tr></table>
 </div>
 </div>
 <blockquote>
 <p>注意：如果 <code>-v</code> 命令失败，请添加 <code>curl</code> 选项以获取更多详细信息。</p>
-</blockquote>
+</blockquote></li>
+</ol>
 
 <h2 id="移除示例应用的-deployment">移除示例应用的 Deployment</h2>
 
