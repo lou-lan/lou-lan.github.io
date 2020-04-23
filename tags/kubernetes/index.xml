@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes on 楼兰志</title>
+    <link>https://loulan.me/tags/kubernetes/</link>
+    <description>Recent content in kubernetes on 楼兰志</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 24 Apr 2020 01:59:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://loulan.me/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kube Apiserver</title>
+      <link>https://loulan.me/post/kube-apiserver/</link>
+      <pubDate>Fri, 24 Apr 2020 01:59:01 +0800</pubDate>
+      
+      <guid>https://loulan.me/post/kube-apiserver/</guid>
+      <description>组件介绍 kube-apiserver 是 Kubernetes 主节点负责提供 API 服务的组件， 是 ETCD 直接交互的一个组件，控制核心资源变化，主要提供以下功能： 提供 Kubernetes API，包括认证授权、数据校验以</description>
+    </item>
+    
+  </channel>
+</rss>

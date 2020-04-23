@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Kube Apiserver - 楼兰志</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="楼兰" /><meta name="description" content="kube-apiserver 是 Kubernetes 主节点负责提供 API 服务的组件" /><meta name="keywords" content="楼兰志, loulan, 翟怀楼, loulan.me, 楼兰" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.2 with even 4.0.0" />
+
+
+
+
+
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.397f1b60.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Kube Apiserver" />
+<meta property="og:description" content="kube-apiserver 是 Kubernetes 主节点负责提供 API 服务的组件" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://loulan.me/post/kube-apiserver/" />
+<meta property="article:published_time" content="2020-04-24T01:59:01+08:00" />
+<meta property="article:modified_time" content="2020-04-24T01:59:01+08:00" />
+<meta itemprop="name" content="Kube Apiserver">
+<meta itemprop="description" content="kube-apiserver 是 Kubernetes 主节点负责提供 API 服务的组件">
+<meta itemprop="datePublished" content="2020-04-24T01:59:01&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-24T01:59:01&#43;08:00" />
+<meta itemprop="wordCount" content="960">
+
+
+
+<meta itemprop="keywords" content="kubernetes," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kube Apiserver"/>
+<meta name="twitter:description" content="kube-apiserver 是 Kubernetes 主节点负责提供 API 服务的组件"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <nav class="nav" role="navigation">
+    <ul class="menu nav-container">
+        <li class="menu-item">
+            <a class="menu-item-link nav-logo-link" href="/">
+                <span class="nav-logo-title">
+                    首页
+                </span>
+            </a>
+        </li>
+        <li class="nav-height">
+                <a href="/post/">归档</a>
+            </li><li class="nav-height">
+                <a href="/tags/">标签</a>
+            </li><li class="nav-height">
+                <a href="/about/">关于</a>
+            </li>
+    </ul>
+</nav>
+  <div class="main main-padding-bottom">
+        <section class="section blog-body">
+            <div class="body-content">
+    
+                <div id="content" class="content">
+                    <article class="post">
+                        
+                        <header class="post-header">
+                            <div class="post-tags">
+                                    <a href="/tags/kubernetes/">kubernetes</a>
+                                    </div><div class="post-meta">
+                                <span class="post-time"> 2020-04-24 </span>
+                                
+                                
+                            </div>
+
+                            <h1 class="post-title">Kube Apiserver</h1>
+                            
+                        </header>
+
+                        
+                        <div class="post-content">
+                            <h2 id="组件介绍">组件介绍</h2>
+<p>kube-apiserver 是 Kubernetes 主节点负责提供  API 服务的组件， 是 ETCD 直接交互的一个组件，控制核心资源变化，主要提供以下功能：</p>
+<ul>
+<li>提供 <a href="https://kubernetes.io/docs/concepts/overview/kubernetes-api/">Kubernetes API</a>，包括认证授权、数据校验以及集群状态变更等，供客户端及其他组件调用；</li>
+<li>代理集群中的一些附加组件组件，如 Kubernetes UI、metrics-server、npd 等；</li>
+<li>创建 kubernetes 服务，即提供 apiserver 的 Service，kubernetes Service；</li>
+<li>资源在不同版本之间的转换。</li>
+</ul>
+<h2 id="action">Action</h2>
+<h3 id="get-pod-流程">Get Pod 流程</h3>
+<h3 id="watch-pod-流程">Watch Pod 流程</h3>
+<h2 id="组件运行">组件运行</h2>
+<h3 id="启动参数">启动参数</h3>
+<ul>
+<li><code>--client-ca-file</code> 当请求到达 Kubernetes apiserver 时，如果启用了此选项，则 Kubernetes apiserver 会检查请求的证书。如果它是由 &ndash;client-ca-file 引用的文件中的 CA 证书之一签名的，并且用户是公用名CN=的值，而组是组织O= 的取值，则该请求被视为合法请求。请参阅  <a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#x509-client-certs">关于 TLS 身份验证的文档</a> 。</li>
+<li><code>--service-account-key-file</code> 参数将对应的公钥传入 kube-apiserver。 公钥用于认证过程中的 token 校验。</li>
+<li><code>--kubelet-certificate-authority</code> 给 apiserver 提供一个根证书捆绑，用于 kubelet 的服务证书。</li>
+</ul>
+<h3 id="如何访问kubernetes-api">如何访问kubernetes API</h3>
+<p>本地端口</p>
+<ol>
+<li>该端口用于接收HTTP请求；</li>
+<li>该端口默认值为8080，可以通过API Server的启动参数“&ndash;insecure-port”的值来修改默认值；</li>
+<li>默认的IP地址为“localhost”，可以通过启动参数“&ndash;insecure-bind-address”的值来修改该IP地址；</li>
+<li>非认证或授权的HTTP请求通过该端口访问API Server。
+安全端口</li>
+<li>该端口默认值为6443，可通过启动参数“&ndash;secure-port”的值来修改默认值；</li>
+<li>默认IP地址为非本地（Non-Localhost）网络端口，通过启动参数“&ndash;bind-address”设置该值；</li>
+<li>该端口用于接收HTTPS请求；</li>
+<li>用于基于Tocken文件或客户端证书及HTTP Base的认证；</li>
+<li>用于基于策略的授权；</li>
+<li>默认不启动HTTPS安全访问控制。</li>
+</ol>
+<h2 id="kube-apiserver--中的组件">kube-apiserver  中的组件</h2>
+<ul>
+<li>KubeAPIServer 核心接口服务器
+负责对请求的一些通用处理，认证、鉴权等，以及处理各个内建资源的 REST 服务。</li>
+<li>APIExtensionsServer 可扩展接口服务器
+主要处理 CustomResourceDefinition（CRD）和 CustomResource（CR）的 REST 请求，也是 Delegation 的最后一环，如果对应 CR 不能被处理的话则会返回 404。</li>
+<li>AggregatorServer 聚合服务器
+暴露的功能类似于一个七层 <a href="https://cloud.tencent.com/product/clb?from=10680">负载均衡</a> ，将来自用户的请求拦截转发给其他服务器，并且负责整个 APIServer 的 Discovery 功能。</li>
+</ul>
+<h2 id="关键代码位置">关键代码位置</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 实现具体存储的接口</span>
+pkg/storage/etcd3/store.go
+</code></pre></td></tr></table>
+</div>
+</div>
+                        </div>
+
+                        <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">楼兰</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-04-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+
+                            
+                            <nav class="post-nav">
+                                
+                                <a class="next" href="https://loulan.me/post/knative-setting-up-custom-ingress-gateway/">
+                                        <span class="next-text nav-default">Knative 自定义 Ingress 网关</span>
+                                        <span class="next-text nav-mobile">下一篇</span>
+                                        <i class="iconfont icon-right"></i>
+                                    </a>
+                            </nav>
+                        </footer>
+                    </article>
+                </div>
+
+            </div>
+        </section>
+    </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="footer" class="copyright footer">
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+  <span class="copyright-year">
+      All content copyright
+    &copy; 
+    2014 - 
+    2020
+
+
+
+    <span class="author">楼兰</span>
+            .
+      All rights reserved.
+  </span>
+</div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.d9a987da.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-150398437-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
