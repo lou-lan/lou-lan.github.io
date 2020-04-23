@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.59.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.2 with even 4.0.0" />
 
 
 
@@ -52,16 +52,13 @@
 <meta property="article:modified_time" content="2019-10-11T22:48:27+08:00" />
 <meta itemprop="name" content="Knative 自定义 Ingress 网关">
 <meta itemprop="description" content="Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，可以设置自定义入口网关代替 istio-ingressgateway 网关。">
-
-
 <meta itemprop="datePublished" content="2019-10-11T22:48:27&#43;08:00" />
 <meta itemprop="dateModified" content="2019-10-11T22:48:27&#43;08:00" />
 <meta itemprop="wordCount" content="567">
 
 
 
-<meta itemprop="keywords" content="Knative," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="Knative," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Knative 自定义 Ingress 网关"/>
 <meta name="twitter:description" content="Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，可以设置自定义入口网关代替 istio-ingressgateway 网关。"/>
 
@@ -116,18 +113,13 @@
 
                         
                         <div class="post-content">
-                            
-
-<p>Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，该服务网格是<code>knative-serving</code> 命名空间下的 <code>knative-ingress-gateway</code> 网关。默认情况下，我们在 <code>istio-system</code> 名称空间下使用 Istio 网关服务 <code>istio-ingressgateway</code> 作为其基础服务。可以按以下方式用自己的服务替换该服务。</p>
-
-<h3 id="步骤1-创建网关服务和部署实例">步骤1：创建网关服务和部署实例</h3>
-
+                            <p>Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，该服务网格是<code>knative-serving</code> 命名空间下的 <code>knative-ingress-gateway</code> 网关。默认情况下，我们在 <code>istio-system</code> 名称空间下使用 Istio 网关服务 <code>istio-ingressgateway</code> 作为其基础服务。可以按以下方式用自己的服务替换该服务。</p>
+<h3 id="步骤1创建网关服务和部署实例">步骤1：创建网关服务和部署实例</h3>
 <p>需要首先创建网关服务和部署实例来处理流量。最简单的方式应该在模板中，<a href="https://github.com/istio/istio/releases">Istio release</a>。</p>
-
 <p>这里是一个例子：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt">  1
+<pre class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
 </span><span class="lnt">  3
 </span><span class="lnt">  4
@@ -325,7 +317,7 @@
 </span><span class="w">  </span>namespace<span class="p">:</span><span class="w"> </span>istio-system<span class="w">
 </span><span class="w">  </span>annotations<span class="p">:</span><span class="w">
 </span><span class="w">  </span>labels<span class="p">:</span><span class="w">
-</span><span class="w">    </span>chart<span class="p">:</span><span class="w"> </span>gateways<span class="m">-1.0.1</span><span class="w">
+</span><span class="w">    </span>chart<span class="p">:</span><span class="w"> </span>gateways<span class="m">-1.0</span><span class="m">.1</span><span class="w">
 </span><span class="w">    </span>release<span class="p">:</span><span class="w"> </span>RELEASE-NAME<span class="w">
 </span><span class="w">    </span>heritage<span class="p">:</span><span class="w"> </span>Tiller<span class="w">
 </span><span class="w">    </span>app<span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
@@ -369,7 +361,7 @@
 </span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
 </span><span class="w">  </span>namespace<span class="p">:</span><span class="w"> </span>istio-system<span class="w">
 </span><span class="w">  </span>labels<span class="p">:</span><span class="w">
-</span><span class="w">    </span>chart<span class="p">:</span><span class="w"> </span>gateways<span class="m">-1.0.1</span><span class="w">
+</span><span class="w">    </span>chart<span class="p">:</span><span class="w"> </span>gateways<span class="m">-1.0</span><span class="m">.1</span><span class="w">
 </span><span class="w">    </span>release<span class="p">:</span><span class="w"> </span>RELEASE-NAME<span class="w">
 </span><span class="w">    </span>heritage<span class="p">:</span><span class="w"> </span>Tiller<span class="w">
 </span><span class="w">    </span>app<span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
@@ -506,58 +498,56 @@
 </span><span class="w">                  </span>-<span class="w"> </span>key<span class="p">:</span><span class="w"> </span>beta.kubernetes.io/arch<span class="w">
 </span><span class="w">                    </span>operator<span class="p">:</span><span class="w"> </span>In<span class="w">
 </span><span class="w">                    </span>values<span class="p">:</span><span class="w">
-</span><span class="w">                      </span>-<span class="w"> </span>s390x</code></pre></td></tr></table>
+</span><span class="w">                      </span>-<span class="w"> </span>s390x<span class="w">
+</span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="步骤2-更新-knative-gateway">步骤2：更新 Knative Gateway</h3>
-
+</div><h3 id="步骤2更新-knative-gateway">步骤2：更新 Knative Gateway</h3>
 <p>在 <code>knative-serving</code> namespace 下更新网关实例 <code>knative-ingress-gateway</code>：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl edit gateway knative-ingress-gateway -n knative-serving</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl edit gateway knative-ingress-gateway -n knative-serving
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>用你的服务 label 替换 label selector：</p>
+</div><p>用你的服务 label 替换 label selector：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">istio: ingressgateway</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">istio: ingressgateway
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>对于上述服务，应当更新如下：</p>
+</div><p>对于上述服务，应当更新如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">custom: ingressgateway</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">custom: ingressgateway
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>如果服务端口发生了变化（与 <code>istio-ingressgateway</code> 相比），请相应地更新网关中的端口信息。</p>
-
-<h3 id="步骤3-更新-gateway-configmap">步骤3：更新 Gateway Configmap</h3>
-
+</div><p>如果服务端口发生了变化（与 <code>istio-ingressgateway</code> 相比），请相应地更新网关中的端口信息。</p>
+<h3 id="步骤3更新-gateway-configmap">步骤3：更新 Gateway Configmap</h3>
 <p>在 <code>knative-serving</code> namespace 下更新网关 configmap <code>config-istio</code>：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl edit configmap config-istio -n knative-serving</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl edit configmap config-istio -n knative-serving
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>将 <code>ingress-gateway</code> 字段替换为服务的标准网址。对于上述服务，应当更新如下：</p>
+</div><p>将 <code>ingress-gateway</code> 字段替换为服务的标准网址。对于上述服务，应当更新如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">custom-ingressgateway.istio-system.svc.cluster.local</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">custom-ingressgateway.istio-system.svc.cluster.local
+</code></pre></td></tr></table>
 </div>
 </div>
                         </div>

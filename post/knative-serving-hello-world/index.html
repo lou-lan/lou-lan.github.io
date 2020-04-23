@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.59.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.2 with even 4.0.0" />
 
 
 
@@ -52,16 +52,13 @@
 <meta property="article:modified_time" content="2019-10-11T22:22:26+08:00" />
 <meta itemprop="name" content="Knative Serving Hello World">
 <meta itemprop="description" content="Knative Serving Hello World">
-
-
 <meta itemprop="datePublished" content="2019-10-11T22:22:26&#43;08:00" />
 <meta itemprop="dateModified" content="2019-10-11T22:22:26&#43;08:00" />
 <meta itemprop="wordCount" content="1344">
 
 
 
-<meta itemprop="keywords" content="Golang," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="Golang," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Knative Serving Hello World"/>
 <meta name="twitter:description" content="Knative Serving Hello World"/>
 
@@ -116,35 +113,30 @@
 
                         
                         <div class="post-content">
-                            
-
-<p>一个 Go 语言编写的极简 web 应用，用于测试。它读取环境变量 <code>TARGET</code> 并打印 <code>Hello ${TARGET}!</code>。如果未指定 <code>TARGET</code>，将 <code>TARGET</code> 内容替换为 <code>World</code> 。</p>
-
+                            <p>一个 Go 语言编写的极简 web 应用，用于测试。它读取环境变量 <code>TARGET</code> 并打印 <code>Hello ${TARGET}!</code>。如果未指定 <code>TARGET</code>，将 <code>TARGET</code> 内容替换为 <code>World</code> 。</p>
 <p>可以按照下面的步骤创建示例代码，然后将应用程序部署到集群。也可以直接运行以下命令下载示例的代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell">git clone -b branch https://github.com/knative/docs knative-docs
-<span class="nb">cd</span> knative-docs/docs/serving/samples/hello-world/helloworld-go</code></pre></td></tr></table>
+<span class="nb">cd</span> knative-docs/docs/serving/samples/hello-world/helloworld-go
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="开始前">开始前</h2>
-
+</div><h2 id="开始前">开始前</h2>
 <ul>
 <li>一个已安装 Knetive 的 Kubernetes 集群。如果需要创建可以参考 <a href="../../../../install/README.md">安装说明</a>。</li>
 <li>在本地计算机上安装运行 <a href="https://www.docker.com">Docker</a>，并配置 Docker Hub 帐户（将来推送镜像）。</li>
 </ul>
-
 <h2 id="重新创建示例代码">重新创建示例代码</h2>
-
 <ol>
-<li><p>创建一个名为 <code>helloworld.go</code> 的新文件，然后粘贴以下代码。这段代码创建了一个监听 8080 端口上的 web 服务：</p>
+<li>创建一个名为 <code>helloworld.go</code> 的新文件，然后粘贴以下代码。这段代码创建了一个监听 8080 端口上的 web 服务：</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -179,40 +171,41 @@
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="p">(</span>
-<span class="s">&#34;fmt&#34;</span>
-<span class="s">&#34;log&#34;</span>
-<span class="s">&#34;net/http&#34;</span>
-<span class="s">&#34;os&#34;</span>
+    <span class="s">&#34;fmt&#34;</span>
+    <span class="s">&#34;log&#34;</span>
+    <span class="s">&#34;net/http&#34;</span>
+    <span class="s">&#34;os&#34;</span>
 <span class="p">)</span>
 
 <span class="kd">func</span> <span class="nf">handler</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-<span class="nx">log</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="s">&#34;Hello world received a request.&#34;</span><span class="p">)</span>
-<span class="nx">target</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;TARGET&#34;</span><span class="p">)</span>
-<span class="k">if</span> <span class="nx">target</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
-  <span class="nx">target</span> <span class="p">=</span> <span class="s">&#34;World&#34;</span>
-<span class="p">}</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nf">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Hello %s!\n&#34;</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-<span class="nx">log</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="s">&#34;Hello world sample started.&#34;</span><span class="p">)</span>
-
-<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
-
-<span class="nx">port</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;PORT&#34;</span><span class="p">)</span>
-<span class="k">if</span> <span class="nx">port</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
-  <span class="nx">port</span> <span class="p">=</span> <span class="s">&#34;8080&#34;</span>
+    <span class="nx">log</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="s">&#34;Hello world received a request.&#34;</span><span class="p">)</span>
+    <span class="nx">target</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;TARGET&#34;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">target</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+      <span class="nx">target</span> <span class="p">=</span> <span class="s">&#34;World&#34;</span>
+    <span class="p">}</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Hello %s!\n&#34;</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;:%s&#34;</span><span class="p">,</span> <span class="nx">port</span><span class="p">),</span> <span class="kc">nil</span><span class="p">))</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">log</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="s">&#34;Hello world sample started.&#34;</span><span class="p">)</span>
+
+    <span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
+
+    <span class="nx">port</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;PORT&#34;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">port</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+      <span class="nx">port</span> <span class="p">=</span> <span class="s">&#34;8080&#34;</span>
+    <span class="p">}</span>
+
+    <span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;:%s&#34;</span><span class="p">,</span> <span class="nx">port</span><span class="p">)</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>在项目的目录中，创建一个名为 <code>Dockerfile</code> 的文件，并将下面的代码复制到其中。有关对 Go 应用进行容器化的详细说明，请参见<a href="https://blog.golang.org/docker">使用 Docker 部署 Go 服务</a>。</p>
+</div><ol>
+<li>在项目的目录中，创建一个名为 <code>Dockerfile</code> 的文件，并将下面的代码复制到其中。有关对 Go 应用进行容器化的详细说明，请参见<a href="https://blog.golang.org/docker">使用 Docker 部署 Go 服务</a>。</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-docker" data-lang="docker"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -248,39 +241,40 @@
 </span><span class="err"></span><span class="c"># 这是基于 Debian 的，并将GOPATH设置为 /go</span><span class="err">
 </span><span class="err"></span><span class="c"># https://hub.docker.com/_/golang</span><span class="err">
 </span><span class="err"></span><span class="k">FROM</span><span class="s"> golang:1.13 as builder</span><span class="err">
-</span><span class="err">
+</span><span class="err"></span><span class="err">
 </span><span class="err"></span><span class="c"># 创建并更改到 app 目录。</span><span class="err">
 </span><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /app</span><span class="err">
-</span><span class="err">
+</span><span class="err"></span><span class="err">
 </span><span class="err"></span><span class="c"># 检索应用依赖项。</span><span class="err">
 </span><span class="err"></span><span class="c"># 这允许容器构建重用缓存的依赖项。</span><span class="err">
 </span><span class="err"></span><span class="k">COPY</span> go.* ./<span class="err">
 </span><span class="err"></span><span class="k">RUN</span> go mod download<span class="err">
-</span><span class="err">
+</span><span class="err"></span><span class="err">
 </span><span class="err"></span><span class="c"># 将本地代码复制到容器镜像。</span><span class="err">
 </span><span class="err"></span><span class="k">COPY</span> . ./<span class="err">
-</span><span class="err">
+</span><span class="err"></span><span class="err">
 </span><span class="err"></span><span class="c"># 编译二进制</span><span class="err">
 </span><span class="err"></span><span class="k">RUN</span> <span class="nv">CGO_ENABLED</span><span class="o">=</span><span class="m">0</span> <span class="nv">GOOS</span><span class="o">=</span>linux go build -mod<span class="o">=</span><span class="nb">readonly</span> -v -o server<span class="err">
-</span><span class="err">
+</span><span class="err"></span><span class="err">
 </span><span class="err"></span><span class="c"># 使用 Alpine 镜像用于生产</span><span class="err">
 </span><span class="err"></span><span class="c"># https://hub.docker.com/_/alpine</span><span class="err">
 </span><span class="err"></span><span class="c"># https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds</span><span class="err">
 </span><span class="err"></span><span class="k">FROM</span><span class="s"> alpine:3</span><span class="err">
 </span><span class="err"></span><span class="k">RUN</span> apk add --no-cache ca-certificates<span class="err">
-</span><span class="err">
+</span><span class="err"></span><span class="err">
 </span><span class="err"></span><span class="c"># 从 builder 阶段拷贝二进制到生产镜像</span><span class="err">
 </span><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>builder /app/server /server<span class="err">
-</span><span class="err">
+</span><span class="err"></span><span class="err">
 </span><span class="err"></span><span class="c"># 启动时运行 web service</span><span class="err">
-</span><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;/server&#34;</span><span class="p">]</span></code></pre></td></tr></table>
+</span><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;/server&#34;</span><span class="p">]</span><span class="err">
+</span></code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>创建一个新文件 <code>service.yaml</code>，并将以下 service 定义复制到该文件中。请确保将 <code>{username}</code> 替换为你的 Docker Hub 用户名。</p>
+</div><ol>
+<li>创建一个新文件 <code>service.yaml</code>，并将以下 service 定义复制到该文件中。请确保将 <code>{username}</code> 替换为你的 Docker Hub 用户名。</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -298,39 +292,37 @@
 <pre class="chroma"><code class="language-yaml" data-lang="yaml">apiVersion<span class="p">:</span><span class="w"> </span>serving.knative.dev/v1alpha1<span class="w">
 </span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>Service<span class="w">
 </span><span class="w"></span>metadata<span class="p">:</span><span class="w">
-</span><span class="w"></span>name<span class="p">:</span><span class="w"> </span>helloworld-go<span class="w">
-</span><span class="w"></span>namespace<span class="p">:</span><span class="w"> </span>default<span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>helloworld-go<span class="w">
+</span><span class="w">  </span>namespace<span class="p">:</span><span class="w"> </span>default<span class="w">
 </span><span class="w"></span>spec<span class="p">:</span><span class="w">
-</span><span class="w"></span>template<span class="p">:</span><span class="w">
-</span><span class="w"></span>spec<span class="p">:</span><span class="w">
-</span><span class="w">  </span>containers<span class="p">:</span><span class="w">
-</span><span class="w">    </span>-<span class="w"> </span>image<span class="p">:</span><span class="w"> </span>docker.io/{username}/helloworld-go<span class="w">
-</span><span class="w">      </span>env<span class="p">:</span><span class="w">
-</span><span class="w">        </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>TARGET<span class="w">
-</span><span class="w">          </span>value<span class="p">:</span><span class="w"> </span><span class="s2">&#34;Go Sample v1&#34;</span></code></pre></td></tr></table>
+</span><span class="w">  </span>template<span class="p">:</span><span class="w">
+</span><span class="w">    </span>spec<span class="p">:</span><span class="w">
+</span><span class="w">      </span>containers<span class="p">:</span><span class="w">
+</span><span class="w">        </span>-<span class="w"> </span>image<span class="p">:</span><span class="w"> </span>docker.io/{username}/helloworld-go<span class="w">
+</span><span class="w">          </span>env<span class="p">:</span><span class="w">
+</span><span class="w">            </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>TARGET<span class="w">
+</span><span class="w">              </span>value<span class="p">:</span><span class="w"> </span><span class="s2">&#34;Go Sample v1&#34;</span><span class="w">
+</span></code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>使用 go tool 创建 <a href="https://github.com/golang/go/wiki/Modules#gomod"><code>go.mod</code></a> manifest。</p>
+</div><ol>
+<li>使用 go tool 创建 <a href="https://github.com/golang/go/wiki/Modules#gomod"><code>go.mod</code></a> manifest。</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">go mod init github.com/knative/docs/docs/serving/samples/hello-world/helloworld-go</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">go mod init github.com/knative/docs/docs/serving/samples/hello-world/helloworld-go
+</code></pre></td></tr></table>
 </div>
-</div></li>
-</ol>
-
-<h2 id="构建示例并部署">构建示例并部署</h2>
-
+</div><h2 id="构建示例并部署">构建示例并部署</h2>
 <p>重新创建示例代码文件（或使用 sample 文件夹中的文件）后，就可以构建和部署示例应用了。</p>
-
 <ol>
-<li><p>使用 Docker 将示例代码构建为容器镜像。运行以下命令构建并推送到 Docker Hub，用你的 Docker Hub 用户名替换 <code>{username}</code> ：</p>
+<li>使用 Docker 将示例代码构建为容器镜像。运行以下命令构建并推送到 Docker Hub，用你的 Docker Hub 用户名替换 <code>{username}</code> ：</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -341,32 +333,34 @@
 docker build -t <span class="o">{</span>username<span class="o">}</span>/helloworld-go .
 
 <span class="c1"># 推送镜像到 docker 仓库</span>
-docker push <span class="o">{</span>username<span class="o">}</span>/helloworld-go</code></pre></td></tr></table>
+docker push <span class="o">{</span>username<span class="o">}</span>/helloworld-go
+</code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>构建完成并将镜像推送到 Docker Hub 之后，可以将应用部署到集群中。确保 <code>service.yaml</code> 中的容器镜像与上一步中构建镜像内容一致。使用 <code>kubectl</code> 应用配置：</p>
+</div><ol>
+<li>构建完成并将镜像推送到 Docker Hub 之后，可以将应用部署到集群中。确保 <code>service.yaml</code> 中的容器镜像与上一步中构建镜像内容一致。使用 <code>kubectl</code> 应用配置：</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl apply --filename service.yaml</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl apply --filename service.yaml
+</code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>现在你的服务已经创建，Knative 将执行以下步骤：</p>
-
+</div><ol>
+<li>
+<p>现在你的服务已经创建，Knative 将执行以下步骤：</p>
 <ul>
 <li>为此版本的应用程序创建一个新的不可变版本。</li>
 <li>为应用创建路由（route）、入口（ingress）、服务（service）和负载均衡（load balance）的网络编程。</li>
 <li>自动缩放你的Pod（包括活动的 Pod 为零）。</li>
-</ul></li>
-
-<li><p>运行以下命令来找到 service 的域名 URL： 返回集群的 ingress IP。如果只是创建集群，则可能需要等待并重新运行命令，直到为 service 分配了外部 IP 地址。</p>
+</ul>
+</li>
+<li>
+<p>运行以下命令来找到 service 的域名 URL： 返回集群的 ingress IP。如果只是创建集群，则可能需要等待并重新运行命令，直到为 service 分配了外部 IP 地址。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -389,82 +383,83 @@ docker push <span class="o">{</span>username<span class="o">}</span>/helloworld-
     <span class="nv">INGRESSGATEWAY</span><span class="o">=</span>istio-ingressgateway
 <span class="k">fi</span>
 
-kubectl get svc <span class="nv">$INGRESSGATEWAY</span> --namespace istio-system</code></pre></td></tr></table>
+kubectl get svc <span class="nv">$INGRESSGATEWAY</span> --namespace istio-system
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>示例：</p>
+</div><p>示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell">NAME                     TYPE           CLUSTER-IP     EXTERNAL-IP      PORT<span class="o">(</span>S<span class="o">)</span>                                      AGE
-xxxxxxx-ingressgateway   LoadBalancer   <span class="m">10</span>.23.247.74   <span class="m">35</span>.203.155.229   <span class="m">80</span>:32380/TCP,443:32390/TCP,32400:32400/TCP   2d</code></pre></td></tr></table>
+xxxxxxx-ingressgateway   LoadBalancer   10.23.247.74   35.203.155.229   80:32380/TCP,443:32390/TCP,32400:32400/TCP   2d
+</code></pre></td></tr></table>
 </div>
 </div></li>
-
-<li><p>运行以下命令来找到 service 的域名 URL：</p>
+<li>
+<p>运行以下命令来找到 service 的域名 URL：</p>
+</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get ksvc helloworld-go --output<span class="o">=</span>custom-columns<span class="o">=</span>NAME:.metadata.name,URL:.status.url</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get ksvc helloworld-go --output<span class="o">=</span>custom-columns<span class="o">=</span>NAME:.metadata.name,URL:.status.url
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>示例：</p>
+</div><p>示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell">NAME                URL
-helloworld-go       http://helloworld-go.default.example.com</code></pre></td></tr></table>
+helloworld-go       http://helloworld-go.default.example.com
+</code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>通过发送请求来测试应用。将以下 <code>curl</code> 命令与在上一个域中获取的域 URL <code>helloworld-go.default.example.com</code> 和 <code>EXTERNAL-IP</code> 地址一起使用脚步：</p>
+</div><ol>
+<li>
+<p>通过发送请求来测试应用。将以下 <code>curl</code> 命令与在上一个域中获取的域 URL <code>helloworld-go.default.example.com</code> 和 <code>EXTERNAL-IP</code> 地址一起使用脚步：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">curl -H <span class="s2">&#34;Host: helloworld-go.default.example.com&#34;</span> http://<span class="o">{</span>EXTERNAL_IP_ADDRESS<span class="o">}</span></code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">curl -H <span class="s2">&#34;Host: helloworld-go.default.example.com&#34;</span> http://<span class="o">{</span>EXTERNAL_IP_ADDRESS<span class="o">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>示例：</p>
+</div><p>示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-shell" data-lang="shell">curl -H <span class="s2">&#34;Host: helloworld-go.default.example.com&#34;</span> http://35.203.155.229
-Hello Go Sample v1!</code></pre></td></tr></table>
+Hello Go Sample v1!
+</code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>注意：如果 <code>curl</code> 命令失败，请添加 <code>-v</code> 选项以获取更多详细信息。</p>
-</blockquote></li>
+</blockquote>
+</li>
 </ol>
-
 <h2 id="移除示例应用的-deployment">移除示例应用的 Deployment</h2>
-
 <p>要从集群中删除示例应用，请删除 service 记录:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl delete --filename service.yaml</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl delete --filename service.yaml
+</code></pre></td></tr></table>
 </div>
-</div>
-<h1 id="排错">排错</h1>
-
+</div><h1 id="排错">排错</h1>
 <h3 id="执行-curl-命令与预期不符">执行 curl 命令与预期不符</h3>
-
 <p>检查 isito ingressgateway 是否为 pending 状态，如果是有 2 种方法，给设置个外部 IP 或者 NodePort 方式访问。</p>
 
                         </div>

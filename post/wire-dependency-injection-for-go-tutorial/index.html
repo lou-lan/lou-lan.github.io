@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.59.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.2 with even 4.0.0" />
 
 
 
@@ -52,16 +52,13 @@
 <meta property="article:modified_time" content="2019-08-03T22:14:31+08:00" />
 <meta itemprop="name" content="Wire 依赖注入指南">
 <meta itemprop="description" content="Wire 是一种代码生成工具，通过显式地为组件注入运行时所有依赖，来产生灵活低耦合的代码。">
-
-
 <meta itemprop="datePublished" content="2019-08-03T22:14:31&#43;08:00" />
 <meta itemprop="dateModified" content="2019-08-03T22:14:31&#43;08:00" />
-<meta itemprop="wordCount" content="1800">
+<meta itemprop="wordCount" content="1799">
 
 
 
-<meta itemprop="keywords" content="Golang," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="Golang," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Wire 依赖注入指南"/>
 <meta name="twitter:description" content="Wire 是一种代码生成工具，通过显式地为组件注入运行时所有依赖，来产生灵活低耦合的代码。"/>
 
@@ -116,18 +113,13 @@
 
                         
                         <div class="post-content">
-                            
-
-<h2 id="基础">基础</h2>
-
+                            <h2 id="基础">基础</h2>
 <p>Wire 有两个核心概念：providers 和 injectors.</p>
-
 <h3 id="providers-定义">Providers 定义</h3>
-
 <p>Wire 中的主要机制是 <strong>providers</strong>: 一个可以产生值的函数。这些函数是普通的 Go 代码。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -146,17 +138,16 @@
 <span class="p">}</span>
 
 <span class="c1">// ProvideFoo returns a Foo.
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ProvideFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ProvideFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">Foo</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>Provider 函数必须导出，以便从其他包中使用，就像普通函数一样。</p>
-
+</div><p>Provider 函数必须导出，以便从其他包中使用，就像普通函数一样。</p>
 <p>Provider 可以使用参数指定依赖项：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -181,13 +172,13 @@
 <span class="c1">// ProvideBar returns a Bar: a negative Foo.
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">ProvideBar</span><span class="p">(</span><span class="nx">foo</span> <span class="nx">Foo</span><span class="p">)</span> <span class="nx">Bar</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">Bar</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="o">-</span><span class="nx">foo</span><span class="p">.</span><span class="nx">X</span><span class="p">}</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>Providers 可以发返回错误：</p>
+</div><p>Providers 可以发返回错误：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -225,16 +216,16 @@
 <span class="c1">// ProvideBaz returns a value if Bar is not zero.
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">ProvideBaz</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">bar</span> <span class="nx">Bar</span><span class="p">)</span> <span class="p">(</span><span class="nx">Baz</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="nx">bar</span><span class="p">.</span><span class="nx">X</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">Baz</span><span class="p">{},</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;cannot provide baz when bar is zero&#34;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nx">Baz</span><span class="p">{</span><span class="p">}</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;cannot provide baz when bar is zero&#34;</span><span class="p">)</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">Baz</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="nx">bar</span><span class="p">.</span><span class="nx">X</span><span class="p">},</span> <span class="kc">nil</span>
-<span class="p">}</span></code></pre></td></tr></table>
+    <span class="k">return</span> <span class="nx">Baz</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="nx">bar</span><span class="p">.</span><span class="nx">X</span><span class="p">}</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>Providers 可以分组到提 <strong>provider sets</strong> 中。如果几个 provider 经常一起使用，这很有用。要将这些提供程序添加到名为 <code>SuperSet</code> 的新集中，请使用 <code>wire.NewSet</code> 函数:</p>
+</div><p>Providers 可以分组到提 <strong>provider sets</strong> 中。如果几个 provider 经常一起使用，这很有用。要将这些提供程序添加到名为 <code>SuperSet</code> 的新集中，请使用 <code>wire.NewSet</code> 函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -255,17 +246,15 @@
 
 <span class="c1">// ...
 </span><span class="c1"></span>
-<span class="kd">var</span> <span class="nx">SuperSet</span> <span class="p">=</span> <span class="nx">wire</span><span class="p">.</span><span class="nf">NewSet</span><span class="p">(</span><span class="nx">ProvideFoo</span><span class="p">,</span> <span class="nx">ProvideBar</span><span class="p">,</span> <span class="nx">ProvideBaz</span><span class="p">)</span></code></pre></td></tr></table>
+<span class="kd">var</span> <span class="nx">SuperSet</span> <span class="p">=</span> <span class="nx">wire</span><span class="p">.</span><span class="nf">NewSet</span><span class="p">(</span><span class="nx">ProvideFoo</span><span class="p">,</span> <span class="nx">ProvideBar</span><span class="p">,</span> <span class="nx">ProvideBaz</span><span class="p">)</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>您也可以将其他 provider sets 加到 provider set 中。</p>
-
+</div><p>您也可以将其他 provider sets 加到 provider set 中。</p>
 <h3 id="injectors">Injectors</h3>
-
-<p>应用程序使用 <strong>injector</strong> 连接这些 provider：按依赖顺序调用 provider 的函数。使用 Wire，写下 injector&rsquo;s 的签名，然后 Wire 生成函数的主体。</p>
+<p>应用程序使用 <strong>injector</strong> 连接这些 provider：按依赖顺序调用 provider 的函数。使用 Wire，写下 injector's 的签名，然后 Wire 生成函数的主体。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -284,7 +273,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// +build wireinject
-</span><span class="c1">// The build tag makes sure the stub is not built in the final build.
+</span><span class="c1"></span><span class="c1">// The build tag makes sure the stub is not built in the final build.
 </span><span class="c1"></span>
 <span class="kn">package</span> <span class="nx">main</span>
 
@@ -297,27 +286,19 @@
 
 <span class="kd">func</span> <span class="nf">initializeBaz</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">(</span><span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">Baz</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">MegaSet</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">Baz</span><span class="p">{},</span> <span class="kc">nil</span>
-<span class="p">}</span></code></pre></td></tr></table>
+    <span class="k">return</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">Baz</span><span class="p">{</span><span class="p">}</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>像 provider 一样，injectors 可以在输入上参数化（然后发送给 provider），并且可以返回错误。wire.Build 参数与 wire.NewSet 一样：他们构成一个 provider 集合。这是在该 injector 注入器的生成代码期间使用的 provider 集。</p>
-
+</div><p>像 provider 一样，injectors 可以在输入上参数化（然后发送给 provider），并且可以返回错误。wire.Build 参数与 wire.NewSet 一样：他们构成一个 provider 集合。这是在该 injector 注入器的生成代码期间使用的 provider 集。</p>
 <p>在 injectors 的文件中发现的任何非 injector 声明将被复制到生成的文件中。</p>
-
 <p>你可以在包目录中调用Wire来生成 injector：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">wire</pre></td></tr></table>
-</div>
-</div>
+<pre><code>wire
+</code></pre>
 <p>Wire 将产生一个实现 injector 调用方法名为 <code>wire_gen.go</code> 文件。看起来如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -342,7 +323,7 @@
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Code generated by Wire. DO NOT EDIT.
 </span><span class="c1"></span>
 <span class="c1">//go:generate wire
-</span><span class="c1">//+build !wireinject
+</span><span class="c1"></span><span class="c1">//+build !wireinject
 </span><span class="c1"></span>
 <span class="kn">package</span> <span class="nx">main</span>
 
@@ -351,30 +332,25 @@
 <span class="p">)</span>
 
 <span class="kd">func</span> <span class="nf">initializeBaz</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">(</span><span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">Baz</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">foo</span> <span class="o">:=</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nf">ProvideFoo</span><span class="p">()</span>
+    <span class="nx">foo</span> <span class="o">:=</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nf">ProvideFoo</span><span class="p">(</span><span class="p">)</span>
     <span class="nx">bar</span> <span class="o">:=</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nf">ProvideBar</span><span class="p">(</span><span class="nx">foo</span><span class="p">)</span>
     <span class="nx">baz</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nf">ProvideBaz</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">bar</span><span class="p">)</span>
     <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
         <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nx">baz</span><span class="p">,</span> <span class="kc">nil</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>就像你看到的一样，输出非常接近开发人员自己编写的内容。此外，运行时对 Wire 的依赖性很小：所有编写的代码都只是普通的 Go 代码，可以在没有 Wire 的情况下使用。</p>
-
+</div><p>就像你看到的一样，输出非常接近开发人员自己编写的内容。此外，运行时对 Wire 的依赖性很小：所有编写的代码都只是普通的 Go 代码，可以在没有 Wire 的情况下使用。</p>
 <p>创建 <code>wire_gen.go</code> 后，您可以通过运行 <code>go generate</code> 来重新生成它。</p>
-
 <h2 id="高级功能">高级功能</h2>
-
 <p>以下特性都建立在 providers 和 injectors 概念的基础上。</p>
-
 <h3 id="绑定-interfaces">绑定 Interfaces</h3>
-
 <p>依赖注入通常用于绑定接口的具体实现。Wire 通过类型标识将输入与输出匹配，因此倾向于创建一个返回接口类型的程序。然而，这并不是惯用的，因为 Go 的最佳实践是返回具体类型。相反，您可以在提供程序 providers sets 中声明接口绑定：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -404,16 +380,16 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Fooer</span> <span class="kd">interface</span> <span class="p">{</span>
-    <span class="nf">Foo</span><span class="p">()</span> <span class="kt">string</span>
+    <span class="nf">Foo</span><span class="p">(</span><span class="p">)</span> <span class="kt">string</span>
 <span class="p">}</span>
 
 <span class="kd">type</span> <span class="nx">MyFooer</span> <span class="kt">string</span>
 
-<span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">MyFooer</span><span class="p">)</span> <span class="nf">Foo</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">MyFooer</span><span class="p">)</span> <span class="nf">Foo</span><span class="p">(</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="o">*</span><span class="nx">b</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">provideMyFooer</span><span class="p">()</span> <span class="o">*</span><span class="nx">MyFooer</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nf">provideMyFooer</span><span class="p">(</span><span class="p">)</span> <span class="o">*</span><span class="nx">MyFooer</span> <span class="p">{</span>
     <span class="nx">b</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">MyFooer</span><span class="p">)</span>
     <span class="o">*</span><span class="nx">b</span> <span class="p">=</span> <span class="s">&#34;Hello, World!&#34;</span>
     <span class="k">return</span> <span class="nx">b</span>
@@ -423,21 +399,20 @@
 
 <span class="kd">func</span> <span class="nf">provideBar</span><span class="p">(</span><span class="nx">f</span> <span class="nx">Fooer</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
     <span class="c1">// f will be a *MyFooer.
-</span><span class="c1"></span>    <span class="k">return</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Foo</span><span class="p">()</span>
+</span><span class="c1"></span>    <span class="k">return</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Foo</span><span class="p">(</span><span class="p">)</span>
 <span class="p">}</span>
 
 <span class="kd">var</span> <span class="nx">Set</span> <span class="p">=</span> <span class="nx">wire</span><span class="p">.</span><span class="nf">NewSet</span><span class="p">(</span>
     <span class="nx">provideMyFooer</span><span class="p">,</span>
-    <span class="nx">wire</span><span class="p">.</span><span class="nf">Bind</span><span class="p">((</span><span class="o">*</span><span class="nx">Fooer</span><span class="p">)(</span><span class="kc">nil</span><span class="p">),</span> <span class="p">(</span><span class="o">*</span><span class="nx">MyFooer</span><span class="p">)(</span><span class="kc">nil</span><span class="p">)),</span>
-    <span class="nx">provideBar</span><span class="p">)</span></code></pre></td></tr></table>
+    <span class="nx">wire</span><span class="p">.</span><span class="nf">Bind</span><span class="p">(</span><span class="p">(</span><span class="o">*</span><span class="nx">Fooer</span><span class="p">)</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="nx">MyFooer</span><span class="p">)</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span><span class="p">)</span><span class="p">,</span>
+    <span class="nx">provideBar</span><span class="p">)</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p><code>wire.Bind</code> 的第一个参数是指向所需接口类型值的指针，任何包含接口绑定的集合都必须在提供具体类型的同一集合中有一个 provides 程序。</p>
-
+</div><p><code>wire.Bind</code> 的第一个参数是指向所需接口类型值的指针，任何包含接口绑定的集合都必须在提供具体类型的同一集合中有一个 provides 程序。</p>
 <p>如果需要，还可以将一个接口绑定到另一个接口：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -453,24 +428,23 @@
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">FooerPlus</span> <span class="kd">interface</span> <span class="p">{</span>
   <span class="nx">Fooer</span>
-  <span class="nf">Bar</span><span class="p">()</span> <span class="nx">String</span>
+  <span class="nf">Bar</span><span class="p">(</span><span class="p">)</span> <span class="nx">String</span>
 <span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">ProvideFooerPlus</span><span class="p">()</span> <span class="nx">FooerPlus</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nf">ProvideFooerPlus</span><span class="p">(</span><span class="p">)</span> <span class="nx">FooerPlus</span> <span class="p">{</span>
   <span class="o">...</span>
 <span class="p">}</span>
 
 <span class="kd">var</span> <span class="nx">FooerPlusAsFooer</span> <span class="p">=</span> <span class="nx">wire</span><span class="p">.</span><span class="nf">NewSet</span><span class="p">(</span>
   <span class="nx">ProvideFooerPlus</span><span class="p">,</span>
-  <span class="nx">wire</span><span class="p">.</span><span class="nf">Bind</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">Fooer</span><span class="p">),</span> <span class="o">*</span><span class="nb">new</span><span class="p">(</span><span class="nx">FooerPlus</span><span class="p">)))</span></code></pre></td></tr></table>
+  <span class="nx">wire</span><span class="p">.</span><span class="nf">Bind</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">Fooer</span><span class="p">)</span><span class="p">,</span> <span class="o">*</span><span class="nb">new</span><span class="p">(</span><span class="nx">FooerPlus</span><span class="p">)</span><span class="p">)</span><span class="p">)</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="结构体-providers">结构体 Providers</h3>
-
+</div><h3 id="结构体-providers">结构体 Providers</h3>
 <p>结构体也可以作为 providers。Injector 将使用相应的 provider 填充每个字段，而不是调用函数。对于给定的结构类型 <code>S</code>，这将同时提供 <code>S</code> 和 <code>*S</code>。例如，给定以下 <code>providers</code>：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -495,11 +469,11 @@
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Foo</span> <span class="kt">int</span>
 <span class="kd">type</span> <span class="nx">Bar</span> <span class="kt">int</span>
 
-<span class="kd">func</span> <span class="nf">ProvideFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nf">ProvideFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
     <span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">ProvideBar</span><span class="p">()</span> <span class="nx">Bar</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nf">ProvideBar</span><span class="p">(</span><span class="p">)</span> <span class="nx">Bar</span> <span class="p">{</span>
     <span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span>
 
@@ -511,13 +485,13 @@
 <span class="kd">var</span> <span class="nx">Set</span> <span class="p">=</span> <span class="nx">wire</span><span class="p">.</span><span class="nf">NewSet</span><span class="p">(</span>
     <span class="nx">ProvideFoo</span><span class="p">,</span>
     <span class="nx">ProvideBar</span><span class="p">,</span>
-    <span class="nx">FooBar</span><span class="p">{})</span></code></pre></td></tr></table>
+    <span class="nx">FooBar</span><span class="p">{</span><span class="p">}</span><span class="p">)</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>为 <code>FooBar</code> 生成的注入器如下所示：</p>
+</div><p>为 <code>FooBar</code> 生成的注入器如下所示：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -528,25 +502,23 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFooBar</span><span class="p">()</span> <span class="nx">FooBar</span> <span class="p">{</span>
-    <span class="nx">foo</span> <span class="o">:=</span> <span class="nf">ProvideFoo</span><span class="p">()</span>
-    <span class="nx">bar</span> <span class="o">:=</span> <span class="nf">ProvideBar</span><span class="p">()</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFooBar</span><span class="p">(</span><span class="p">)</span> <span class="nx">FooBar</span> <span class="p">{</span>
+    <span class="nx">foo</span> <span class="o">:=</span> <span class="nf">ProvideFoo</span><span class="p">(</span><span class="p">)</span>
+    <span class="nx">bar</span> <span class="o">:=</span> <span class="nf">ProvideBar</span><span class="p">(</span><span class="p">)</span>
     <span class="nx">fooBar</span> <span class="o">:=</span> <span class="nx">FooBar</span><span class="p">{</span>
         <span class="nx">Foo</span><span class="p">:</span> <span class="nx">foo</span><span class="p">,</span>
         <span class="nx">Bar</span><span class="p">:</span> <span class="nx">bar</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nx">fooBar</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>同样，如果注射器需要 <code>*FooBar</code>。</p>
-
+</div><p>同样，如果注射器需要 <code>*FooBar</code>。</p>
 <h3 id="绑定值">绑定值</h3>
-
 <p>有时，将基本值（通常为nil）绑定到类型是有用的。 您可以将值表达式添加到提 provider set，而不是让 injectors 依赖于一次性提供程序函数。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -560,16 +532,16 @@
     <span class="nx">X</span> <span class="kt">int</span>
 <span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
-    <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">Value</span><span class="p">(</span><span class="nx">Foo</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">42</span><span class="p">}))</span>
-    <span class="k">return</span> <span class="nx">Foo</span><span class="p">{}</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
+    <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">Value</span><span class="p">(</span><span class="nx">Foo</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span><span class="p">)</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">Foo</span><span class="p">{</span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这个生成如下所示</p>
+</div><p>这个生成如下所示</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -579,39 +551,37 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
     <span class="nx">foo</span> <span class="o">:=</span> <span class="nx">_wireFooValue</span>
     <span class="k">return</span> <span class="nx">foo</span>
 <span class="p">}</span>
 
 <span class="kd">var</span> <span class="p">(</span>
     <span class="nx">_wireFooValue</span> <span class="p">=</span> <span class="nx">Foo</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span>
-<span class="p">)</span></code></pre></td></tr></table>
+<span class="p">)</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>需要注意的是，表达式将被复制到注 injector 的包中；对变量的引用将在 injector 组件初始化期间进行求值。如果表达式调用任何函数或从任何通道接收，Wire 将发出错误。</p>
-
+</div><p>需要注意的是，表达式将被复制到注 injector 的包中；对变量的引用将在 injector 组件初始化期间进行求值。如果表达式调用任何函数或从任何通道接收，Wire 将发出错误。</p>
 <p>对于接口值，使用 <code>InterfaceValue</code>：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectReader</span><span class="p">()</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span> <span class="p">{</span>
-    <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">InterfaceValue</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">),</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">))</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectReader</span><span class="p">(</span><span class="p">)</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span> <span class="p">{</span>
+    <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">InterfaceValue</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">)</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">)</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">nil</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="清理函数">清理函数</h3>
-
+</div><h3 id="清理函数">清理函数</h3>
 <p>如果 provides 创建了一个需要清理的值(例如，关闭一个文件)，那么它可以返回一个闭包来清理资源。稍后如果在 injector 的实现中，调用的提供程序返回错误，注入器将使用它向调用方返回聚合清理函数或者清理资源。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -625,35 +595,34 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">provideFile</span><span class="p">(</span><span class="nx">log</span> <span class="nx">Logger</span><span class="p">,</span> <span class="nx">path</span> <span class="nx">Path</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">os</span><span class="p">.</span><span class="nx">File</span><span class="p">,</span> <span class="kd">func</span><span class="p">(),</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">path</span><span class="p">))</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">provideFile</span><span class="p">(</span><span class="nx">log</span> <span class="nx">Logger</span><span class="p">,</span> <span class="nx">path</span> <span class="nx">Path</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">os</span><span class="p">.</span><span class="nx">File</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span><span class="p">)</span>
     <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
         <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
     <span class="p">}</span>
-    <span class="nx">cleanup</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="nx">cleanup</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">(</span><span class="p">)</span><span class="p">;</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
             <span class="nx">log</span><span class="p">.</span><span class="nf">Log</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
         <span class="p">}</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nx">f</span><span class="p">,</span> <span class="nx">cleanup</span><span class="p">,</span> <span class="kc">nil</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>provider 清理函数必须保证在调用前这个清理函数在 provider  提供输入并且必须是匿名<code>func()</code>。</p>
-
+</div><p>provider 清理函数必须保证在调用前这个清理函数在 provider  提供输入并且必须是匿名<code>func()</code>。</p>
 <h3 id="替代-injector-语法">替代 Injector 语法</h3>
-
 <p>如果你厌倦了在 injector 函数声明的末尾写 <code>return foobarbaz.Foo{}, nil</code>，可以使用 panic 用一个简洁的方式写出来：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
-    <span class="nb">panic</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">))</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
+    <span class="nb">panic</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">)</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
 </div>
                         </div>
