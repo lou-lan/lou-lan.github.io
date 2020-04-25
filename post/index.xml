@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>Kubernetes API Server</title>
+      <title>Kubernetes API Server 深入浅出</title>
       <link>https://loulan.me/post/kube-apiserver/</link>
       <pubDate>Fri, 24 Apr 2020 01:59:01 +0800</pubDate>
       
       <guid>https://loulan.me/post/kube-apiserver/</guid>
-      <description>组件介绍 Kubernetes API Server 通过名为 kube-apiserver 进程提供服务，它的核心功能是提供集群管理 RESTful API 接口，将 API 操作的对象存储到持久化存储到 ETCD 后端，本质是集群中所有用户和组件</description>
+      <description>组件概述 Kubernetes API Server 通过名为 kube-apiserver 进程提供服务，它的核心功能是提供集群管理 RESTful API 接口，将 API 操作的对象存储到持久化存储到 ETCD 后端，本质是集群中所有用户和组件</description>
     </item>
     
     <item>
