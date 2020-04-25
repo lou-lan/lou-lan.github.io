@@ -40,7 +40,7 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.7ceb486c.min.css" rel="stylesheet">
+<link href="/dist/even.e4376426.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
@@ -116,15 +116,15 @@
                             <h2 id="组件概述">组件概述</h2>
 <p>Kubernetes API Server 通过名为 kube-apiserver 进程提供服务，它的核心功能是提供集群管理 RESTful API 接口，将 API 操作的对象存储到持久化存储到 ETCD 后端，本质是集群中所有用户和组件的数据交互中心。</p>
 <h2 id="架构解析">架构解析</h2>
-<p>Kubernetes API Server 从上到下可以分为几层。</p>
-<p><img src="/img/kube-apiserver2.png" alt="kube-apiserver2"></p>
+<p>Kubernetes API Server 从上到下可以分为四层：接口层，访问控制层，注册表层和数据库层。</p>
+<p><img src="/img/kube-apiserver2.svg#center" alt="kube-apiserver2"></p>
 <h3 id="api-层">API 层</h3>
-<h4 id="kube-core--api-server-核心接口服务器">Kube Core  API Server 核心接口服务器</h4>
+<h4 id="1-kube-core--api-server-核心接口服务器">1. Kube Core  API Server 核心接口服务器</h4>
 <p>负责对请求的一些通用处理，认证、鉴权等，以及处理各个内建资源的 REST 服务。</p>
-<h4 id="api-extensions-server-可扩展接口服务器">API Extensions Server 可扩展接口服务器</h4>
+<h4 id="2-api-extensions-server-可扩展接口服务器">2. API Extensions Server 可扩展接口服务器</h4>
 <p>主要处理 CustomResourceDefinition（CRD）和 CustomResource（CR）的 REST 请求，也是 Delegation 的最后一环，如果对应 CR 不能被处理的话则会返回 404。</p>
-<p>####· Aggregator Server 聚合服务器</p>
-<p>暴露的功能类似于一个七层 <a href="https://cloud.tencent.com/product/clb?from=10680">负载均衡</a>，将来自用户的请求拦截转发给其他服务器，并且负责整个 APIServer 的 Discovery 功能。</p>
+<h4 id="3-aggregator-server-聚合服务器">3. Aggregator Server 聚合服务器</h4>
+<p>暴露的功能类似于一个七层<a href="https://cloud.tencent.com/product/clb?from=10680">负载均衡</a>，将来自用户的请求拦截转发给其他服务器，并且负责整个 APIServer 的 Discovery 功能。</p>
 <h3 id="访问控制层">访问控制层</h3>
 <p>当客户端访问 API 接口时，访问控制层对用户进行身份鉴权，然后根据配置的各种访问许可逻辑（Admission Controller），判断是否允许访问。</p>
 <h3 id="注册表层">注册表层</h3>
@@ -139,7 +139,7 @@
 <h2 id="扩展文档">扩展文档</h2>
 <h3 id="启动参数">启动参数</h3>
 <ul>
-<li><code>--client-ca-file</code> 当请求到达 Kubernetes API Server 时，如果启用了此选项，则 Kubernetes apiserver 会检查请求的证书。如果它是由 &ndash;client-ca-file 引用的文件中的 CA 证书之一签名的，并且用户是公用名CN=的值，而组是组织O= 的取值，则该请求被视为合法请求。请参阅<a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#x509-client-certs">关于 TLS 身份验证的文档</a>。</li>
+<li><code>--client-ca-file</code> 请求到达 Kubernetes API Server 时检查请求的证书。如果它是由 &ndash;client-ca-file 引用的文件中的 CA 证书之一签名的，并且用户是公用名 <code>CN=</code> 的值，而组是组织 <code>O=</code> 的取值，则该请求被视为合法请求。请参阅<a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#x509-client-certs">关于 TLS 身份验证的文档</a>。</li>
 <li><code>--service-account-key-file</code> 参数将对应的公钥传入 kube-apiserver。 公钥用于认证过程中的 token 校验。</li>
 <li><code>--kubelet-certificate-authority</code> 给 apiserver 提供一个根证书捆绑，用于 kubelet 的服务证书。</li>
 </ul>
