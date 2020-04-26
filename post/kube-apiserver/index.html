@@ -54,7 +54,7 @@
 <meta itemprop="description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。">
 <meta itemprop="datePublished" content="2020-04-24T01:59:01&#43;08:00" />
 <meta itemprop="dateModified" content="2020-04-24T01:59:01&#43;08:00" />
-<meta itemprop="wordCount" content="1250">
+<meta itemprop="wordCount" content="1324">
 
 
 
@@ -105,7 +105,7 @@
                                     <a class="topic-tag" href="/tags/kubernetes/">kubernetes</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-04-24 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 1250 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 1324 字 </span>
                                     <span class="more-meta post-tag-no-selecte"> 预计阅读 3 分钟 </span>
                                 
                             </div>
@@ -164,10 +164,52 @@
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
+</span><span class="c1"></span><span class="c1">// 完成启动流程
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="nx">preparedGenericAPIServer</span><span class="p">)</span> <span class="nf">NonBlockingRun</span><span class="p">(</span><span class="nx">stopCh</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{</span><span class="p">}</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// cmd/kube-apiserver/app/options/options.go NewServerRunOptions 构造了服务运行所有的对象
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewServerRunOptions</span><span class="p">(</span><span class="p">)</span> <span class="o">*</span><span class="nx">ServerRunOptions</span> <span class="p">{</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 实现具体存储的接口</span>
 pkg/storage/etcd3/store.go
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Admission Controller 的具体实现位置</span>
+k8s.io/apiserver/pkg/admission/initializer/initializer.go
+
+<span class="c1"># Admission Controller 各个策略的实现位置</span>
+plugin/pkg/admission/*
 </code></pre></td></tr></table>
 </div>
 </div>
