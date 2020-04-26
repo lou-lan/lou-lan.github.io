@@ -54,7 +54,7 @@
 <meta itemprop="description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。">
 <meta itemprop="datePublished" content="2020-04-24T01:59:01&#43;08:00" />
 <meta itemprop="dateModified" content="2020-04-24T01:59:01&#43;08:00" />
-<meta itemprop="wordCount" content="1324">
+<meta itemprop="wordCount" content="1825">
 
 
 
@@ -105,8 +105,8 @@
                                     <a class="topic-tag" href="/tags/kubernetes/">kubernetes</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-04-24 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 1324 字 </span>
-                                    <span class="more-meta post-tag-no-selecte"> 预计阅读 3 分钟 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 1825 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 预计阅读 4 分钟 </span>
                                 
                             </div>
 
@@ -131,10 +131,136 @@
 <h4 id="aggregator-server-聚合服务器">Aggregator Server 聚合服务器</h4>
 <p>暴露的功能类似于一个七层<a href="https://cloud.tencent.com/product/clb?from=10680">负载均衡</a>，将来自用户的请求拦截转发给其他服务器，并且负责整个 APIServer 的 Discovery 功能。</p>
 <h3 id="访问控制层">访问控制层</h3>
-<p>当客户端访问 API 接口时，访问控制层对用户进行身份鉴权，然后根据配置的各种访问许可逻辑（Admission Controller），判断是否允许访问。</p>
-<h3 id="注册表层">注册表层</h3>
-<p>Kubernetes 把所有资源都保存在注册表（Registry）中，针对注册表中的各种资源对象，都定义了相应的资源对象类型，以及如何创建资源，转换不同版本的资源，编码解码资源。</p>
-<h3 id="etcd-数据库">ETCD 数据库</h3>
+<p>访问控制层对用户进行身份鉴权，然后根据配置的各种访问许可逻辑（Admission Controller），判断是否允许访问。当请求到达 kube-apiserver 时，kube-apiserver 首先会执行在 http filter chain 中注册的过滤器链，该过滤器对其执行一系列过滤操作，主要有认证、鉴权等检查操作。</p>
+<p>我们以请求正向的方式进行分析，API Server 监听端口的 HTTP 请求会首先打到 FullHandlerChain。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">APIServerHandler</span><span class="p">)</span> <span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">a</span><span class="p">.</span><span class="nx">FullHandlerChain</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>FullHandlerChain 是由 DefaultBuildHandlerChain 实际构建出来的处理链。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/config.go
+</span><span class="c1"></span><span class="c1">// filter chain 处理链的注册函数
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">DefaultBuildHandlerChain</span><span class="p">(</span><span class="nx">apiHandler</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">,</span> <span class="nx">c</span> <span class="o">*</span><span class="nx">Config</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+    <span class="nx">handler</span> <span class="o">:=</span> <span class="nx">genericapifilters</span><span class="p">.</span><span class="nf">WithAuthorization</span><span class="p">(</span><span class="nx">apiHandler</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Authorization</span><span class="p">.</span><span class="nx">Authorizer</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面代码片段中的 apiHandler 是 director 对象，所以 filter 结束会进入 director 的 http.Handler。导向器 director 根据初始化的配置，如果 goRestfulContainer 的 WebServices 的 RootPath 中是 <code>/apis</code>，或者请求前缀与 RootPath 匹配，则进入 Restful 处理链路，否则进入非 Restful 处理链路。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="nx">director</span><span class="p">)</span> <span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">path</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span>
+
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ws</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">RegisteredWebServices</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">switch</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">(</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;/apis&#34;</span><span class="p">:</span>
+                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">Dispatch</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">case</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">:</span>
+                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">Dispatch</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
+                <span class="k">return</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="nx">d</span><span class="p">.</span><span class="nx">nonGoRestfulMux</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="注册表层">注册表层</h3>
+<p>Kubernetes 把所有资源都保存在注册表（Registry）中，针对注册表中的各种资源对象，都定义了相应的资源对象类型，以及如何创建资源，转换不同版本的资源，编码解码资源。
+InstallREST 函数在启动时候就已经把路由注册进 goRestfulContainer 中，进入 Dispatch 分发路由，会路由到不同的 endpoint handler 中。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// k8s.io/apiserver/pkg/endpoints/groupversion.go
+</span><span class="c1"></span><span class="c1">// 注册路由位置
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">g</span> <span class="o">*</span><span class="nx">APIGroupVersion</span><span class="p">)</span> <span class="nf">InstallREST</span><span class="p">(</span><span class="nx">container</span> <span class="o">*</span><span class="nx">restful</span><span class="p">.</span><span class="nx">Container</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">prefix</span> <span class="o">:=</span> <span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Root</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">.</span><span class="nx">Group</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">.</span><span class="nx">Version</span><span class="p">)</span>
+	<span class="nx">installer</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">APIInstaller</span><span class="p">{</span>
+		<span class="nx">group</span><span class="p">:</span>             <span class="nx">g</span><span class="p">,</span>
+		<span class="nx">prefix</span><span class="p">:</span>            <span class="nx">prefix</span><span class="p">,</span>
+		<span class="nx">minRequestTimeout</span><span class="p">:</span> <span class="nx">g</span><span class="p">.</span><span class="nx">MinRequestTimeout</span><span class="p">,</span>
+	<span class="p">}</span>
+
+	<span class="nx">apiResources</span><span class="p">,</span> <span class="nx">ws</span><span class="p">,</span> <span class="nx">registrationErrors</span> <span class="o">:=</span> <span class="nx">installer</span><span class="p">.</span><span class="nf">Install</span><span class="p">(</span><span class="p">)</span>
+	<span class="nx">versionDiscoveryHandler</span> <span class="o">:=</span> <span class="nx">discovery</span><span class="p">.</span><span class="nf">NewAPIVersionHandler</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">,</span> <span class="nx">staticLister</span><span class="p">{</span><span class="nx">apiResources</span><span class="p">}</span><span class="p">)</span>
+	<span class="nx">versionDiscoveryHandler</span><span class="p">.</span><span class="nf">AddToWebService</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span>
+	<span class="nx">container</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">utilerrors</span><span class="p">.</span><span class="nf">NewAggregate</span><span class="p">(</span><span class="nx">registrationErrors</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">DryRunnableStorage</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Storage</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">Interface</span>
+	<span class="nx">Codec</span>   <span class="nx">runtime</span><span class="p">.</span><span class="nx">Codec</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="etcd-数据库">ETCD 数据库</h3>
 <p>通过 KV 持久化存储 Kubernetes 对象，API Server 就是利用 ETCD 的 Watch 特性实现了经典 List-Watch 机制。</p>
 <h2 id="流程剖析">流程剖析</h2>
 <h3 id="create-pod-流程">Create Pod 流程</h3>
@@ -156,7 +282,7 @@
 <h3 id="启动参数">启动参数</h3>
 <ul>
 <li><code>--client-ca-file</code> 请求到达 Kubernetes API Server 时检查请求的证书。如果它是由 &ndash;client-ca-file 引用的文件中的 CA 证书之一签名的，并且用户是公用名 <code>CN=</code> 的值，而组是组织 <code>O=</code> 的取值，则该请求被视为合法请求。请参阅<a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#x509-client-certs">关于 TLS 身份验证的文档</a>。</li>
-<li><code>--service-account-key-file</code> 参数将对应的公钥传入 kube-apiserver。 公钥用于认证过程中的 token 校验。</li>
+<li><code>--service-account-key-file</code> 参数将对应的公钥传入 kube-apiserver。公钥用于认证过程中的 token 校验。</li>
 <li><code>--kubelet-certificate-authority</code> 给 apiserver 提供一个根证书捆绑，用于 kubelet 的服务证书。</li>
 </ul>
 <h3 id="经典代码">经典代码</h3>
@@ -169,9 +295,37 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
+</span><span class="c1"></span><span class="c1">// GenericAPIServer 是构造出来的 API Server 对象
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">GenericAPIServer</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
 </span><span class="c1"></span><span class="c1">// 完成启动流程
 </span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="nx">preparedGenericAPIServer</span><span class="p">)</span> <span class="nf">NonBlockingRun</span><span class="p">(</span><span class="nx">stopCh</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{</span><span class="p">}</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-<span class="p">}</span>
+    <span class="c1">// ...
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">s</span><span class="p">.</span><span class="nx">SecureServingInfo</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">Handler</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="c1">// ...
+</span><span class="c1"></span>		<span class="nx">stoppedCh</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">SecureServingInfo</span><span class="p">.</span><span class="nf">Serve</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">Handler</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">ShutdownTimeout</span><span class="p">,</span> <span class="nx">internalStopCh</span><span class="p">)</span>
+		<span class="c1">// ...
+</span><span class="c1"></span>    <span class="p">}</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
@@ -179,9 +333,11 @@
 <pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
+</span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// cmd/kube-apiserver/app/options/options.go NewServerRunOptions 构造了服务运行所有的对象
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// cmd/kube-apiserver/app/options/options.go  
+</span><span class="c1"></span><span class="c1">// NewServerRunOptions 构造了服务运行所有的对象
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewServerRunOptions</span><span class="p">(</span><span class="p">)</span> <span class="o">*</span><span class="nx">ServerRunOptions</span> <span class="p">{</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
@@ -212,7 +368,8 @@ k8s.io/apiserver/pkg/admission/initializer/initializer.go
 plugin/pkg/admission/*
 </code></pre></td></tr></table>
 </div>
-</div>
+</div><p>filter （权限相关）</p>
+
                         </div>
 
                         <div class="post-copyright">
