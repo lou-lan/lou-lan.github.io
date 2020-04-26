@@ -206,8 +206,8 @@
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="注册表层">注册表层</h3>
-<p>Kubernetes 把所有资源都保存在注册表（Registry）中，针对注册表中的各种资源对象，都定义了相应的资源对象类型，以及如何创建资源，转换不同版本的资源，编码解码资源。
-InstallREST 函数在启动时候就已经把路由注册进 goRestfulContainer 中，进入 Dispatch 分发路由，会路由到不同的 endpoint handler 中。</p>
+<p>Kubernetes 把所有资源都保存在注册表（Registry）中，针对注册表中的各种资源对象，都定义了相应的资源对象类型，以及如何创建资源，转换不同版本的资源，编码解码资源。</p>
+<p>InstallREST 函数在启动时候就已经把路由注册进 goRestfulContainer 中，进入 Dispatch 分发路由，会路由到不同的 endpoint handler 中。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
