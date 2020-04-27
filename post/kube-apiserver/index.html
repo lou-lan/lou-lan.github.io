@@ -54,7 +54,7 @@
 <meta itemprop="description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。">
 <meta itemprop="datePublished" content="2020-04-24T01:59:01&#43;08:00" />
 <meta itemprop="dateModified" content="2020-04-24T01:59:01&#43;08:00" />
-<meta itemprop="wordCount" content="1825">
+<meta itemprop="wordCount" content="2133">
 
 
 
@@ -105,8 +105,8 @@
                                     <a class="topic-tag" href="/tags/kubernetes/">kubernetes</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-04-24 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 1825 字 </span>
-                                    <span class="more-meta post-tag-no-selecte"> 预计阅读 4 分钟 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 2133 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 预计阅读 5 分钟 </span>
                                 
                             </div>
 
@@ -274,11 +274,87 @@
 <p>认证成功后，会进行<strong>授权</strong>处理。Kubernetes 支持多种授权模块，例如 ABAC 模式，RBAC 模式和 Webhook 模式。管理员创建集群时，会配置 API 服务器应用的授权模块。如果多种授权模式同时被启用，Kubernetes 将检查所有模块，如果其中一种通过授权，则请求授权通过。如果所有的模块全部拒绝，则请求被拒绝（HTTP 状态码 403）。</p>
 <p>然后进入<strong>准入控制</strong>处理流程，准入控制模块是能够修改或拒绝请求的软件模块。作为授权模块的补充，准入控制模块会访问被创建或更新的对象的内容。它们作用于对象的创建，删除，更新和连接（proxy）阶段，但不包括对象的读取。与认证和授权模块不同的是，如果任一个准入控制器拒绝请求，那么整个请求会立即被拒绝。除了拒绝请求外，准入控制器还可以为对象设置复杂的默认值。</p>
 <p>一旦请求通过所有准入控制器，将使用对应 API 对象的验证流程对其进行验证，然后写入对象存储。</p>
-<h3 id="get-pod-流程">Get Pod 流程</h3>
-<p>待补充</p>
 <h3 id="watch-pod-流程">Watch Pod 流程</h3>
-<p>待补充</p>
-<h2 id="扩展文档">扩展文档</h2>
+<p>在 Watch 在进度到注册表层时，前面经过的流程和创建流程一样。首先会解析资源版本，等待 Cacher 对象 ready，通过 newCacheWatcher 初始化对象，进入 Watch 流程。Kubernetes 为了避免后端存储压力，通过缓存资源数据，避免每次都从后端获取，watchCache 是一个固定大小的用于监测缓存数据变化的数组。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">newCacheWatcher</span><span class="p">(</span><span class="nx">chanSize</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">filter</span> <span class="nx">filterWithAttrsFunc</span><span class="p">,</span> <span class="nx">forget</span> <span class="kd">func</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="nx">versioner</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">Versioner</span><span class="p">,</span> <span class="nx">deadline</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">allowWatchBookmarks</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">objectType</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="o">*</span><span class="nx">cacheWatcher</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">cacheWatcher</span><span class="p">{</span>
+		<span class="nx">input</span><span class="p">:</span>               <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="o">*</span><span class="nx">watchCacheEvent</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">)</span><span class="p">,</span>
+		<span class="nx">result</span><span class="p">:</span>              <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">watch</span><span class="p">.</span><span class="nx">Event</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">)</span><span class="p">,</span>
+		<span class="nx">done</span><span class="p">:</span>                <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{</span><span class="p">}</span><span class="p">)</span><span class="p">,</span>
+		<span class="nx">filter</span><span class="p">:</span>              <span class="nx">filter</span><span class="p">,</span>
+		<span class="nx">stopped</span><span class="p">:</span>             <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">forget</span><span class="p">:</span>              <span class="nx">forget</span><span class="p">,</span>
+		<span class="nx">versioner</span><span class="p">:</span>           <span class="nx">versioner</span><span class="p">,</span>
+		<span class="nx">deadline</span><span class="p">:</span>            <span class="nx">deadline</span><span class="p">,</span>
+		<span class="nx">allowWatchBookmarks</span><span class="p">:</span> <span class="nx">allowWatchBookmarks</span><span class="p">,</span>
+		<span class="nx">objectType</span><span class="p">:</span>          <span class="nx">objectType</span><span class="p">,</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>以下代码块是启动 goroutine 进入处理流程，process 接收 input chan 对象中的信息。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cacher</span><span class="p">)</span> <span class="nf">Watch</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">key</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">resourceVersion</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">pred</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">SelectionPredicate</span><span class="p">)</span> <span class="p">(</span><span class="nx">watch</span><span class="p">.</span><span class="nx">Interface</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// ...
+</span><span class="c1"></span>	<span class="kd">func</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+		<span class="c1">// ...
+</span><span class="c1"></span>		<span class="nx">c</span><span class="p">.</span><span class="nx">watchers</span><span class="p">.</span><span class="nf">addWatcher</span><span class="p">(</span><span class="nx">watcher</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">watcherIdx</span><span class="p">,</span> <span class="nx">triggerValue</span><span class="p">,</span> <span class="nx">triggerSupported</span><span class="p">)</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">watcherIdx</span><span class="o">++</span>
+		<span class="c1">// ...
+</span><span class="c1"></span>	<span class="p">}</span><span class="p">(</span><span class="p">)</span>
+	<span class="c1">// ...
+</span><span class="c1"></span>	<span class="k">go</span> <span class="nx">watcher</span><span class="p">.</span><span class="nf">process</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">initEvents</span><span class="p">,</span> <span class="nx">watchRV</span><span class="p">)</span>
+	<span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Cacher 初始化的时候会启动，在 dispatchEvents 函数中将每个时间分发到 cacheWatcher 之中。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Cacher</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">incoming</span> <span class="kd">chan</span> <span class="nx">watchCacheEvent</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="扩展文档">扩展文档</h2>
 <h3 id="启动参数">启动参数</h3>
 <ul>
 <li><code>--client-ca-file</code> 请求到达 Kubernetes API Server 时检查请求的证书。如果它是由 &ndash;client-ca-file 引用的文件中的 CA 证书之一签名的，并且用户是公用名 <code>CN=</code> 的值，而组是组织 <code>O=</code> 的取值，则该请求被视为合法请求。请参阅<a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#x509-client-certs">关于 TLS 身份验证的文档</a>。</li>
