@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.2 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.69.2 with even 4.0.0" />
 
 
 
@@ -156,7 +156,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/config.go
-</span><span class="c1"></span><span class="c1">// filter chain 处理链的注册函数
+</span><span class="c1">// filter chain 处理链的注册函数
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">DefaultBuildHandlerChain</span><span class="p">(</span><span class="nx">apiHandler</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">,</span> <span class="nx">c</span> <span class="o">*</span><span class="nx">Config</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
     <span class="nx">handler</span> <span class="o">:=</span> <span class="nx">genericapifilters</span><span class="p">.</span><span class="nf">WithAuthorization</span><span class="p">(</span><span class="nx">apiHandler</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Authorization</span><span class="p">.</span><span class="nx">Authorizer</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">)</span>
 <span class="p">}</span>
@@ -188,13 +188,13 @@
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="nx">director</span><span class="p">)</span> <span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">path</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span>
 
-    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ws</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">RegisteredWebServices</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ws</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">RegisteredWebServices</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">switch</span> <span class="p">{</span>
-        <span class="k">case</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">(</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;/apis&#34;</span><span class="p">:</span>
+        <span class="k">case</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#34;/apis&#34;</span><span class="p">:</span>
             <span class="c1">// ...
 </span><span class="c1"></span>            <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">Dispatch</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="k">case</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">:</span>
+        <span class="k">case</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">()):</span>
             <span class="c1">// ...
 </span><span class="c1"></span>            <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">Dispatch</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
             <span class="k">return</span>
@@ -229,7 +229,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// k8s.io/apiserver/pkg/endpoints/groupversion.go
-</span><span class="c1"></span><span class="c1">// 注册路由位置
+</span><span class="c1">// 注册路由位置
 </span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">g</span> <span class="o">*</span><span class="nx">APIGroupVersion</span><span class="p">)</span> <span class="nf">InstallREST</span><span class="p">(</span><span class="nx">container</span> <span class="o">*</span><span class="nx">restful</span><span class="p">.</span><span class="nx">Container</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
     <span class="nx">prefix</span> <span class="o">:=</span> <span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Root</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">.</span><span class="nx">Group</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">.</span><span class="nx">Version</span><span class="p">)</span>
     <span class="nx">installer</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">APIInstaller</span><span class="p">{</span>
@@ -238,8 +238,8 @@
         <span class="nx">minRequestTimeout</span><span class="p">:</span> <span class="nx">g</span><span class="p">.</span><span class="nx">MinRequestTimeout</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="nx">apiResources</span><span class="p">,</span> <span class="nx">ws</span><span class="p">,</span> <span class="nx">registrationErrors</span> <span class="o">:=</span> <span class="nx">installer</span><span class="p">.</span><span class="nf">Install</span><span class="p">(</span><span class="p">)</span>
-    <span class="nx">versionDiscoveryHandler</span> <span class="o">:=</span> <span class="nx">discovery</span><span class="p">.</span><span class="nf">NewAPIVersionHandler</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">,</span> <span class="nx">staticLister</span><span class="p">{</span><span class="nx">apiResources</span><span class="p">}</span><span class="p">)</span>
+    <span class="nx">apiResources</span><span class="p">,</span> <span class="nx">ws</span><span class="p">,</span> <span class="nx">registrationErrors</span> <span class="o">:=</span> <span class="nx">installer</span><span class="p">.</span><span class="nf">Install</span><span class="p">()</span>
+    <span class="nx">versionDiscoveryHandler</span> <span class="o">:=</span> <span class="nx">discovery</span><span class="p">.</span><span class="nf">NewAPIVersionHandler</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">,</span> <span class="nx">staticLister</span><span class="p">{</span><span class="nx">apiResources</span><span class="p">})</span>
     <span class="nx">versionDiscoveryHandler</span><span class="p">.</span><span class="nf">AddToWebService</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span>
     <span class="nx">container</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span>
     <span class="k">return</span> <span class="nx">utilerrors</span><span class="p">.</span><span class="nf">NewAggregate</span><span class="p">(</span><span class="nx">registrationErrors</span><span class="p">)</span>
@@ -294,11 +294,11 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">newCacheWatcher</span><span class="p">(</span><span class="nx">chanSize</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">filter</span> <span class="nx">filterWithAttrsFunc</span><span class="p">,</span> <span class="nx">forget</span> <span class="kd">func</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="nx">versioner</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">Versioner</span><span class="p">,</span> <span class="nx">deadline</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">allowWatchBookmarks</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">objectType</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="o">*</span><span class="nx">cacheWatcher</span> <span class="p">{</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">newCacheWatcher</span><span class="p">(</span><span class="nx">chanSize</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">filter</span> <span class="nx">filterWithAttrsFunc</span><span class="p">,</span> <span class="nx">forget</span> <span class="kd">func</span><span class="p">(),</span> <span class="nx">versioner</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">Versioner</span><span class="p">,</span> <span class="nx">deadline</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">allowWatchBookmarks</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">objectType</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="o">*</span><span class="nx">cacheWatcher</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">&amp;</span><span class="nx">cacheWatcher</span><span class="p">{</span>
-        <span class="nx">input</span><span class="p">:</span>               <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="o">*</span><span class="nx">watchCacheEvent</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">)</span><span class="p">,</span>
-        <span class="nx">result</span><span class="p">:</span>              <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">watch</span><span class="p">.</span><span class="nx">Event</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">)</span><span class="p">,</span>
-        <span class="nx">done</span><span class="p">:</span>                <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{</span><span class="p">}</span><span class="p">)</span><span class="p">,</span>
+        <span class="nx">input</span><span class="p">:</span>               <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="o">*</span><span class="nx">watchCacheEvent</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">),</span>
+        <span class="nx">result</span><span class="p">:</span>              <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">watch</span><span class="p">.</span><span class="nx">Event</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">),</span>
+        <span class="nx">done</span><span class="p">:</span>                <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{}),</span>
         <span class="nx">filter</span><span class="p">:</span>              <span class="nx">filter</span><span class="p">,</span>
         <span class="nx">stopped</span><span class="p">:</span>             <span class="kc">false</span><span class="p">,</span>
         <span class="nx">forget</span><span class="p">:</span>              <span class="nx">forget</span><span class="p">,</span>
@@ -329,19 +329,19 @@
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cacher</span><span class="p">)</span> <span class="nf">Watch</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">key</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">resourceVersion</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">pred</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">SelectionPredicate</span><span class="p">)</span> <span class="p">(</span><span class="nx">watch</span><span class="p">.</span><span class="nx">Interface</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// ...
-</span><span class="c1"></span>    <span class="kd">func</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="c1"></span>    <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
         <span class="c1">// ...
 </span><span class="c1"></span>        <span class="nx">c</span><span class="p">.</span><span class="nx">watchers</span><span class="p">.</span><span class="nf">addWatcher</span><span class="p">(</span><span class="nx">watcher</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">watcherIdx</span><span class="p">,</span> <span class="nx">triggerValue</span><span class="p">,</span> <span class="nx">triggerSupported</span><span class="p">)</span>
         <span class="nx">c</span><span class="p">.</span><span class="nx">watcherIdx</span><span class="o">++</span>
         <span class="c1">// ...
-</span><span class="c1"></span>    <span class="p">}</span><span class="p">(</span><span class="p">)</span>
+</span><span class="c1"></span>    <span class="p">}()</span>
     <span class="c1">// ...
 </span><span class="c1"></span>    <span class="k">go</span> <span class="nx">watcher</span><span class="p">.</span><span class="nf">process</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">initEvents</span><span class="p">,</span> <span class="nx">watchRV</span><span class="p">)</span>
 	<span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>Cacher 初始化的时候会启动，在 dispatchEvents 函数中将每个时间分发到 cacheWatcher 之中。</p>
+</div><p>Cacher 初始化的时候会启动，在 dispatchEvents 函数中将每个事件分发到 cacheWatcher 之中。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -371,7 +371,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
-</span><span class="c1"></span><span class="c1">// GenericAPIServer 是构造出来的 API Server 对象
+</span><span class="c1">// GenericAPIServer 是构造出来的 API Server 对象
 </span><span class="c1"></span><span class="kd">type</span> <span class="nx">GenericAPIServer</span> <span class="kd">struct</span> <span class="p">{</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
@@ -392,8 +392,8 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
-</span><span class="c1"></span><span class="c1">// 完成启动流程
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="nx">preparedGenericAPIServer</span><span class="p">)</span> <span class="nf">NonBlockingRun</span><span class="p">(</span><span class="nx">stopCh</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{</span><span class="p">}</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="c1">// 完成启动流程
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="nx">preparedGenericAPIServer</span><span class="p">)</span> <span class="nf">NonBlockingRun</span><span class="p">(</span><span class="nx">stopCh</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span> <span class="kt">error</span> <span class="p">{</span>
     <span class="c1">// ...
 </span><span class="c1"></span>    <span class="k">if</span> <span class="nx">s</span><span class="p">.</span><span class="nx">SecureServingInfo</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">Handler</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
         <span class="c1">// ...
@@ -413,8 +413,8 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// cmd/kube-apiserver/app/options/options.go  
-</span><span class="c1"></span><span class="c1">// NewServerRunOptions 构造了服务运行所有的对象
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewServerRunOptions</span><span class="p">(</span><span class="p">)</span> <span class="o">*</span><span class="nx">ServerRunOptions</span> <span class="p">{</span>
+</span><span class="c1">// NewServerRunOptions 构造了服务运行所有的对象
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewServerRunOptions</span><span class="p">()</span> <span class="o">*</span><span class="nx">ServerRunOptions</span> <span class="p">{</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>

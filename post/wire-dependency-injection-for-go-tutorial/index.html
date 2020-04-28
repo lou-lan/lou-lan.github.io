@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.2 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.69.2 with even 4.0.0" />
 
 
 
@@ -143,7 +143,7 @@
 <span class="p">}</span>
 
 <span class="c1">// ProvideFoo returns a Foo.
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ProvideFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ProvideFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">Foo</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
@@ -221,9 +221,9 @@
 <span class="c1">// ProvideBaz returns a value if Bar is not zero.
 </span><span class="c1"></span><span class="kd">func</span> <span class="nf">ProvideBaz</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">bar</span> <span class="nx">Bar</span><span class="p">)</span> <span class="p">(</span><span class="nx">Baz</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="nx">bar</span><span class="p">.</span><span class="nx">X</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">Baz</span><span class="p">{</span><span class="p">}</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;cannot provide baz when bar is zero&#34;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nx">Baz</span><span class="p">{},</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;cannot provide baz when bar is zero&#34;</span><span class="p">)</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">Baz</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="nx">bar</span><span class="p">.</span><span class="nx">X</span><span class="p">}</span><span class="p">,</span> <span class="kc">nil</span>
+    <span class="k">return</span> <span class="nx">Baz</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="nx">bar</span><span class="p">.</span><span class="nx">X</span><span class="p">},</span> <span class="kc">nil</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
@@ -256,7 +256,7 @@
 </div>
 </div><p>您也可以将其他 provider sets 加到 provider set 中。</p>
 <h3 id="injectors">Injectors</h3>
-<p>应用程序使用 <strong>injector</strong> 连接这些 provider：按依赖顺序调用 provider 的函数。使用 Wire，写下 injector's 的签名，然后 Wire 生成函数的主体。</p>
+<p>应用程序使用 <strong>injector</strong> 连接这些 provider：按依赖顺序调用 provider 的函数。使用 Wire，写下 injector&rsquo;s 的签名，然后 Wire 生成函数的主体。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -278,7 +278,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// +build wireinject
-</span><span class="c1"></span><span class="c1">// The build tag makes sure the stub is not built in the final build.
+</span><span class="c1">// The build tag makes sure the stub is not built in the final build.
 </span><span class="c1"></span>
 <span class="kn">package</span> <span class="nx">main</span>
 
@@ -291,7 +291,7 @@
 
 <span class="kd">func</span> <span class="nf">initializeBaz</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">(</span><span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">Baz</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">MegaSet</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">Baz</span><span class="p">{</span><span class="p">}</span><span class="p">,</span> <span class="kc">nil</span>
+    <span class="k">return</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">Baz</span><span class="p">{},</span> <span class="kc">nil</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
@@ -328,7 +328,7 @@
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Code generated by Wire. DO NOT EDIT.
 </span><span class="c1"></span>
 <span class="c1">//go:generate wire
-</span><span class="c1"></span><span class="c1">//+build !wireinject
+</span><span class="c1">//+build !wireinject
 </span><span class="c1"></span>
 <span class="kn">package</span> <span class="nx">main</span>
 
@@ -337,7 +337,7 @@
 <span class="p">)</span>
 
 <span class="kd">func</span> <span class="nf">initializeBaz</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">(</span><span class="nx">foobarbaz</span><span class="p">.</span><span class="nx">Baz</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">foo</span> <span class="o">:=</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nf">ProvideFoo</span><span class="p">(</span><span class="p">)</span>
+    <span class="nx">foo</span> <span class="o">:=</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nf">ProvideFoo</span><span class="p">()</span>
     <span class="nx">bar</span> <span class="o">:=</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nf">ProvideBar</span><span class="p">(</span><span class="nx">foo</span><span class="p">)</span>
     <span class="nx">baz</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">foobarbaz</span><span class="p">.</span><span class="nf">ProvideBaz</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">bar</span><span class="p">)</span>
     <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
@@ -385,16 +385,16 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Fooer</span> <span class="kd">interface</span> <span class="p">{</span>
-    <span class="nf">Foo</span><span class="p">(</span><span class="p">)</span> <span class="kt">string</span>
+    <span class="nf">Foo</span><span class="p">()</span> <span class="kt">string</span>
 <span class="p">}</span>
 
 <span class="kd">type</span> <span class="nx">MyFooer</span> <span class="kt">string</span>
 
-<span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">MyFooer</span><span class="p">)</span> <span class="nf">Foo</span><span class="p">(</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">MyFooer</span><span class="p">)</span> <span class="nf">Foo</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="o">*</span><span class="nx">b</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">provideMyFooer</span><span class="p">(</span><span class="p">)</span> <span class="o">*</span><span class="nx">MyFooer</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nf">provideMyFooer</span><span class="p">()</span> <span class="o">*</span><span class="nx">MyFooer</span> <span class="p">{</span>
     <span class="nx">b</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">MyFooer</span><span class="p">)</span>
     <span class="o">*</span><span class="nx">b</span> <span class="p">=</span> <span class="s">&#34;Hello, World!&#34;</span>
     <span class="k">return</span> <span class="nx">b</span>
@@ -404,12 +404,12 @@
 
 <span class="kd">func</span> <span class="nf">provideBar</span><span class="p">(</span><span class="nx">f</span> <span class="nx">Fooer</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
     <span class="c1">// f will be a *MyFooer.
-</span><span class="c1"></span>    <span class="k">return</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Foo</span><span class="p">(</span><span class="p">)</span>
+</span><span class="c1"></span>    <span class="k">return</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Foo</span><span class="p">()</span>
 <span class="p">}</span>
 
 <span class="kd">var</span> <span class="nx">Set</span> <span class="p">=</span> <span class="nx">wire</span><span class="p">.</span><span class="nf">NewSet</span><span class="p">(</span>
     <span class="nx">provideMyFooer</span><span class="p">,</span>
-    <span class="nx">wire</span><span class="p">.</span><span class="nf">Bind</span><span class="p">(</span><span class="p">(</span><span class="o">*</span><span class="nx">Fooer</span><span class="p">)</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="nx">MyFooer</span><span class="p">)</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span><span class="p">)</span><span class="p">,</span>
+    <span class="nx">wire</span><span class="p">.</span><span class="nf">Bind</span><span class="p">((</span><span class="o">*</span><span class="nx">Fooer</span><span class="p">)(</span><span class="kc">nil</span><span class="p">),</span> <span class="p">(</span><span class="o">*</span><span class="nx">MyFooer</span><span class="p">)(</span><span class="kc">nil</span><span class="p">)),</span>
     <span class="nx">provideBar</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
@@ -433,16 +433,16 @@
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">FooerPlus</span> <span class="kd">interface</span> <span class="p">{</span>
   <span class="nx">Fooer</span>
-  <span class="nf">Bar</span><span class="p">(</span><span class="p">)</span> <span class="nx">String</span>
+  <span class="nf">Bar</span><span class="p">()</span> <span class="nx">String</span>
 <span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">ProvideFooerPlus</span><span class="p">(</span><span class="p">)</span> <span class="nx">FooerPlus</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nf">ProvideFooerPlus</span><span class="p">()</span> <span class="nx">FooerPlus</span> <span class="p">{</span>
   <span class="o">...</span>
 <span class="p">}</span>
 
 <span class="kd">var</span> <span class="nx">FooerPlusAsFooer</span> <span class="p">=</span> <span class="nx">wire</span><span class="p">.</span><span class="nf">NewSet</span><span class="p">(</span>
   <span class="nx">ProvideFooerPlus</span><span class="p">,</span>
-  <span class="nx">wire</span><span class="p">.</span><span class="nf">Bind</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">Fooer</span><span class="p">)</span><span class="p">,</span> <span class="o">*</span><span class="nb">new</span><span class="p">(</span><span class="nx">FooerPlus</span><span class="p">)</span><span class="p">)</span><span class="p">)</span>
+  <span class="nx">wire</span><span class="p">.</span><span class="nf">Bind</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">Fooer</span><span class="p">),</span> <span class="o">*</span><span class="nb">new</span><span class="p">(</span><span class="nx">FooerPlus</span><span class="p">)))</span>
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="结构体-providers">结构体 Providers</h3>
@@ -474,11 +474,11 @@
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Foo</span> <span class="kt">int</span>
 <span class="kd">type</span> <span class="nx">Bar</span> <span class="kt">int</span>
 
-<span class="kd">func</span> <span class="nf">ProvideFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nf">ProvideFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
     <span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">ProvideBar</span><span class="p">(</span><span class="p">)</span> <span class="nx">Bar</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nf">ProvideBar</span><span class="p">()</span> <span class="nx">Bar</span> <span class="p">{</span>
     <span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span>
 
@@ -490,7 +490,7 @@
 <span class="kd">var</span> <span class="nx">Set</span> <span class="p">=</span> <span class="nx">wire</span><span class="p">.</span><span class="nf">NewSet</span><span class="p">(</span>
     <span class="nx">ProvideFoo</span><span class="p">,</span>
     <span class="nx">ProvideBar</span><span class="p">,</span>
-    <span class="nx">FooBar</span><span class="p">{</span><span class="p">}</span><span class="p">)</span>
+    <span class="nx">FooBar</span><span class="p">{})</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>为 <code>FooBar</code> 生成的注入器如下所示：</p>
@@ -507,9 +507,9 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFooBar</span><span class="p">(</span><span class="p">)</span> <span class="nx">FooBar</span> <span class="p">{</span>
-    <span class="nx">foo</span> <span class="o">:=</span> <span class="nf">ProvideFoo</span><span class="p">(</span><span class="p">)</span>
-    <span class="nx">bar</span> <span class="o">:=</span> <span class="nf">ProvideBar</span><span class="p">(</span><span class="p">)</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFooBar</span><span class="p">()</span> <span class="nx">FooBar</span> <span class="p">{</span>
+    <span class="nx">foo</span> <span class="o">:=</span> <span class="nf">ProvideFoo</span><span class="p">()</span>
+    <span class="nx">bar</span> <span class="o">:=</span> <span class="nf">ProvideBar</span><span class="p">()</span>
     <span class="nx">fooBar</span> <span class="o">:=</span> <span class="nx">FooBar</span><span class="p">{</span>
         <span class="nx">Foo</span><span class="p">:</span> <span class="nx">foo</span><span class="p">,</span>
         <span class="nx">Bar</span><span class="p">:</span> <span class="nx">bar</span><span class="p">,</span>
@@ -537,9 +537,9 @@
     <span class="nx">X</span> <span class="kt">int</span>
 <span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
-    <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">Value</span><span class="p">(</span><span class="nx">Foo</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span><span class="p">)</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nx">Foo</span><span class="p">{</span><span class="p">}</span>
+<span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
+    <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">Value</span><span class="p">(</span><span class="nx">Foo</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">42</span><span class="p">}))</span>
+    <span class="k">return</span> <span class="nx">Foo</span><span class="p">{}</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
@@ -556,7 +556,7 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
     <span class="nx">foo</span> <span class="o">:=</span> <span class="nx">_wireFooValue</span>
     <span class="k">return</span> <span class="nx">foo</span>
 <span class="p">}</span>
@@ -576,8 +576,8 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectReader</span><span class="p">(</span><span class="p">)</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span> <span class="p">{</span>
-    <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">InterfaceValue</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">)</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">)</span><span class="p">)</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectReader</span><span class="p">()</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span> <span class="p">{</span>
+    <span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">InterfaceValue</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">),</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">))</span>
     <span class="k">return</span> <span class="kc">nil</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
@@ -600,13 +600,13 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">provideFile</span><span class="p">(</span><span class="nx">log</span> <span class="nx">Logger</span><span class="p">,</span> <span class="nx">path</span> <span class="nx">Path</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">os</span><span class="p">.</span><span class="nx">File</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span><span class="p">)</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">provideFile</span><span class="p">(</span><span class="nx">log</span> <span class="nx">Logger</span><span class="p">,</span> <span class="nx">path</span> <span class="nx">Path</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">os</span><span class="p">.</span><span class="nx">File</span><span class="p">,</span> <span class="kd">func</span><span class="p">(),</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">path</span><span class="p">))</span>
     <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
         <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
     <span class="p">}</span>
-    <span class="nx">cleanup</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">(</span><span class="p">)</span><span class="p">;</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="nx">cleanup</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
             <span class="nx">log</span><span class="p">.</span><span class="nf">Log</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
         <span class="p">}</span>
     <span class="p">}</span>
@@ -624,8 +624,8 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">(</span><span class="p">)</span> <span class="nx">Foo</span> <span class="p">{</span>
-    <span class="nb">panic</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">)</span><span class="p">)</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">injectFoo</span><span class="p">()</span> <span class="nx">Foo</span> <span class="p">{</span>
+    <span class="nb">panic</span><span class="p">(</span><span class="nx">wire</span><span class="p">.</span><span class="nf">Build</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">))</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
