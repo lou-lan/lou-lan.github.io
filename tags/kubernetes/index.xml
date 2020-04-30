@@ -6,19 +6,10 @@
     <description>Recent content in kubernetes on 楼兰志</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 30 Apr 2020 23:44:01 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 24 Apr 2020 01:59:01 +0800</lastBuildDate>
     
 	<atom:link href="https://loulan.me/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>kubernetes 实现规模化容器静态布局和动态迁移</title>
-      <link>https://loulan.me/post/criu/</link>
-      <pubDate>Thu, 30 Apr 2020 23:44:01 +0800</pubDate>
-      
-      <guid>https://loulan.me/post/criu/</guid>
-      <description>软件版本要求 Docker要管理运行在内部的所有containers，因此CRIU需要在Docker内运行，而不是单独运行。 组件 | 版本 —|— docker</description>
-    </item>
     
     <item>
       <title>Kubernetes API Server 深入浅出</title>

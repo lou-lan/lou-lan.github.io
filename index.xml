@@ -12,15 +12,6 @@
     
     
     <item>
-      <title>kubernetes 实现规模化容器静态布局和动态迁移</title>
-      <link>https://loulan.me/post/criu/</link>
-      <pubDate>Thu, 30 Apr 2020 23:44:01 +0800</pubDate>
-      
-      <guid>https://loulan.me/post/criu/</guid>
-      <description>软件版本要求 Docker要管理运行在内部的所有containers，因此CRIU需要在Docker内运行，而不是单独运行。 组件 | 版本 —|— docker</description>
-    </item>
-    
-    <item>
       <title>Kubernetes API Server 深入浅出</title>
       <link>https://loulan.me/post/kube-apiserver/</link>
       <pubDate>Fri, 24 Apr 2020 01:59:01 +0800</pubDate>
@@ -53,7 +44,7 @@
       <pubDate>Mon, 05 Aug 2019 21:52:47 +0800</pubDate>
       
       <guid>https://loulan.me/about/</guid>
-      <description>嗨，我是楼兰。长于日照，求学青岛。目前从事容器领域开发，熟悉 Go 语言，我还对 Swift 语言感兴趣。硬件，航模和羽毛球爱好者。</description>
+      <description>嗨，我是楼兰。长于日照，求学青岛。目前从事容器领域开发，熟悉 Go 语言，我还对 Swift 语言感兴趣。硬件，航模和羽毛球爱好者。 关注 Github 可以获取更多信息，通</description>
     </item>
     
     <item>
