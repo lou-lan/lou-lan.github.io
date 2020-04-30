@@ -3,27 +3,34 @@
   
   <url>
     <loc>https://loulan.me/tags/kubernetes/</loc>
-    <lastmod>2020-04-24T01:59:01+08:00</lastmod>
+    <lastmod>2020-04-30T23:44:01+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://loulan.me/post/kube-apiserver/</loc>
-    <lastmod>2020-04-24T01:59:01+08:00</lastmod>
+    <loc>https://loulan.me/post/criu/</loc>
+    <lastmod>2020-04-30T23:44:01+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://loulan.me/post/</loc>
-    <lastmod>2020-04-24T01:59:01+08:00</lastmod>
+    <lastmod>2020-04-30T23:44:01+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://loulan.me/tags/</loc>
+    <lastmod>2020-04-30T23:44:01+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://loulan.me/post/kube-apiserver/</loc>
     <lastmod>2020-04-24T01:59:01+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

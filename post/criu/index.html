@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>kubernetes 实现规模化容器静态布局和动态迁移 - 楼兰志</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="楼兰" /><meta name="description" content="软件版本要求 Docker要管理运行在内部的所有containers，因此CRIU需要在Docker内运行，而不是单独运行。 组件 | 版本 —|— docker" /><meta name="keywords" content="楼兰志, loulan, 翟怀楼, loulan.me, 楼兰" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.69.2 with even 4.0.0" />
+
+
+
+
+
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.3f35fcfa.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="kubernetes 实现规模化容器静态布局和动态迁移" />
+<meta property="og:description" content="软件版本要求 Docker要管理运行在内部的所有containers，因此CRIU需要在Docker内运行，而不是单独运行。 组件 | 版本 —|— docker" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://loulan.me/post/criu/" />
+<meta property="article:published_time" content="2020-04-30T23:44:01+08:00" />
+<meta property="article:modified_time" content="2020-04-30T23:44:01+08:00" />
+<meta itemprop="name" content="kubernetes 实现规模化容器静态布局和动态迁移">
+<meta itemprop="description" content="软件版本要求 Docker要管理运行在内部的所有containers，因此CRIU需要在Docker内运行，而不是单独运行。 组件 | 版本 —|— docker">
+<meta itemprop="datePublished" content="2020-04-30T23:44:01&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-30T23:44:01&#43;08:00" />
+<meta itemprop="wordCount" content="2364">
+
+
+
+<meta itemprop="keywords" content="kubernetes," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="kubernetes 实现规模化容器静态布局和动态迁移"/>
+<meta name="twitter:description" content="软件版本要求 Docker要管理运行在内部的所有containers，因此CRIU需要在Docker内运行，而不是单独运行。 组件 | 版本 —|— docker"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <nav class="nav" role="navigation">
+    <ul class="menu nav-container">
+        <li class="menu-item">
+            <a class="menu-item-link nav-logo-link" href="/">
+                <span class="nav-logo-title">
+                    首页
+                </span>
+            </a>
+        </li>
+        <li class="nav-height">
+                <a href="/post/">归档</a>
+            </li><li class="nav-height">
+                <a href="/tags/">标签</a>
+            </li><li class="nav-height">
+                <a href="/about/">关于</a>
+            </li>
+    </ul>
+</nav>
+  <div class="main main-padding-bottom">
+        <section class="section blog-body">
+            <div class="body-content">
+    
+                <div id="content" class="content">
+                    <article class="post">
+                        
+                        <header class="post-header">
+                            
+                            <div class="post-meta">
+                                
+                                    <a class="topic-tag" href="/tags/kubernetes/">kubernetes</a>
+                                    <span class="post-time post-tag-no-selecte"> 2020-04-30 </span>
+                                
+                                    <span class="more-meta post-tag-no-selecte"> 约 2364 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 预计阅读 5 分钟 </span>
+                                
+                            </div>
+
+                            
+
+                            <h1 class="post-title">kubernetes 实现规模化容器静态布局和动态迁移</h1>
+
+                        </header>
+
+                        
+                        <div class="post-content">
+                            <p>软件版本要求
+Docker要管理运行在内部的所有containers，因此CRIU需要在Docker内运行，而不是单独运行。 组件 | 版本 —|— docker | ce=17.03+ ee=1.13+ criu | 2.0+ centos | 7.3 kernel | 3.10.0-957</p>
+<p>criu安装
+第一种方式，通过yum源安装</p>
+<h1 id="yum-install-criu--y">yum install criu -y</h1>
+<p>第二种方式，通过源码安装</p>
+<p>1.下载源码</p>
+<h1 id="git-clone-httpsgithubcomcheckpoint-restorecriugit">git clone <a href="https://github.com/checkpoint-restore/criu.git">https://github.com/checkpoint-restore/criu.git</a></h1>
+<p>2.安装编译所需的依赖包</p>
+<h1 id="yum-install-gcc-protobuf-protobuf-c-protobuf-c-devel-protobuf-compiler-protobuf-devel-protobuf-python-libnet-devel-libnl3-devel-libcap-devel--asciidoc-xmlto--y">yum install gcc protobuf protobuf-c protobuf-c-devel protobuf-compiler protobuf-devel protobuf-python libnet-devel libnl3-devel libcap-devel  asciidoc xmlto -y</h1>
+<p>3.编译源码</p>
+<h1 id="cd-criu">cd criu</h1>
+<h1 id="make-install">make install</h1>
+<p>4.测试，无报错信息表示安装成功</p>
+<h1 id="criu-check">criu check</h1>
+<p>Looks good.
+docker安装
+1.卸载旧版本</p>
+<h1 id="yum-remove-docker-docker-common-docker-selinux-docker-engine--y">yum remove docker docker-common docker-selinux docker-engine -y</h1>
+<p>2.配置docker-ce镜像仓库
+安装依赖包</p>
+<h1 id="yum-install--y-yum-utils-device-mapper-persistent-data-lvm2">yum install -y yum-utils device-mapper-persistent-data lvm2</h1>
+<p>添加yum源</p>
+<h1 id="yum-config-manager---add-repo-httpsdownloaddockercomlinuxcentosdocker-cerepo">yum-config-manager &ndash;add-repo <a href="https://download.docker.com/linux/centos/docker-ce.repo">https://download.docker.com/linux/centos/docker-ce.repo</a></h1>
+<p>3.安装最新版Docker CE</p>
+<h1 id="yum-makecache-fast">yum makecache fast</h1>
+<h1 id="yum-install-docker-ce--y">yum install docker-ce -y</h1>
+<p>4.启动Docker</p>
+<h1 id="systemctl-enable-docker">systemctl enable docker</h1>
+<h1 id="systemctl-start-docker">systemctl start docker</h1>
+<p>5.开启热迁移功能
+修改配置文件</p>
+<h1 id="echo-experimental-true--etcdockerdaemonjson">echo &ldquo;{&quot;experimental&quot;: true}&rdquo; &raquo; /etc/docker/daemon.json</h1>
+<h1 id="systemctl-restart-docker">systemctl restart docker</h1>
+<p>进程热迁移
+本机热迁移的过程不做描述，因此需要准备两台主机，下面docker进程的热迁移也一样</p>
+<p>准备一个程序
+criu提供了一个go-binding的库叫go-criu用来完成进程的热迁移，首先下载源码到GOPATH目录下</p>
+<h1 id="git-clone-httpsgithubcomcheckpoint-restorego-criugit">git clone <a href="https://github.com/checkpoint-restore/go-criu.git">https://github.com/checkpoint-restore/go-criu.git</a></h1>
+<h1 id="cd-githubcomcheckpoint-restorego-criu">cd github.com/checkpoint-restore/go-criu</h1>
+<p>2.编译</p>
+<p>如果go环境配置没问题，直接执行make等待编译完成</p>
+<h1 id="make">make</h1>
+<p>make过程中已经在本机执行了一次测试用例，我们主要关注跨主机的热迁移功能</p>
+<p>3.运行测试程序</p>
+<p>为了方便演示，可以将演示程序piggie以及criu测试程序test这两个文件cp到home目录下</p>
+<h1 id="cp-testpiggie-testtest-home--cd-home">cp test/piggie test/test /home &amp;&amp; cd /home</h1>
+<h1 id="piggie-piggielog">./piggie piggie.log</h1>
+<p>Child forked, pid 27636</p>
+<h1 id="ps--ef--grep-piggie">ps -ef | grep piggie</h1>
+<p>root     27636     1  0 10:17 ?        00:00:00 ./piggie piggie.log
+root     27676  7298  0 10:17 pts/0    00:00:00 grep &ndash;color=auto piggie</p>
+<h1 id="tail--f-piggielog">tail -f piggie.log</h1>
+<p>0
+1
+2
+3
+4
+5
+可以看到日志文件piggie.log中在不停的打印递增的数字</p>
+<p>创建checkpoint
+ssh到源主机node1上操作</p>
+<h1 id="cd-home">cd /home</h1>
+<h1 id="mkdir--p-image">mkdir -p image</h1>
+<p>test程序的参数含义可以直接看源码checkpoint-restore\go-criu\test\main.go</p>
+<h1 id="test-dump-pidof-piggie-image">./test dump <code>pidof piggie</code> image</h1>
+<p>CRIU version 31200
+Dumping
+TEST PRE DUMP
+Success
+创建完成后进程被杀掉了</p>
+<h1 id="ps--ef--grep-piggie-1">ps -ef | grep piggie</h1>
+<p>root     28478  7298  0 10:42 pts/0    00:00:00 grep &ndash;color=auto piggie
+进程相关的数据保存在image目录下</p>
+<h1 id="ll-image">ll image/</h1>
+<p>total 224
+-rw-r&ndash;r&ndash; 1 root root   1762 Jan 24 10:42 core-1.img
+-rw&mdash;&mdash;- 1 root root  74269 Jan 24 10:42 dump.log
+-rw-r&ndash;r&ndash; 1 root root     44 Jan 24 10:42 fdinfo-2.img
+-rw-r&ndash;r&ndash; 1 root root    352 Jan 24 10:42 files.img
+-rw-r&ndash;r&ndash; 1 root root     18 Jan 24 10:42 fs-1.img
+-rw-r&ndash;r&ndash; 1 root root     32 Jan 24 10:42 ids-1.img
+-rw-r&ndash;r&ndash; 1 root root     40 Jan 24 10:42 inventory.img
+-rw-r&ndash;r&ndash; 1 root root    809 Jan 24 10:42 mm-1.img
+-rw-r&ndash;r&ndash; 1 root root    216 Jan 24 10:42 pagemap-1.img
+-rw-r&ndash;r&ndash; 1 root root 106496 Jan 24 10:42 pages-1.img
+-rw-r&ndash;r&ndash; 1 root root     22 Jan 24 10:42 pstree.img
+-rw-r&ndash;r&ndash; 1 root root     12 Jan 24 10:42 seccomp.img
+-rw-r&ndash;r&ndash; 1 root root     41 Jan 24 10:42 stats-dump
+复制镜像文件到目的节点
+从源节点将进程相关的数据拷贝到目的节点node2上，注意进程相关的文件都要拷过去且保持目录不变，日志文件piggie.log一定要使用创建checkpoint时间点的文件</p>
+<h1 id="scp--r-homeimage-homepiggie-homepiggielog-hometest-node2home">scp -r /home/image/ /home/piggie /home/piggie.log /home/test node2:/home</h1>
+<p>恢复
+登录到node2节点上</p>
+<h1 id="cd-home-1">cd /home</h1>
+<h1 id="test-restore-image">./test restore image</h1>
+<p>CRIU version 31200
+Restoring
+Success
+查看状态
+可以看到进程会接着上次创建checkpoint的序号继续打印，看起来就像没中断过一样，至此进程热迁移就算完成了</p>
+<h1 id="ps--ef--grep-piggie-2">ps -ef | grep piggie</h1>
+<p>root     30870     1  0 10:51 ?        00:00:00 ./piggie piggie.log
+root     30880 29769  0 10:52 pts/0    00:00:00 grep &ndash;color=auto piggie</p>
+<h1 id="tailf-piggielog">tailf piggie.log</h1>
+<p>210
+211
+212
+213
+214
+215
+容器热迁移
+准备一个容器
+以wordpress为例，首先在源节点node1上创建一个容器</p>
+<h1 id="docker-run---name-mwp--e-wordpress_db_host10302522413306--e-wordpress_db_userroot--e-wordpress_db_password123456--p8180--d---privileged---security-opt-seccompunconfined-wordpress">docker run &ndash;name mwp -e WORDPRESS_DB_HOST=10.30.252.241:3306 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=123456 -p81:80 -d &ndash;privileged &ndash;security-opt seccomp:unconfined wordpress</h1>
+<p>ca22b1d7cc1b14ebc3e019d87718c54672b182464734d1b16a6b5f5adaf88b88
+打开浏览器检查wordpress状态正常</p>
+<p>创建checkpoint</p>
+<h1 id="docker-checkpoint-create-ca22b1d7cc1b-c1">docker checkpoint create ca22b1d7cc1b c1</h1>
+<p>创建好的image文件默认保存在这个目录下： /var/lib/docker/containers//checkpoints//</p>
+<p>创建checkpoint成功后通过docker ps命令看到容器进程被杀掉了</p>
+<p>导出源容器的镜像文件
+注意：导出镜像需要使用save&amp;load，不能使用export&amp;import，原因是存储层的数据是容器运行所需的必备文件，两者的区别参考https://jingsam.github.io/2017/08/26/docker-save-and-docker-export.html</p>
+<p>定制镜像
+将容器转换为docker镜像</p>
+<h1 id="docker-commit-ca22b1d7cc1b-wordpressv1">docker commit ca22b1d7cc1b wordpress:v1</h1>
+<p>成功后能看到多出来一个image</p>
+<h1 id="docker-images">docker images</h1>
+<p>REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
+wordpress                               v1                  872e4c495369        2 seconds ago       420MB
+导出镜像
+将上一步转换的docker镜像导出为一个输出文件</p>
+<h1 id="docker-save--o-wordpressv1-wordpressv1">docker save -o wordpressv1 wordpress:v1</h1>
+<p>在当前目录下能看到导出的镜像文件wordpressv1</p>
+<h1 id="ll--h-wordpressv1">ll -h wordpressv1</h1>
+<p>-rw&mdash;&mdash;- 1 root root 410M Jan 24 12:54 wordpressv1
+如果不需要了可以删除该镜像文件</p>
+<h1 id="docker-rmi-wordpressv1">docker rmi wordpress:v1</h1>
+<p>复制镜像文件到目的节点
+将导出的镜像文件复制到目的节点</p>
+<h1 id="scp-wordpressv1-node2home">scp wordpressv1 node2:/home</h1>
+<p>恢复
+登录到node2节点上</p>
+<p>导入镜像</p>
+<h1 id="cd-home-2">cd /home</h1>
+<h1 id="docker-load--i-wordpressv1">docker load -i wordpressv1</h1>
+<p>6b237323a705: Loading layer [==================================================&gt;]  7.168kB/7.168kB
+Loaded image: wordpress:v1
+查看导入的image</p>
+<h1 id="docker-images-1">docker images</h1>
+<p>REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+wordpress           v1                  872e4c495369        2 minutes ago       420MB
+创建容器</p>
+<h1 id="docker-create---name-mwp--e-wordpress_db_host10302522413306--e-wordpress_db_userroot--e-wordpress_db_password123456--p8180---privileged--security-opt-seccompunconfined-wordpressv1">docker create &ndash;name mwp -e WORDPRESS_DB_HOST=10.30.252.241:3306 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=123456 -p81:80 &ndash;privileged&ndash;security-opt seccomp:unconfined wordpress:v1</h1>
+<p>00d9e510226fa18f146b09613603e6f85601227eeae62f56191f043cff6effef
+从node1节点拷贝checkpoint文件到node2节点
+scp -r node1:/var/lib/docker/containers//checkpoints// node2:/var/lib/docker/containers//checkpoints/</p>
+<h1 id="scp--r-node1varlibdockercontainersca22b1d7cc1b14ebc3e019d87718c54672b182464734d1b16a6b5f5adaf88b88checkpointsc1-varlibdockercontainers00d9e510226fa18f146b09613603e6f85601227eeae62f56191f043cff6effefcheckpoints">scp -r node1:/var/lib/docker/containers/ca22b1d7cc1b14ebc3e019d87718c54672b182464734d1b16a6b5f5adaf88b88/checkpoints/c1 /var/lib/docker/containers/00d9e510226fa18f146b09613603e6f85601227eeae62f56191f043cff6effef/checkpoints</h1>
+<p>恢复启动容器</p>
+<h1 id="docker-start---checkpoint-c1-00d9e510226f">docker start &ndash;checkpoint c1 00d9e510226f</h1>
+<p>查看状态
+打开浏览器检查WordPress状态正常</p>
+<p>官网给的例子是在容器内运行一个循环，测试也可以正常迁移</p>
+<ol>
+<li>启动容器</li>
+</ol>
+<h1 id="docker-run--d---name-looper---security-opt-seccompunconfined-busybox--">docker run -d &ndash;name looper &ndash;security-opt seccomp:unconfined busybox  \</h1>
+<pre><code>     /bin/sh -c 'i=0; while true; do echo $i; i=$(expr $i + 1); sleep 1; done'
+</code></pre>
+<ol start="2">
+<li>创建checkpoint</li>
+</ol>
+<h1 id="docker-checkpoint-create-looper-c1">docker checkpoint create looper c1</h1>
+<ol start="3">
+<li>检查进程日志</li>
+</ol>
+<h1 id="docker-logs-looper">docker logs looper</h1>
+<ol start="4">
+<li>转换为镜像</li>
+</ol>
+<h1 id="docker-commit-6f71122189b2-busyboxv1">docker commit 6f71122189b2 busybox:v1</h1>
+<h1 id="docker-save--o-busyboxv1-busyboxv1">docker save -o busyboxv1 busybox:v1</h1>
+<ol start="5">
+<li>拷贝镜像到目的节点</li>
+</ol>
+<h1 id="scp-node1homebusyboxv1-node2home">scp node1:/home/busyboxv1 node2:/home</h1>
+<ol start="6">
+<li>在目的节点导入镜像</li>
+</ol>
+<h1 id="docker-load--i-homebusyboxv1">docker load -i /home/busyboxv1</h1>
+<p>7.在目的节点创建新容器</p>
+<h1 id="docker-create---name-looper---security-opt-seccompunconfined-busyboxv1-binsh--c-i0-whilecrue-do-echo-i-iexpr-i--1-sleep-1-done">docker create &ndash;name looper &ndash;security-opt seccomp:unconfined busybox:v1 /bin/sh -c &lsquo;i=0; while^Crue; do echo $i; i=$(expr $i + 1); sleep 1; done&rsquo;</h1>
+<ol start="8">
+<li>拷贝checkpoint到目的节点</li>
+</ol>
+<h1 id="scp--r-node1varlibdockercontainers6f71122189b2d797ed821e08481e8277289a51458a6090570bad2e57cf25ec45checkpointsc1-node2varlibdockercontainers22fde8c8571c5655b0ba2377925a5e2791b0858343cfdf0335c3857cc2c2f514checkpoints">scp -r node1:/var/lib/docker/containers/6f71122189b2d797ed821e08481e8277289a51458a6090570bad2e57cf25ec45/checkpoints/c1/ node2:/var/lib/docker/containers/22fde8c8571c5655b0ba2377925a5e2791b0858343cfdf0335c3857cc2c2f514/checkpoints/</h1>
+<ol start="9">
+<li>启动容器</li>
+</ol>
+<h1 id="docker-start---checkpoint-c1-22fde8c8571c">docker start &ndash;checkpoint c1 22fde8c8571c</h1>
+<ol start="10">
+<li>再次检查进程日志正常，接着上次创建checkpoint的时间点打印</li>
+</ol>
+<h1 id="docker-logs-22fde8c8571c">docker logs 22fde8c8571c</h1>
+<p>功能限制
+目前docker将criu标记为实验性质的功能，存在以下兼容性问题需要注意</p>
+<p>TTY，不支持对交互式容器创建checkpoint；
+Seccomp，如果容器开启了安全计算模式，需要kernel支持（grep CONFIG_SECCOMP= /boot/config-$(uname -r) 返回CONFIG_SECCOMP=y表示支持）
+OverlayFS，kernel有个关于OverlayFS的bug在v4.2-rc2版本中被修复
+Async IO，如果容器使用了AIO需要kernel&gt;=3.19
+总结
+criu能支持热迁移的功能有限，这也是docker没有将它直接封装成跨主机迁移的功能，目前只能在本地实现进程的dump和restore，而且对于在容器内运行的交互式程序不支持，这也是后面使用时要注意的一个问题。 只能说这个功能能解决的问题十分有限，另外还有很多程序不支持热迁移，例如mysql详见https://github.com/checkpoint-restore/criu/issues/484</p>
+
+                        </div>
+
+                        <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">楼兰</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-04-30
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+
+                            
+                            <nav class="post-nav">
+                                
+                                <a class="next" href="https://loulan.me/post/kube-apiserver/">
+                                        <span class="next-text nav-default">Kubernetes API Server 深入浅出</span>
+                                        <span class="next-text nav-mobile">下一篇</span>
+                                        <i class="iconfont icon-right"></i>
+                                    </a>
+                            </nav>
+                        </footer>
+                    </article>
+                </div>
+
+            </div>
+        </section>
+    </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="footer" class="copyright footer">
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+  <span class="copyright-year">
+      All content copyright
+    &copy; 
+    2014 - 
+    2020
+
+
+
+    <span class="author">楼兰</span>
+            .
+      All rights reserved.
+  </span>
+</div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.d9a987da.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-150398437-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
