@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Golang Context</title>
+      <link>https://loulan.me/post/golang-context/</link>
+      <pubDate>Wed, 06 May 2020 23:36:47 +0800</pubDate>
+      
+      <guid>https://loulan.me/post/golang-context/</guid>
+      <description>概要 Go 1.7 标准库引入 context，中文译作”上下文“，Go 语言的 context 包要用来在 Goroutine 之间传递上下文信息，包括：取消信号、超时时间、截止时间、K-V</description>
+    </item>
+    
+    <item>
       <title>Helm Chart Hook</title>
       <link>https://loulan.me/post/helm-chart-hook/</link>
       <pubDate>Sat, 02 May 2020 18:08:40 +0800</pubDate>

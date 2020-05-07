@@ -54,7 +54,7 @@
 <meta itemprop="description" content="Helm 提供一个 Hook 机制，允许 Chart 开发者在发布的生命周期中的某些阶段进行干预。">
 <meta itemprop="datePublished" content="2020-05-02T18:08:40&#43;08:00" />
 <meta itemprop="dateModified" content="2020-05-02T18:08:40&#43;08:00" />
-<meta itemprop="wordCount" content="1883">
+<meta itemprop="wordCount" content="1885">
 
 
 
@@ -105,7 +105,7 @@
                                     <a class="topic-tag" href="/tags/helm/">Helm</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-05-02 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 1883 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 1885 字 </span>
                                     <span class="more-meta post-tag-no-selecte"> 预计阅读 4 分钟 </span>
                                 
                             </div>
@@ -124,7 +124,7 @@
 <li>在安装新 Chart 之前执行一个 Job 来备份数据库，然后在升级后执行第二个 Job 来恢复数据。</li>
 <li>在删除 release 之前运行作业，以便在删除前优雅地停止服务。</li>
 </ul>
-<p>钩子像常规模板一样，但是它们有特殊的注解，可以使 Helm 以不同的方式使用它们。在本节中，我们介绍 Hook 的基本使用模式。</p>
+<p>Hook 像常规模板一样，但是它们有特殊的注解，可以使 Helm 以不同的方式使用它们。在本节中，我们介绍 Hook 的基本使用模式。</p>
 <h2 id="可用的-hook">可用的 Hook</h2>
 <p>定义了以下 Hook：</p>
 <table>
@@ -190,12 +190,12 @@
 <li>调用 Helm 安装接口</li>
 <li>在 <code>crds/</code> 目录下的 CRD 被安装了</li>
 <li>经过一些验证后，渲染 <code>foo</code> 模板</li>
-<li>执行 <code>pre-install</code> 钩子（将 Hook 资源加载到 Kubernetes 中）。</li>
+<li>执行 <code>pre-install</code> Hook（将 Hook 资源加载到 Kubernetes 中）。</li>
 <li>根据权重（默认值为 0）排序，具有相同权重的 Hook 的按名称升序排序。</li>
 <li>然后，首先加载权重最小的 Hook (从负到正)</li>
 <li>等待 Hook 直到  &ldquo;Ready&rdquo; (除了 CRD)</li>
 <li>将生成的资源加载到 Kubernetes 中。注意，如果设置了 <code>--wait</code> 标志，将等待所有资源处于准备就绪状态，并且不会运行<code>post-install</code> Hook，直到它们准备就绪为止。</li>
-<li>执行 <code>post-install</code> 钩子（加载 Hook 资源）。</li>
+<li>执行 <code>post-install</code> Hook（加载 Hook 资源）。</li>
 <li>等待 Hook 直到 &ldquo;Ready&rdquo;</li>
 <li>将 Release 对象和其他数据返回给客户端</li>
 <li>客户端退出</li>
@@ -203,7 +203,7 @@
 <p>等待 Hook 直到就绪是什么意思？ 这取决于 Hook 中声明的资源。如果是 <code>Job</code> 或 <code>Pod</code> 类型的资源，Helm 将等待 直到它成功运行完成。而如果 Hook 失败了，发布也会失败。这是一个_阻塞操作_，所以 Helm 客户端将在运行 Job 时暂停。</p>
 <p>对于所有其他类型的资源，只要 Kubernetes 标记为 loaded（added 或 updated），该资源就被视为 &ldquo;Ready&rdquo;。当一个 Hook 中声明了许多资源时，资源是按顺序执行的。如果它们有 Hook 权重（见下文），则按加权顺序执行。否则，顺序不保证。（在 Helm 2.3.0 及之后的版本中，它们按字母顺序排列。但这种行为并未被视为具有约束力，将来可能会发生变化。） 好的做法是增加一个 Hook 的权重，如果权重不重要，可以将其设置为 <code>0</code>。</p>
 <h3 id="hook-资源不与相应的-release-一起进行管理">Hook 资源不与相应的 Release 一起进行管理</h3>
-<p>Hook 创建的资源不作为 Release 的一部分进行跟踪或管理。一旦 Helm 验证 Hook 已经达到就绪状态，它将使 Hook 资源保持独立。当相应的 Release 被删除时，Hook 资源垃圾收集可能会在将来被添加到 Helm 3 中，所以任何不能被删除的钩子资源都应该用 <code>helm.sh/resource-policy: keep</code> 进行注释。</p>
+<p>Hook 创建的资源不作为 Release 的一部分进行跟踪或管理。一旦 Helm 验证 Hook 已经达到就绪状态，它将使 Hook 资源保持独立。当相应的 Release 被删除时，Hook 资源垃圾收集可能会在将来被添加到 Helm 3 中，所以任何不能被删除的 Hook 资源都应该用 <code>helm.sh/resource-policy: keep</code> 进行注释。</p>
 <p>实际上，这意味着如果你在 Hook 中创建了资源，就不能依靠 <code>helm uninstall</code> 来删除资源。要销毁这些资源，你需要在 Hook 模板文件中添加一个自定义的 <code>helm.sh/hook-delete-policy</code>  注解，或者<a href="https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/">设置 Job 资源的存活时间（TTL）字段</a>。</p>
 <h2 id="写一个-hook">写一个 Hook</h2>
 <p>Hook 只是 Kubernetes manifest 文件，在 <code>metadata</code> 部分有特殊的注解。因为它们是模板文件，所以可以使用所有正常的模板功能，包括读取 <code>.Values</code>, <code>.Release</code> 和 <code>.Template</code>。
@@ -368,7 +368,11 @@
 
                             
                             <nav class="post-nav">
-                                
+                                <a class="prev" href="https://loulan.me/post/golang-context/">
+                                        <i class="iconfont icon-left"></i>
+                                        <span class="prev-text nav-default">Golang Context</span>
+                                        <span class="prev-text nav-mobile">上一篇</span>
+                                    </a>
                                 <a class="next" href="https://loulan.me/post/kube-apiserver/">
                                         <span class="next-text nav-default">Kubernetes API Server 深入浅出</span>
                                         <span class="next-text nav-mobile">下一篇</span>
