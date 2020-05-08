@@ -40,7 +40,7 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.9d68e552.min.css" rel="stylesheet">
+<link href="/dist/even.9c71cb6a.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
@@ -156,12 +156,12 @@
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nf">process</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">traceId</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Value</span><span class="p">(</span><span class="s">&#34;traceID&#34;</span><span class="p">).(</span><span class="kt">string</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
-        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;process over. traceID=%s\n&#34;</span><span class="p">,</span> <span class="nx">traceId</span><span class="p">)</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;process over. no traceID\n&#34;</span><span class="p">)</span>
-    <span class="p">}</span>
+	<span class="nx">traceId</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Value</span><span class="p">(</span><span class="s">&#34;traceID&#34;</span><span class="p">).(</span><span class="kt">string</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;process over. traceID=%s\n&#34;</span><span class="p">,</span> <span class="nx">traceId</span><span class="p">)</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;process over. no traceID\n&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
