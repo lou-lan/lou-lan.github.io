@@ -40,7 +40,7 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.9c71cb6a.min.css" rel="stylesheet">
+<link href="/dist/even.8473b9c6.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
@@ -54,7 +54,7 @@
 <meta itemprop="description" content="介绍 Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。 Go 程序启动后需要对自身">
 <meta itemprop="datePublished" content="2020-08-10T15:11:41&#43;08:00" />
 <meta itemprop="dateModified" content="2020-08-10T15:11:41&#43;08:00" />
-<meta itemprop="wordCount" content="3697">
+<meta itemprop="wordCount" content="3702">
 
 
 
@@ -105,7 +105,7 @@
                                     <a class="topic-tag" href="/tags/go/">Go</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-08-10 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 3697 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 3702 字 </span>
                                     <span class="more-meta post-tag-no-selecte"> 预计阅读 8 分钟 </span>
                                 
                             </div>
@@ -135,10 +135,10 @@
 	<span class="n">JMP</span>	<span class="n">_rt0_amd64</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>可见，两者均跳转到了 _rt0_amd64 函数。这种做法符合直觉，在程序编译为机器码之后，依赖特定 CPU 架构的指令集，而操作系统的差异则是直接反应在运行时进行不同的系统级操作上，例如：系统调用。</p>
-<p>rt0 其实是 runtime0 的缩写，意为运行时的创生，随后所有创建的都是 1 为后缀。</p>
+</div><p>可见，两者均跳转到了 <code>_rt0_amd64</code> 函数。这种做法符合直觉，在程序编译为机器码之后，依赖特定 CPU 架构的指令集，而操作系统的差异则是直接反应在运行时进行不同的系统级操作上，例如：系统调用。</p>
+<p>rt0 其实是 <code>runtime0</code> 的缩写，意为运行时的创生，随后所有创建的都是 1 为后缀。</p>
 <h2 id="入口参数">入口参数</h2>
-<p>操作系统通过入口参数的约定与应用程序进行沟通，为了支持从系统给运行时传递参数，Go 程序 在进行引导时将对这部分参数进行处理。程序刚刚启动时，栈指针 SP 的前两个值分别对应 argc 和 argv，分别存储参数的数量和具体的参数的值</p>
+<p>操作系统通过入口参数的约定与应用程序进行沟通，为了支持从系统给运行时传递参数，Go 程序在进行引导时将对这部分参数进行处理。程序刚刚启动时，栈指针 SP 的前两个值分别对应 argc 和 argv，分别存储参数的数量和具体的参数的值：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -231,24 +231,26 @@
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
+</span><span class="lnt">29
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-c" data-lang="c"><span class="n">TEXT</span> <span class="n">runtime</span><span class="err">·</span><span class="n">rt0_go</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
 	<span class="p">(...)</span>
 <span class="cp">#ifdef GOOS_darwin
-</span><span class="cp"></span>	<span class="n">JMP</span> <span class="n">ok</span> <span class="c1">// 在 Darwin 系统上跳过 TLS 设置
-</span><span class="c1"></span><span class="cp">#endif
+</span><span class="cp"></span>	<span class="c1">// skip TLS setup on Darwin
+</span><span class="c1"></span>	<span class="n">JMP</span> <span class="n">ok</span>
+<span class="cp">#endif
 </span><span class="cp"></span>
-	<span class="n">LEAQ</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">m0</span><span class="o">+</span><span class="n">m_tls</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">DI</span>	<span class="c1">// DI = m0.tls
-</span><span class="c1"></span>	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">settls</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>			<span class="c1">// 将 TLS 地址设置到 DI
+	<span class="n">LEAQ</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">m0</span><span class="o">+</span><span class="n">m_tls</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">DI</span>  <span class="c1">// DI = m0.tls
+</span><span class="c1"></span>	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">settls</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>        <span class="c1">// 将 TLS 地址设置到 DI
 </span><span class="c1"></span>
 	<span class="c1">// 使用它进行存储，确保能正常运行
-</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">TLS</span><span class="p">,</span> <span class="n">BX</span>
+</span><span class="c1"></span>	<span class="n">get_tls</span><span class="p">(</span><span class="n">BX</span><span class="p">)</span>
 	<span class="n">MOVQ</span>	<span class="err">$</span><span class="mh">0x123</span><span class="p">,</span> <span class="n">g</span><span class="p">(</span><span class="n">BX</span><span class="p">)</span>
 	<span class="n">MOVQ</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">m0</span><span class="o">+</span><span class="n">m_tls</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">AX</span>
-	<span class="n">CMPQ</span>	<span class="n">AX</span><span class="p">,</span> <span class="err">$</span><span class="mh">0x123</span>			<span class="c1">// 判断 TLS 是否设置成功
-</span><span class="c1"></span>	<span class="n">JEQ</span> <span class="mi">2</span><span class="p">(</span><span class="n">PC</span><span class="p">)</span>		 			<span class="c1">// 如果相等则向后跳转两条指令
-</span><span class="c1"></span>	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">abort</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>	<span class="c1">// 使用 INT 指令执行中断
+	<span class="n">CMPQ</span>  <span class="n">AX</span><span class="p">,</span> <span class="err">$</span><span class="mh">0x123</span>        <span class="c1">// 判断 TLS 是否设置成功
+</span><span class="c1"></span>	<span class="n">JEQ</span> <span class="mi">2</span><span class="p">(</span><span class="n">PC</span><span class="p">)</span>               <span class="c1">// 如果相等则向后跳转两条指令
+</span><span class="c1"></span>	<span class="n">CALL</span>  <span class="n">runtime</span><span class="err">·</span><span class="n">abort</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span> <span class="c1">// 使用 INT 指令执行中断
 </span><span class="c1"></span><span class="nl">ok</span><span class="p">:</span>
 	<span class="c1">// 程序刚刚启动，此时位于主线程
 </span><span class="c1"></span>	<span class="c1">// 当前栈与资源保存在 g0
@@ -263,7 +265,7 @@
 </span><span class="c1"></span>	<span class="p">(...)</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>而 g0 和 m0 是一组全局变量，在程序运行之初就已经存在。 除了程序参数外，会首先将 m0 与 g0 通过指针互相关联。</p>
+</div><p>而 <code>g0</code> 和 <code>m0</code> 是一组全局变量，在程序运行之初就已经存在。除了程序参数外，会首先将 <code>m0</code> 与 <code>g0</code> 通过指针互相关联。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -290,9 +292,9 @@
 </span><span class="c1"></span>	<span class="n">RET</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>可以看到到此函数进行 arch_prctl 系统调用并 ARCH_SET_FS 作为参数传递， 为 FS 段寄存器设置了基础。</p>
+</div><p>可以看到到此函数进行 <code>arch_prctl</code> 系统调用并 <code>ARCH_SET_FS</code> 作为参数传递，为 <code>FS</code> 段寄存器设置了基础。</p>
 <h2 id="早期校验与系统级初始化">早期校验与系统级初始化</h2>
-<p>在正式初始化运行时组件之前，还需要做一些校验和系统级的初始化工作，这包括：运行时类型检查， 系统参数的获取以及影响内存管理和程序调度的相关常量的初始化。</p>
+<p>在正式初始化运行时组件之前，还需要做一些校验和系统级的初始化工作，这包括：运行时类型检查，系统参数的获取以及影响内存管理和程序调度的相关常量的初始化。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -379,9 +381,9 @@
 </div><div style="text-align: center">
 <img src="/img/golang-boot-proc-stack.png" style="width: 300px">
 </div>
-<p>args 函数将参数指针保存到了 argc 和 argv 这两个全局变量中， 供其他初始化函数使用，而后调用了平台特定的 sysargs。 对于 Darwin 系统而言，只负责获取程序的 executable_path：</p>
+<p>args 函数将参数指针保存到了 argc 和 argv 这两个全局变量中，供其他初始化函数使用，而后调用了平台特定的 sysargs。对于 Darwin 系统而言，只负责获取程序的 executable_path：</p>
 <p>这个参数用于设置 os 包中的 executablePath 变量。</p>
-<p>而在 Linux 平台中，这个过程就变得复杂起来了。 与 Darwin 使用 mach-o 不同，Linux 使用 ELF 格式 [Matz et al. 2014]。 ELF 除了 argc, argv, envp 之外，会携带辅助向量（auxiliary vector） 将某些内核级的信息传递给用户进程，例如内存物理页大小。具体结构如图 5.1 所示。</p>
+<p>而在 Linux 平台中，这个过程就变得复杂起来了。与 Darwin 使用 mach-o 不同，Linux 使用 ELF 格式 [Matz et al. 2014]。ELF 除了 argc, argv, envp 之外，会携带辅助向量（auxiliary vector）将某些内核级的信息传递给用户进程，例如内存物理页大小。具体结构如图 5.1 所示。</p>
 <p>对照图 5.1 的词表，我们能够很容易的看明白 sysargs 在 Linux amd64 下作的事情：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -474,7 +476,7 @@
 </code></pre></td></tr></table>
 </div>
 </div><p>因此对于 Linux 而言，物理页大小在 sysargs 中便能直接完成初始化。</p>
-<p>最后是，osinit 完成对 CPU 核心数的获取，因为这与调度器有关。 而 Darwin 上由于使用的是 mach-o 格式，在此前的 sysargs 上 还没有确定内存页的大小，因而在这个函数中，还会额外使用 sysctl 完成物理页大小的查询。</p>
+<p>最后是，osinit 完成对 CPU 核心数的获取，因为这与调度器有关。而 Darwin 上由于使用的是 mach-o 格式，在此前的 sysargs 上 还没有确定内存页的大小，因而在这个函数中，还会额外使用 sysctl 完成物理页大小的查询。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -553,7 +555,7 @@
 </div><p>其中：</p>
 <ol>
 <li>schedinit：进行各种运行时组件初始化工作，这包括我们的调度器与内存分配器、回收器的初始化</li>
-<li>newproc：负责根据主 goroutine （即 main）入口地址创建可被运行时调度的执行单元</li>
+<li>newproc：负责根据主 goroutine（即 main）入口地址创建可被运行时调度的执行单元</li>
 <li>mstart：开始启动调度器的调度循环</li>
 </ol>
 <p>编译器负责生成了 main 函数的入口地址，runtime.mainPC 在数据段中被定义为 runtime.main 保存主 goroutine 入口地址：</p>
