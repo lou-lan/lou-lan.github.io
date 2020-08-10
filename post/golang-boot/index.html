@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Golang 启动引导 - 楼兰志</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="楼兰" /><meta name="description" content="介绍 Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。 Go 程序启动后需要对自身" /><meta name="keywords" content="楼兰志, loulan, 翟怀楼, loulan.me, 楼兰" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.69.2 with even 4.0.0" />
+
+
+
+
+
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.9c71cb6a.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Golang 启动引导" />
+<meta property="og:description" content="介绍 Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。 Go 程序启动后需要对自身" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://loulan.me/post/golang-boot/" />
+<meta property="article:published_time" content="2020-08-10T15:11:41+08:00" />
+<meta property="article:modified_time" content="2020-08-10T15:11:41+08:00" />
+<meta itemprop="name" content="Golang 启动引导">
+<meta itemprop="description" content="介绍 Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。 Go 程序启动后需要对自身">
+<meta itemprop="datePublished" content="2020-08-10T15:11:41&#43;08:00" />
+<meta itemprop="dateModified" content="2020-08-10T15:11:41&#43;08:00" />
+<meta itemprop="wordCount" content="3697">
+
+
+
+<meta itemprop="keywords" content="Go," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Golang 启动引导"/>
+<meta name="twitter:description" content="介绍 Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。 Go 程序启动后需要对自身"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <nav class="nav" role="navigation">
+    <ul class="menu nav-container">
+        <li class="menu-item">
+            <a class="menu-item-link nav-logo-link" href="/">
+                <span class="nav-logo-title">
+                    首页
+                </span>
+            </a>
+        </li>
+        <li class="nav-height">
+                <a href="/post/">归档</a>
+            </li><li class="nav-height">
+                <a href="/tags/">标签</a>
+            </li><li class="nav-height">
+                <a href="/about/">关于</a>
+            </li>
+    </ul>
+</nav>
+  <div class="main main-padding-bottom">
+        <section class="section blog-body">
+            <div class="body-content">
+    
+                <div id="content" class="content">
+                    <article class="post">
+                        
+                        <header class="post-header">
+                            
+                            <div class="post-meta">
+                                
+                                    <a class="topic-tag" href="/tags/go/">Go</a>
+                                    <span class="post-time post-tag-no-selecte"> 2020-08-10 </span>
+                                
+                                    <span class="more-meta post-tag-no-selecte"> 约 3697 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 预计阅读 8 分钟 </span>
+                                
+                            </div>
+
+                            
+
+                            <h1 class="post-title">Golang 启动引导</h1>
+
+                        </header>
+
+                        
+                        <div class="post-content">
+                            <h2 id="介绍">介绍</h2>
+<p>Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。</p>
+<p>Go 程序启动后需要对自身运行时进行初始化，其真正的程序入口由 runtime 包控制。以 AMD64 架构上的 Linux 和 macOS 为例，分别位于：<code>src/runtime/rt0_linux_amd64.s</code> 和 <code>src/runtime/rt0_darwin_amd64.s</code>。在 plan9 中 TEXT 是一个指令，用来定义一个函数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">TEXT</span> <span class="n">_rt0_amd64_linux</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="o">-</span><span class="mi">8</span>
+	<span class="n">JMP</span>	<span class="n">_rt0_amd64</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+<span class="n">TEXT</span> <span class="n">_rt0_amd64_darwin</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="o">-</span><span class="mi">8</span>
+	<span class="n">JMP</span>	<span class="n">_rt0_amd64</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可见，两者均跳转到了 _rt0_amd64 函数。这种做法符合直觉，在程序编译为机器码之后，依赖特定 CPU 架构的指令集，而操作系统的差异则是直接反应在运行时进行不同的系统级操作上，例如：系统调用。</p>
+<p>rt0 其实是 runtime0 的缩写，意为运行时的创生，随后所有创建的都是 1 为后缀。</p>
+<h2 id="入口参数">入口参数</h2>
+<p>操作系统通过入口参数的约定与应用程序进行沟通，为了支持从系统给运行时传递参数，Go 程序 在进行引导时将对这部分参数进行处理。程序刚刚启动时，栈指针 SP 的前两个值分别对应 argc 和 argv，分别存储参数的数量和具体的参数的值</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">TEXT</span> <span class="n">_rt0_amd64</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="o">-</span><span class="mi">8</span>
+	<span class="n">MOVQ</span>	<span class="mi">0</span><span class="p">(</span><span class="n">SP</span><span class="p">),</span> <span class="n">DI</span>	<span class="c1">// argc
+</span><span class="c1"></span>	<span class="n">LEAQ</span>	<span class="mi">8</span><span class="p">(</span><span class="n">SP</span><span class="p">),</span> <span class="n">SI</span>	<span class="c1">// argv
+</span><span class="c1"></span>	<span class="n">JMP</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">rt0_go</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+
+<span class="n">TEXT</span> <span class="n">runtime</span><span class="err">·</span><span class="n">rt0_go</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+	<span class="c1">// 将参数向前复制到一个偶数栈上
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">DI</span><span class="p">,</span> <span class="n">AX</span>			<span class="c1">// argc
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">SI</span><span class="p">,</span> <span class="n">BX</span>			<span class="c1">// argv
+</span><span class="c1"></span>	<span class="n">SUBQ</span>	<span class="err">$</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="mi">8</span><span class="o">+</span><span class="mi">7</span><span class="p">),</span> <span class="n">SP</span>	<span class="c1">// 2args 2auto
+</span><span class="c1"></span>	<span class="n">ANDQ</span>	<span class="err">$</span><span class="o">~</span><span class="mi">15</span><span class="p">,</span> <span class="n">SP</span>
+	<span class="n">MOVQ</span>	<span class="n">AX</span><span class="p">,</span> <span class="mi">16</span><span class="p">(</span><span class="n">SP</span><span class="p">)</span>
+	<span class="n">MOVQ</span>	<span class="n">BX</span><span class="p">,</span> <span class="mi">24</span><span class="p">(</span><span class="n">SP</span><span class="p">)</span>
+
+	<span class="c1">// 初始化 g0 执行栈
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="err">$</span><span class="n">runtime</span><span class="err">·</span><span class="n">g0</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">DI</span>			<span class="c1">// DI = g0
+</span><span class="c1"></span>	<span class="n">LEAQ</span>	<span class="p">(</span><span class="o">-</span><span class="mi">64</span><span class="o">*</span><span class="mi">1024</span><span class="o">+</span><span class="mi">104</span><span class="p">)(</span><span class="n">SP</span><span class="p">),</span> <span class="n">BX</span>
+	<span class="n">MOVQ</span>	<span class="n">BX</span><span class="p">,</span> <span class="n">g_stackguard0</span><span class="p">(</span><span class="n">DI</span><span class="p">)</span>		<span class="c1">// g0.stackguard0 = SP + (-64*1024+104)
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">BX</span><span class="p">,</span> <span class="n">g_stackguard1</span><span class="p">(</span><span class="n">DI</span><span class="p">)</span>		<span class="c1">// g0.stackguard1 = SP + (-64*1024+104)
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">BX</span><span class="p">,</span> <span class="p">(</span><span class="n">g_stack</span><span class="o">+</span><span class="n">stack_lo</span><span class="p">)(</span><span class="n">DI</span><span class="p">)</span>	<span class="c1">// g0.stack.lo    = SP + (-64*1024+104)
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">SP</span><span class="p">,</span> <span class="p">(</span><span class="n">g_stack</span><span class="o">+</span><span class="n">stack_hi</span><span class="p">)(</span><span class="n">DI</span><span class="p">)</span>	<span class="c1">// g0.stack.hi    = SP
+</span><span class="c1"></span>
+	<span class="c1">// 确定 CPU 处理器的信息
+</span><span class="c1"></span>	<span class="n">MOVL</span>	<span class="err">$</span><span class="mi">0</span><span class="p">,</span> <span class="n">AX</span>
+	<span class="n">CPUID</span>			<span class="c1">// CPUID 会设置 AX 的值
+</span><span class="c1"></span>	<span class="n">MOVL</span>	<span class="n">AX</span><span class="p">,</span> <span class="n">SI</span>
+	<span class="p">(...)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="线程本地存储-tls">线程本地存储 TLS</h3>
+<p>确定完程序入口参数和 CPU 处理器信息之后，一个影响运行时非常重要的操作便是本地线程存储 （Thread Local Storage, TLS）。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">TEXT</span> <span class="n">runtime</span><span class="err">·</span><span class="n">rt0_go</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+	<span class="p">(...)</span>
+<span class="cp">#ifdef GOOS_darwin
+</span><span class="cp"></span>	<span class="n">JMP</span> <span class="n">ok</span> <span class="c1">// 在 Darwin 系统上跳过 TLS 设置
+</span><span class="c1"></span><span class="cp">#endif
+</span><span class="cp"></span>
+	<span class="n">LEAQ</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">m0</span><span class="o">+</span><span class="n">m_tls</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">DI</span>	<span class="c1">// DI = m0.tls
+</span><span class="c1"></span>	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">settls</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>			<span class="c1">// 将 TLS 地址设置到 DI
+</span><span class="c1"></span>
+	<span class="c1">// 使用它进行存储，确保能正常运行
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">TLS</span><span class="p">,</span> <span class="n">BX</span>
+	<span class="n">MOVQ</span>	<span class="err">$</span><span class="mh">0x123</span><span class="p">,</span> <span class="n">g</span><span class="p">(</span><span class="n">BX</span><span class="p">)</span>
+	<span class="n">MOVQ</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">m0</span><span class="o">+</span><span class="n">m_tls</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">AX</span>
+	<span class="n">CMPQ</span>	<span class="n">AX</span><span class="p">,</span> <span class="err">$</span><span class="mh">0x123</span>			<span class="c1">// 判断 TLS 是否设置成功
+</span><span class="c1"></span>	<span class="n">JEQ</span> <span class="mi">2</span><span class="p">(</span><span class="n">PC</span><span class="p">)</span>		 			<span class="c1">// 如果相等则向后跳转两条指令
+</span><span class="c1"></span>	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">abort</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>	<span class="c1">// 使用 INT 指令执行中断
+</span><span class="c1"></span><span class="nl">ok</span><span class="p">:</span>
+	<span class="c1">// 程序刚刚启动，此时位于主线程
+</span><span class="c1"></span>	<span class="c1">// 当前栈与资源保存在 g0
+</span><span class="c1"></span>	<span class="c1">// 该线程保存在 m0
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">TLS</span><span class="p">,</span> <span class="n">BX</span>
+	<span class="n">LEAQ</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">g0</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">CX</span>
+	<span class="n">MOVQ</span>	<span class="n">CX</span><span class="p">,</span> <span class="n">g</span><span class="p">(</span><span class="n">BX</span><span class="p">)</span>
+	<span class="n">LEAQ</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">m0</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">AX</span>
+
+	<span class="n">MOVQ</span>	<span class="n">CX</span><span class="p">,</span> <span class="n">m_g0</span><span class="p">(</span><span class="n">AX</span><span class="p">)</span> <span class="c1">// m-&gt;g0 = g0
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">AX</span><span class="p">,</span> <span class="n">g_m</span><span class="p">(</span><span class="n">CX</span><span class="p">)</span>  <span class="c1">// g0-&gt;m = m0
+</span><span class="c1"></span>	<span class="p">(...)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>而 g0 和 m0 是一组全局变量，在程序运行之初就已经存在。 除了程序参数外，会首先将 m0 与 g0 通过指针互相关联。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">TEXT</span> <span class="n">runtime</span><span class="err">·</span><span class="n">settls</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">32</span>
+	<span class="n">ADDQ</span>	<span class="err">$</span><span class="mi">8</span><span class="p">,</span> <span class="n">DI</span>	<span class="c1">// DI = DI + 8, ELF 格式使用 -8(FS)
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">DI</span><span class="p">,</span> <span class="n">SI</span>					<span class="c1">// SI = DI
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="err">$</span><span class="mh">0x1002</span><span class="p">,</span> <span class="n">DI</span>				<span class="c1">// 0x1002 == ARCH_SET_FS
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="err">$</span><span class="n">SYS_arch_prctl</span><span class="p">,</span> <span class="n">AX</span>
+	<span class="n">SYSCALL</span>
+	<span class="n">CMPQ</span>	<span class="n">AX</span><span class="p">,</span> <span class="err">$</span><span class="mh">0xfffffffffffff001</span>	<span class="c1">// 验证是否成功
+</span><span class="c1"></span>	<span class="n">JLS</span>	<span class="mi">2</span><span class="p">(</span><span class="n">PC</span><span class="p">)</span>					
+	<span class="n">MOVL</span>	<span class="err">$</span><span class="mh">0xf1</span><span class="p">,</span> <span class="mh">0xf1</span>				<span class="c1">// 崩溃
+</span><span class="c1"></span>	<span class="n">RET</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到到此函数进行 arch_prctl 系统调用并 ARCH_SET_FS 作为参数传递， 为 FS 段寄存器设置了基础。</p>
+<h2 id="早期校验与系统级初始化">早期校验与系统级初始化</h2>
+<p>在正式初始化运行时组件之前，还需要做一些校验和系统级的初始化工作，这包括：运行时类型检查， 系统参数的获取以及影响内存管理和程序调度的相关常量的初始化。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">TEXT</span> <span class="n">runtime</span><span class="err">·</span><span class="n">rt0_go</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+	<span class="p">(...)</span>
+	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">check</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+
+	<span class="n">MOVL</span>	<span class="mi">16</span><span class="p">(</span><span class="n">SP</span><span class="p">),</span> <span class="n">AX</span>		<span class="c1">// 复制 argc
+</span><span class="c1"></span>	<span class="n">MOVL</span>	<span class="n">AX</span><span class="p">,</span> <span class="mi">0</span><span class="p">(</span><span class="n">SP</span><span class="p">)</span>
+	<span class="n">MOVQ</span>	<span class="mi">24</span><span class="p">(</span><span class="n">SP</span><span class="p">),</span> <span class="n">AX</span>		<span class="c1">// 复制 argv
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="n">AX</span><span class="p">,</span> <span class="mi">8</span><span class="p">(</span><span class="n">SP</span><span class="p">)</span>
+	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">args</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">osinit</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+	<span class="p">(...)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="运行时类型检查">运行时类型检查</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// runtime/runtime1.go
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">check</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="p">(</span>
+		<span class="nx">a</span>     <span class="kt">int8</span>
+		<span class="nx">b</span>     <span class="kt">uint8</span>
+		<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+	<span class="p">)</span>
+	<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+	<span class="c1">// 校验 int8 类型 sizeof 是否为 1，下同
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="p">{</span> <span class="nf">throw</span><span class="p">(</span><span class="s">&#34;bad a&#34;</span><span class="p">)</span> <span class="p">}</span>
+	<span class="k">if</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="p">{</span> <span class="nf">throw</span><span class="p">(</span><span class="s">&#34;bad b&#34;</span><span class="p">)</span> <span class="p">}</span>
+	<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="系统参数处理器与内存常量">系统参数、处理器与内存常量</h3>
+<p>argc, argv 作为来自操作系统的参数传递给 args 处理程序参数的相关事宜。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// runtime/runtime1.go
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">args</span><span class="p">(</span><span class="nx">c</span> <span class="kt">int32</span><span class="p">,</span> <span class="nx">v</span> <span class="o">**</span><span class="kt">byte</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">argc</span> <span class="p">=</span> <span class="nx">c</span>
+	<span class="nx">argv</span> <span class="p">=</span> <span class="nx">v</span>
+	<span class="nf">sysargs</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<p>args 函数将参数指针保存到了 argc 和 argv 这两个全局变量中， 供其他初始化函数使用，而后调用了平台特定的 sysargs。 对于 Darwin 系统而言，只负责获取程序的 executable_path：</p>
+<p>这个参数用于设置 os 包中的 executablePath 变量。</p>
+<p>而在 Linux 平台中，这个过程就变得复杂起来了。 与 Darwin 使用 mach-o 不同，Linux 使用 ELF 格式 [Matz et al. 2014]。 ELF 除了 argc, argv, envp 之外，会携带辅助向量（auxiliary vector） 将某些内核级的信息传递给用户进程，例如内存物理页大小。具体结构如图 5.1 所示。</p>
+<p>对照图 5.1 的词表，我们能够很容易的看明白 sysargs 在 Linux amd64 下作的事情：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// runtime/os_linux.go
+</span><span class="c1"></span>
+<span class="c1">// physPageSize 是操作系统的内存物理页字节大小。
+</span><span class="c1">// 内存页的映射和反映射操作必须以 physPageSize 的整数倍完成
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">physPageSize</span> <span class="kt">uintptr</span>
+
+<span class="kd">func</span> <span class="nf">sysargs</span><span class="p">(</span><span class="nx">argc</span> <span class="kt">int32</span><span class="p">,</span> <span class="nx">argv</span> <span class="o">**</span><span class="kt">byte</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// 跳过 argv, envp 来获取 auxv
+</span><span class="c1"></span>	<span class="nx">n</span> <span class="o">:=</span> <span class="nx">argc</span> <span class="o">+</span> <span class="mi">1</span>
+	<span class="k">for</span> <span class="nf">argv_index</span><span class="p">(</span><span class="nx">argv</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span> <span class="nx">n</span><span class="o">++</span> <span class="p">}</span>
+
+	<span class="nx">n</span><span class="o">++</span> <span class="c1">// 跳过 NULL 分隔符
+</span><span class="c1"></span>
+	<span class="c1">// 尝试读取 auxv
+</span><span class="c1"></span>	<span class="nx">auxv</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">28</span><span class="p">]</span><span class="kt">uintptr</span><span class="p">)(</span><span class="nf">add</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">argv</span><span class="p">),</span> <span class="nb">uintptr</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span><span class="o">*</span><span class="nx">sys</span><span class="p">.</span><span class="nx">PtrSize</span><span class="p">))</span>
+	<span class="k">if</span> <span class="nf">sysauxv</span><span class="p">(</span><span class="nx">auxv</span><span class="p">[:])</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="c1">// 处理无法读取 auxv 的情况：
+</span><span class="c1"></span>	<span class="c1">// 一种方法是尝试读取 /proc/self/auxv。
+</span><span class="c1"></span>	<span class="c1">// 如果这个文件不存在，还可以尝试调用 mmap 等内存分配的系统调用直接测试物理页的大小。
+</span><span class="c1"></span>	<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">sysauxv</span><span class="p">(</span><span class="nx">auxv</span> <span class="p">[]</span><span class="kt">uintptr</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">i</span> <span class="kt">int</span>
+	<span class="c1">// 依次读取 auxv 键值对
+</span><span class="c1"></span>	<span class="k">for</span> <span class="p">;</span> <span class="nx">auxv</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">!=</span> <span class="nx">_AT_NULL</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">2</span> <span class="p">{</span>
+		<span class="nx">tag</span><span class="p">,</span> <span class="nx">val</span> <span class="o">:=</span> <span class="nx">auxv</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">auxv</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+		<span class="k">switch</span> <span class="nx">tag</span> <span class="p">{</span>
+		<span class="k">case</span> <span class="nx">_AT_PAGESZ</span><span class="p">:</span>
+			<span class="c1">// 读取内存页的大小
+</span><span class="c1"></span>			<span class="nx">physPageSize</span> <span class="p">=</span> <span class="nx">val</span>
+			<span class="c1">// 这里其实也可能出现无法读取到物理页大小的情况，但后续再内存分配器初始化的时候还会对
+</span><span class="c1"></span>			<span class="c1">// physPageSize 的大小进行检查，如果读取失败则无法运行程序，从而抛出运行时错误
+</span><span class="c1"></span>		<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">i</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>因此对于 Linux 而言，物理页大小在 sysargs 中便能直接完成初始化。</p>
+<p>最后是，osinit 完成对 CPU 核心数的获取，因为这与调度器有关。 而 Darwin 上由于使用的是 mach-o 格式，在此前的 sysargs 上 还没有确定内存页的大小，因而在这个函数中，还会额外使用 sysctl 完成物理页大小的查询。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">var</span> <span class="n">ncpu</span> <span class="n">int32</span>
+
+<span class="c1">// Linux
+</span><span class="c1"></span><span class="n">func</span> <span class="n">osinit</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">ncpu</span> <span class="o">=</span> <span class="n">getproccount</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="c1">// Darwin
+</span><span class="c1"></span><span class="n">func</span> <span class="n">osinit</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">ncpu</span> <span class="o">=</span> <span class="n">getncpu</span><span class="p">()</span>
+	<span class="n">physPageSize</span> <span class="o">=</span> <span class="n">getPageSize</span><span class="p">()</span> <span class="c1">// 内部使用 sysctl 来获取物理页大小.
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Darwin 从操作系统发展来看，是从 NeXTSTEP 和 FreeBSD 2.x 发展而来的后代，macOS 系统调用的特殊之处在于它提供了两套调用接口，一个是 Mach 调用，另一个则是 POSIX 调用。 Mach 是 NeXTSTEP 遗留下来的产物，其 BSD 层本质上是对 Mach 内核的一层封装。 尽管用户态进程可以直接访问 Mach 调用，但出于通用性的考虑，物理页大小获取的方式是通过 POSIX sysctl 这个系统调用进行获取 [Bacon, 2007]。</p>
+<p>事实上 Linux 与 Darwin 下的系统调用如何参与到 Go 程序中去稍有不同，我们暂时不做深入讨论，留到以后再统一分析。</p>
+<p>可以看出，对运行时最为重要的两个系统级参数：CPU 核心数与内存物理页大小。</p>
+<h3 id="运行时组件核心">运行时组件核心</h3>
+<p>万事俱备只欠东风，对于 Go 运行时而言，最后的这三个函数及其后续调用关系完整实现了整个程序的全部运行时机制的准备工作：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">TEXT</span> <span class="n">runtime</span><span class="err">·</span><span class="n">rt0_go</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+	<span class="p">(...)</span>
+	<span class="c1">// 调度器初始化
+</span><span class="c1"></span>	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">schedinit</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+
+	<span class="c1">// 创建一个新的 goroutine 来启动程序
+</span><span class="c1"></span>	<span class="n">MOVQ</span>	<span class="err">$</span><span class="n">runtime</span><span class="err">·</span><span class="n">mainPC</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span> <span class="n">AX</span>
+	<span class="n">PUSHQ</span>	<span class="n">AX</span>
+	<span class="n">PUSHQ</span>	<span class="err">$</span><span class="mi">0</span>			<span class="c1">// 参数大小
+</span><span class="c1"></span>	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">newproc</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+	<span class="n">POPQ</span>	<span class="n">AX</span>
+	<span class="n">POPQ</span>	<span class="n">AX</span>
+
+	<span class="c1">// 启动这个 M，mstart 应该永不返回
+</span><span class="c1"></span>	<span class="n">CALL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">mstart</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+	<span class="p">(...)</span>
+	<span class="n">RET</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其中：</p>
+<ol>
+<li>schedinit：进行各种运行时组件初始化工作，这包括我们的调度器与内存分配器、回收器的初始化</li>
+<li>newproc：负责根据主 goroutine （即 main）入口地址创建可被运行时调度的执行单元</li>
+<li>mstart：开始启动调度器的调度循环</li>
+</ol>
+<p>编译器负责生成了 main 函数的入口地址，runtime.mainPC 在数据段中被定义为 runtime.main 保存主 goroutine 入口地址：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">DATA</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">mainPC</span><span class="o">+</span><span class="mi">0</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span><span class="err">$</span><span class="n">runtime</span><span class="err">·</span><span class="n">main</span><span class="p">(</span><span class="n">SB</span><span class="p">)</span>
+<span class="n">GLOBL</span>	<span class="n">runtime</span><span class="err">·</span><span class="n">mainPC</span><span class="p">(</span><span class="n">SB</span><span class="p">),</span><span class="n">RODATA</span><span class="p">,</span><span class="err">$</span><span class="mi">8</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最后我们来大致浏览一下 schedinit 的全貌。schedinit 函数名表面上是调度器的初始化，但实际上它包含了所有核心组件的初始化工作。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// src/runtime/proc.go
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">schedinit</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">_g_</span> <span class="o">:=</span> <span class="nf">getg</span><span class="p">()</span>
+	<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+	<span class="c1">// 栈、内存分配器、调度器相关初始化
+</span><span class="c1"></span>	<span class="nx">sched</span><span class="p">.</span><span class="nx">maxmcount</span> <span class="p">=</span> <span class="mi">10000</span>	<span class="c1">// 限制最大系统线程数量
+</span><span class="c1"></span>	<span class="nf">stackinit</span><span class="p">()</span>			<span class="c1">// 初始化执行栈
+</span><span class="c1"></span>	<span class="nf">mallocinit</span><span class="p">()</span>		<span class="c1">// 初始化内存分配器
+</span><span class="c1"></span>	<span class="nf">mcommoninit</span><span class="p">(</span><span class="nx">_g_</span><span class="p">.</span><span class="nx">m</span><span class="p">)</span>	<span class="c1">// 初始化当前系统线程
+</span><span class="c1"></span>	<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+	<span class="nf">gcinit</span><span class="p">()</span>	<span class="c1">// 垃圾回收器初始化
+</span><span class="c1"></span>	<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+	<span class="c1">// 创建 P
+</span><span class="c1"></span>	<span class="c1">// 通过 CPU 核心数和 GOMAXPROCS 环境变量确定 P 的数量
+</span><span class="c1"></span>	<span class="nx">procs</span> <span class="o">:=</span> <span class="nx">ncpu</span>
+	<span class="k">if</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nf">atoi32</span><span class="p">(</span><span class="nf">gogetenv</span><span class="p">(</span><span class="s">&#34;GOMAXPROCS&#34;</span><span class="p">));</span> <span class="nx">ok</span> <span class="o">&amp;&amp;</span> <span class="nx">n</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">procs</span> <span class="p">=</span> <span class="nx">n</span>
+	<span class="p">}</span>
+	<span class="nf">procresize</span><span class="p">(</span><span class="nx">procs</span><span class="p">)</span>
+	<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我们最感兴趣的三大运行时组件在如下函数签名中进行大量初始化工作：</p>
+<ul>
+<li>stackinit() goroutine 执行栈初始化</li>
+<li>mallocinit() 内存分配器初始化</li>
+<li>mcommoninit() 系统线程的部分初始化工作</li>
+<li>gcinit() 垃圾回收器初始化</li>
+<li>procresize() 根据 CPU 核心数，初始化系统线程的本地缓存</li>
+</ul>
+<h2 id="小结">小结</h2>
+<p>我们通过一个简化的调用关系图来对本节中我们观察到的程序启动流程。</p>
+<p><img src="/img/golang-boot1.png" alt="启动流程"></p>
+<p>根据分析我们可以看到，Go 程序既不是从 <code>main.main</code> 直接启动，也不是从 <code>runtime.main</code> 直接启动。相反，其实际的入口位于 <code>runtime._rt0_amd64_*</code>。随后会转到 <code>runtime.rt0_go</code> 调用。在这个调用中，除了进行运行时类型检查外，还确定了两个很重要的运行时常量，即处理器核心数以及内存物理页大小。</p>
+<p>程序引导和初始化工作是整个运行时最关键的基础步骤之一。在 <code>schedinit</code> 这个函数的调用过程中，还会完成整个程序运行时的初始化，包括调度器、执行栈、内存分配器、调度器、垃圾回收器等组件的初始化。最后通过 <code>newproc</code> 和 <code>mstart</code> 调用进而开始由调度器转为执行主 <code>goroutine</code>。</p>
+<p>运行时组件的内容我们留到组件各自的章节中进行讨论，我们在下一节中着先着重讨论当一切都初始化好后，程序的正式启动过程，即 <code>runtime.main</code>。</p>
+<h2 id="参考文章">参考文章</h2>
+<p><a href="https://changkun.de/golang/zh-cn/part1basic/ch05life/boot/">https://changkun.de/golang/zh-cn/part1basic/ch05life/boot/</a></p>
+
+                        </div>
+
+                        <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">楼兰</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-08-10
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+
+                            
+                            <nav class="post-nav">
+                                
+                                <a class="next" href="https://loulan.me/post/golang-context/">
+                                        <span class="next-text nav-default">Golang Context</span>
+                                        <span class="next-text nav-mobile">下一篇</span>
+                                        <i class="iconfont icon-right"></i>
+                                    </a>
+                            </nav>
+                        </footer>
+                    </article>
+                </div>
+
+            </div>
+        </section>
+    </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="footer" class="copyright footer">
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+  <span class="copyright-year">
+      All content copyright
+    &copy; 
+    2014 - 
+    2020
+
+
+
+    <span class="author">楼兰</span>
+            .
+      All rights reserved.
+  </span>
+</div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.d9a987da.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-150398437-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

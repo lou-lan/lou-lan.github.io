@@ -3,27 +3,34 @@
   
   <url>
     <loc>https://loulan.me/tags/go/</loc>
-    <lastmod>2020-05-06T23:36:47+08:00</lastmod>
+    <lastmod>2020-08-10T15:11:41+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://loulan.me/post/golang-context/</loc>
-    <lastmod>2020-05-06T23:36:47+08:00</lastmod>
+    <loc>https://loulan.me/post/golang-boot/</loc>
+    <lastmod>2020-08-10T15:11:41+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://loulan.me/post/</loc>
-    <lastmod>2020-05-06T23:36:47+08:00</lastmod>
+    <lastmod>2020-08-10T15:11:41+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://loulan.me/tags/</loc>
+    <lastmod>2020-08-10T15:11:41+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://loulan.me/post/golang-context/</loc>
     <lastmod>2020-05-06T23:36:47+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

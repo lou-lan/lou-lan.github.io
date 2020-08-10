@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Golang 启动引导</title>
+      <link>https://loulan.me/post/golang-boot/</link>
+      <pubDate>Mon, 10 Aug 2020 15:11:41 +0800</pubDate>
+      
+      <guid>https://loulan.me/post/golang-boot/</guid>
+      <description>介绍 Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。 Go 程序启动后需要对自身</description>
+    </item>
+    
+    <item>
       <title>Golang Context</title>
       <link>https://loulan.me/post/golang-context/</link>
       <pubDate>Wed, 06 May 2020 23:36:47 +0800</pubDate>
