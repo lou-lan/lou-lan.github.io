@@ -376,7 +376,9 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><!-- raw HTML omitted -->
+</div><div style="text-align: center">
+<img src="/img/golang-boot-proc-stack.png" style="width: 300px">
+</div>
 <p>args 函数将参数指针保存到了 argc 和 argv 这两个全局变量中， 供其他初始化函数使用，而后调用了平台特定的 sysargs。 对于 Darwin 系统而言，只负责获取程序的 executable_path：</p>
 <p>这个参数用于设置 os 包中的 executablePath 变量。</p>
 <p>而在 Linux 平台中，这个过程就变得复杂起来了。 与 Darwin 使用 mach-o 不同，Linux 使用 ELF 格式 [Matz et al. 2014]。 ELF 除了 argc, argv, envp 之外，会携带辅助向量（auxiliary vector） 将某些内核级的信息传递给用户进程，例如内存物理页大小。具体结构如图 5.1 所示。</p>
