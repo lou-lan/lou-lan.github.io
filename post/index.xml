@@ -6,10 +6,19 @@
     <description>Recent content in Posts on 楼兰志</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 31 Aug 2020 20:52:35 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 04 Sep 2020 15:39:20 +0800</lastBuildDate>
     
 	<atom:link href="https://loulan.me/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>kubernetes 之 kubelet 深入浅出</title>
+      <link>https://loulan.me/post/kubelet/</link>
+      <pubDate>Fri, 04 Sep 2020 15:39:20 +0800</pubDate>
+      
+      <guid>https://loulan.me/post/kubelet/</guid>
+      <description>介绍 作用 节点管理 Pod 管理 文件 HTTP API Server 容器健康检查 cAdvisor 资源监控 核心代码 监听 Pod 变化 对多个管道进行遍历，发现任何一个管道有消息就交给 handler 去处理。它会从以下</description>
+    </item>
     
     <item>
       <title>Kubernetes Services</title>
