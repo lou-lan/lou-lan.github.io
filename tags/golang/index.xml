@@ -21,15 +21,6 @@
     </item>
     
     <item>
-      <title>Golang 优雅退出</title>
-      <link>https://loulan.me/post/go-shutdown-signal-gracefully/</link>
-      <pubDate>Sun, 04 Aug 2019 00:33:29 +0800</pubDate>
-      
-      <guid>https://loulan.me/post/go-shutdown-signal-gracefully/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Wire 依赖注入指南</title>
       <link>https://loulan.me/post/wire-dependency-injection-for-go-tutorial/</link>
       <pubDate>Sat, 03 Aug 2019 22:14:31 +0800</pubDate>

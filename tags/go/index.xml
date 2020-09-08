@@ -29,5 +29,14 @@
       <description>概要 Go 1.7 标准库引入 context，中文译作”上下文“，Go 语言的 context 包要用来在 Goroutine 之间传递上下文信息，包括：取消信号、超时时间、截止时间、K-V</description>
     </item>
     
+    <item>
+      <title>Golang 优雅退出</title>
+      <link>https://loulan.me/post/go-shutdown-signal-gracefully/</link>
+      <pubDate>Sun, 04 Aug 2019 00:33:29 +0800</pubDate>
+      
+      <guid>https://loulan.me/post/go-shutdown-signal-gracefully/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

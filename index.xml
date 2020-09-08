@@ -75,6 +75,15 @@
     </item>
     
     <item>
+      <title>Knative Install</title>
+      <link>https://loulan.me/post/knative-install/</link>
+      <pubDate>Fri, 11 Oct 2019 22:25:37 +0800</pubDate>
+      
+      <guid>https://loulan.me/post/knative-install/</guid>
+      <description>资源要求 内存 12 GB（全套安装推荐 16GB 资源，可安装部分组件体验） CPU 6 核心 Kube 集群 安装 Helm 安装 3.x 的 beta 版本 1 2 3 wget https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz tar -xvf helm-v3.0.0-beta.3-linux-amd64.tar.gz cp linux-amd64/helm /usr/local/bin/ 安装 Istio 安装 istio 步骤 1 2 3 4</description>
+    </item>
+    
+    <item>
       <title>Knative Serving Hello World</title>
       <link>https://loulan.me/post/knative-serving-hello-world/</link>
       <pubDate>Fri, 11 Oct 2019 22:22:26 +0800</pubDate>

@@ -54,11 +54,11 @@
 <meta itemprop="description" content="介绍 作用 节点管理 Pod 管理 文件 HTTP API Server 容器健康检查 cAdvisor 资源监控 核心代码 监听 Pod 变化 对多个管道进行遍历，发现任何一个管道有消息就交给 handler 去处理。它会从以下">
 <meta itemprop="datePublished" content="2020-09-04T15:39:20+08:00" />
 <meta itemprop="dateModified" content="2020-09-04T15:39:20+08:00" />
-<meta itemprop="wordCount" content="993">
+<meta itemprop="wordCount" content="937">
 
 
 
-<meta itemprop="keywords" content="kubernetes," />
+<meta itemprop="keywords" content="Kubernetes," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="kubernetes 之 kubelet 深入浅出"/>
 <meta name="twitter:description" content="介绍 作用 节点管理 Pod 管理 文件 HTTP API Server 容器健康检查 cAdvisor 资源监控 核心代码 监听 Pod 变化 对多个管道进行遍历，发现任何一个管道有消息就交给 handler 去处理。它会从以下"/>
@@ -103,10 +103,10 @@
                             
                             <div class="post-meta">
                                 
-                                    <a class="topic-tag" href="/tags/kubernetes/">kubernetes</a>
+                                    <a class="topic-tag" href="/tags/kubernetes/">Kubernetes</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-09-04 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 993 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 937 字 </span>
                                     <span class="more-meta post-tag-no-selecte"> 预计阅读 2 分钟 </span>
                                 
                             </div>
@@ -225,7 +225,15 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><h2 id="创建-pod">创建 Pod</h2>
+</div><h4 id="创建-pod">创建 Pod</h4>
+<div style="text-align: center">
+<img src="/img/pod-start.png" style="width: 700px">
+</div>
+<ol>
+<li>用户请求 APIServer 组件，经过一系列的校验，然后 APIServer 将 Pod 定义存储到 EDCD 后端；</li>
+<li>Scheduler watch 到 Pod 的更新，然后根据策略调度到某个 Node，将信息更新回 APIServer；</li>
+<li>然后 Kubelet watch 到 Pod 的时间更新会按照如下详细步骤进行同步操作。</li>
+</ol>
 <p>流程</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -268,8 +276,7 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><h2 id="podworkers-子模块为该-pod-启动一个处理对-pod-的更新事件的-goroutine">podWorkers 子模块为该 Pod 启动一个处理对 Pod 的更新事件的 goroutine</h2>
-<p>podWorkers 子模块主要的作用就是处理针对每一个的 Pod 的更新事件，比如 Pod 的创建，删除，更新。而 podWorkers 采取的基本思路是：为每一个 Pod 都单独创建一个 goroutine 和更新事件的 channel，goroutine 会阻塞式的等待 channel 中的事件，并且对获取的事件进行处理。而 podWorkers 对象自身则主要负责对更新事件进行下发。</p>
+</div><p>Goroutine 会阻塞等待 channel 中的事件，并且对获取的事件进行处理。而 podWorkers 对象自身则主要负责对更新事件进行下发。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -302,8 +309,6 @@
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">podWorkers</span><span class="p">)</span> <span class="nf">UpdatePod</span><span class="p">(</span><span class="nx">options</span> <span class="o">*</span><span class="nx">UpdatePodOptions</span><span class="p">)</span> <span class="p">{</span>
@@ -320,9 +325,7 @@
 		<span class="nx">podUpdates</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">UpdatePodOptions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 		<span class="nx">p</span><span class="p">.</span><span class="nx">podUpdates</span><span class="p">[</span><span class="nx">uid</span><span class="p">]</span> <span class="p">=</span> <span class="nx">podUpdates</span>
 
-        <span class="c1">// 创建一个新的 Pod worker 要么意味着这是一个新的 pod，要么意味着 kubelet 刚刚重新启动。
-</span><span class="c1"></span>        <span class="c1">// 无论哪种情况，无论哪种情况下，kubelet 都愿意相信第一个 Pod 同步的状态。参见 syncPod 中的相应注释。
-</span><span class="c1"></span>		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
 			<span class="k">defer</span> <span class="nx">runtime</span><span class="p">.</span><span class="nf">HandleCrash</span><span class="p">()</span>
 			<span class="nx">p</span><span class="p">.</span><span class="nf">managePodLoop</span><span class="p">(</span><span class="nx">podUpdates</span><span class="p">)</span>
 		<span class="p">}()</span>
@@ -338,6 +341,17 @@
 		<span class="p">}</span>
 	<span class="p">}</span>
 <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>managePodLoop 负责消费，调用 <code>syncPodFn</code> 匿名函数进行处理，匿名函数是 kubelet 对象的 <code>func (kl *Kubelet) syncPod(o syncPodOptions) error</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// pkg/kubelet/kubelet.go:1388
+</span><span class="c1"></span>
 </code></pre></td></tr></table>
 </div>
 </div>
