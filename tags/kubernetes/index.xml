@@ -17,7 +17,7 @@
       <pubDate>Fri, 04 Sep 2020 15:39:20 +0800</pubDate>
       
       <guid>https://loulan.me/post/kubelet/</guid>
-      <description>介绍 作用 节点管理 Pod 管理 文件 HTTP API Server 容器健康检查 cAdvisor 资源监控 核心代码 监听 Pod 变化 对多个管道进行遍历，发现任何一个管道有消息就交给 handler 去处理。它会从以下</description>
+      <description>介绍 Kubelet 是 Kubernetes 的主要组件之一，在每个节点运行，基于 PodSpec 来工作。 作用 节点管理 Pod 管理 文件 HTTP API Server 容器健康检查 cAdvisor 资源监控 核心代码 监听 Pod 变化 对多个管道进行遍</description>
     </item>
     
     <item>
