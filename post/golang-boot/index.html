@@ -54,7 +54,7 @@
 <meta itemprop="description" content="Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Go 语言程序启动引导过程。">
 <meta itemprop="datePublished" content="2020-08-10T15:11:41+08:00" />
 <meta itemprop="dateModified" content="2020-08-10T15:11:41+08:00" />
-<meta itemprop="wordCount" content="3702">
+<meta itemprop="wordCount" content="3703">
 
 
 
@@ -106,7 +106,7 @@
                                     <a class="topic-tag" href="/tags/go/">Go</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-08-10 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 3702 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 3703 字 </span>
                                     <span class="more-meta post-tag-no-selecte"> 预计阅读 8 分钟 </span>
                                 
                             </div>
@@ -640,7 +640,8 @@
 <p>程序引导和初始化工作是整个运行时最关键的基础步骤之一。在 <code>schedinit</code> 这个函数的调用过程中，还会完成整个程序运行时的初始化，包括调度器、执行栈、内存分配器、调度器、垃圾回收器等组件的初始化。最后通过 <code>newproc</code> 和 <code>mstart</code> 调用进而开始由调度器转为执行主 <code>goroutine</code>。</p>
 <p>运行时组件的内容我们留到组件各自的章节中进行讨论，我们在下一节中着先着重讨论当一切都初始化好后，程序的正式启动过程，即 <code>runtime.main</code>。</p>
 <h2 id="参考文章">参考文章</h2>
-<p><a href="https://changkun.de/golang/zh-cn/part1basic/ch05life/boot/">https://changkun.de/golang/zh-cn/part1basic/ch05life/boot/</a></p>
+<p><a href="https://juejin.im/post/6844904114493587470">https://juejin.im/post/6844904114493587470</a>
+<a href="https://changkun.de/golang/zh-cn/part1basic/ch05life/boot/">https://changkun.de/golang/zh-cn/part1basic/ch05life/boot/</a></p>
 
                         </div>
 

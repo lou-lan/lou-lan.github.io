@@ -54,7 +54,7 @@
 <meta itemprop="description" content="Kubelet 是在每个节点上运行的主要节点代理，基于 PodSpec 来工作的。">
 <meta itemprop="datePublished" content="2020-09-04T15:39:20+08:00" />
 <meta itemprop="dateModified" content="2020-09-04T15:39:20+08:00" />
-<meta itemprop="wordCount" content="1758">
+<meta itemprop="wordCount" content="1830">
 
 
 
@@ -106,7 +106,7 @@
                                     <a class="topic-tag" href="/tags/kubernetes/">Kubernetes</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-09-04 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 1758 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 1830 字 </span>
                                     <span class="more-meta post-tag-no-selecte"> 预计阅读 4 分钟 </span>
                                 
                             </div>
@@ -397,8 +397,6 @@
 </span><span class="lnt">48
 </span><span class="lnt">49
 </span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// pkg/kubelet/kubelet.go:1388
@@ -419,8 +417,6 @@
 	<span class="nx">runnable</span> <span class="o">:=</span> <span class="nx">kl</span><span class="p">.</span><span class="nf">canRunPod</span><span class="p">(</span><span class="nx">pod</span><span class="p">)</span>
 	<span class="c1">// 检查 Pod 是否能运行在本节点，主要是权限检查（是否能使用主机网络模式，是否可以以 privileged 权限运行等）。如果没有权限，就删除本地旧的 Pod 并返回错误信息；
 </span><span class="c1"></span>
-
-
 	<span class="c1">// 如果是 static Pod，就创建或者更新对应的 mirrorPod，如果存在先删除
 </span><span class="c1"></span>	<span class="k">if</span> <span class="nx">kubetypes</span><span class="p">.</span><span class="nf">IsStaticPod</span><span class="p">(</span><span class="nx">pod</span><span class="p">)</span> <span class="p">{</span>
 		<span class="o">...</span>
@@ -456,6 +452,11 @@
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="container-runtime">Container Runtime</h2>
+<p>目前实现了 CRI 的主流项目有：Docker、containerd、CRI-O、Frakti、Pouch，它们衔接 Kubelet 与运行时方式对比如下：</p>
+<div style="text-align: center">
+<img src="/img/cri-contrast.jpg" style="width: 700px">
+</div>
+<p>以 Docker 运行时为例：</p>
 <div style="text-align: center">
 <img src="/img/cri.png" style="width: 700px">
 </div>
