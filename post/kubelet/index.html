@@ -231,7 +231,7 @@
 <img src="/img/pod-start.png" style="width: 700px">
 </div>
 <ol>
-<li>用户请求 APIServer 组件，经过一系列的校验，然后 APIServer 将 Pod 定义存储到 EDCD 后端；</li>
+<li>用户请求 APIServer 组件，经过一系列的校验，然后 APIServer 将 Pod 定义存储到 ETCD 后端；</li>
 <li>Scheduler watch 到 Pod 的更新，然后根据策略调度到某个 Node，将信息更新回 APIServer；</li>
 <li>然后 Kubelet watch 到 Pod 的时间更新会按照如下详细步骤进行同步操作。</li>
 </ol>
