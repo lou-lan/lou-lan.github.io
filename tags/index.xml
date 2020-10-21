@@ -6,10 +6,19 @@
     <description>Recent content in Tags on 楼兰志</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 04 Sep 2020 15:39:20 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 21 Oct 2020 14:36:14 +0800</lastBuildDate>
     
 	<atom:link href="https://loulan.me/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go</title>
+      <link>https://loulan.me/tags/go/</link>
+      <pubDate>Wed, 21 Oct 2020 14:36:14 +0800</pubDate>
+      
+      <guid>https://loulan.me/tags/go/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Kubernetes</title>
@@ -17,15 +26,6 @@
       <pubDate>Fri, 04 Sep 2020 15:39:20 +0800</pubDate>
       
       <guid>https://loulan.me/tags/kubernetes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Go</title>
-      <link>https://loulan.me/tags/go/</link>
-      <pubDate>Mon, 17 Aug 2020 11:43:38 +0800</pubDate>
-      
-      <guid>https://loulan.me/tags/go/</guid>
       <description></description>
     </item>
     

@@ -6,10 +6,19 @@
     <description>Recent content in Go on 楼兰志</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 17 Aug 2020 11:43:38 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 21 Oct 2020 14:36:14 +0800</lastBuildDate>
     
 	<atom:link href="https://loulan.me/tags/go/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Golang IO</title>
+      <link>https://loulan.me/post/golang-io/</link>
+      <pubDate>Wed, 21 Oct 2020 14:36:14 +0800</pubDate>
+      
+      <guid>https://loulan.me/post/golang-io/</guid>
+      <description>kqueue 是 Unix 下的一个 IO 多路复用库，如下是 Go 语言中 kevent 的对象注释。kevent 可以往 kqueue 里添加事件，或者监听事件，kevent 是阻塞调用的。 1 2 3 4 5 6</description>
+    </item>
     
     <item>
       <title>Golang Channel</title>
