@@ -54,7 +54,7 @@
 <meta itemprop="description" content="kqueue 是 Unix 下的一个 IO 多路复用库，如下是 Go 语言中 kevent 的对象注释。kevent 可以往 kqueue 里添加事件，或者监听事件，kevent 是阻塞调用的。 1 2 3 4 5 6">
 <meta itemprop="datePublished" content="2020-10-21T14:36:14+08:00" />
 <meta itemprop="dateModified" content="2020-10-21T14:36:14+08:00" />
-<meta itemprop="wordCount" content="151">
+<meta itemprop="wordCount" content="154">
 
 
 
@@ -106,7 +106,7 @@
                                     <a class="topic-tag" href="/tags/go/">Go</a>
                                     <span class="post-time post-tag-no-selecte"> 2020-10-21 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 151 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 154 字 </span>
                                     <span class="more-meta post-tag-no-selecte"> 预计阅读 1 分钟 </span>
                                 
                             </div>
@@ -130,9 +130,11 @@
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Kevent_t</span> <span class="kd">struct</span> <span class="p">{</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// golang.org/x/sys/unix/ztypes_darwin_amd64.go:282
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Kevent_t</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span class="nx">Ident</span>  <span class="kt">uint64</span>  <span class="c1">// 事件标识
 </span><span class="c1"></span>	<span class="nx">Filter</span> <span class="kt">int16</span>   <span class="c1">// 监听事件的类型
 </span><span class="c1"></span>	<span class="nx">Flags</span>  <span class="kt">uint16</span>  <span class="c1">// 事件操作类型
