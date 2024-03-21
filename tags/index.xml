@@ -7,63 +7,48 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 21 Oct 2020 14:36:14 +0800</lastBuildDate>
-    
-	<atom:link href="https://loulan.me/tags/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="https://loulan.me/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go</title>
       <link>https://loulan.me/tags/go/</link>
       <pubDate>Wed, 21 Oct 2020 14:36:14 +0800</pubDate>
-      
       <guid>https://loulan.me/tags/go/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Kubernetes</title>
       <link>https://loulan.me/tags/kubernetes/</link>
       <pubDate>Fri, 04 Sep 2020 15:39:20 +0800</pubDate>
-      
       <guid>https://loulan.me/tags/kubernetes/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Helm</title>
       <link>https://loulan.me/tags/helm/</link>
       <pubDate>Sat, 02 May 2020 18:08:40 +0800</pubDate>
-      
       <guid>https://loulan.me/tags/helm/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Knative</title>
       <link>https://loulan.me/tags/knative/</link>
       <pubDate>Fri, 11 Oct 2019 22:48:27 +0800</pubDate>
-      
       <guid>https://loulan.me/tags/knative/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Golang</title>
       <link>https://loulan.me/tags/golang/</link>
       <pubDate>Fri, 11 Oct 2019 22:22:26 +0800</pubDate>
-      
       <guid>https://loulan.me/tags/golang/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Git</title>
       <link>https://loulan.me/tags/git/</link>
       <pubDate>Sun, 04 Aug 2019 00:31:23 +0800</pubDate>
-      
       <guid>https://loulan.me/tags/git/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

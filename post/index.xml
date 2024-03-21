@@ -7,135 +7,104 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 21 Oct 2020 14:36:14 +0800</lastBuildDate>
-    
-	<atom:link href="https://loulan.me/post/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="https://loulan.me/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang IO</title>
       <link>https://loulan.me/post/golang-io/</link>
       <pubDate>Wed, 21 Oct 2020 14:36:14 +0800</pubDate>
-      
       <guid>https://loulan.me/post/golang-io/</guid>
       <description>kqueue 是 Unix 下的一个 IO 多路复用库，如下是 Go 语言中 kevent 的对象注释。kevent 可以往 kqueue 里添加事件，或者监听事件，kevent 是阻塞调用的。 1 2 3 4 5 6</description>
     </item>
-    
     <item>
       <title>kubernetes 之 kubelet 深入浅出</title>
       <link>https://loulan.me/post/kubelet/</link>
       <pubDate>Fri, 04 Sep 2020 15:39:20 +0800</pubDate>
-      
       <guid>https://loulan.me/post/kubelet/</guid>
       <description>介绍 Kubelet 是 Kubernetes 的主要组件之一，在每个节点运行，基于 PodSpec 来工作。 作用 节点管理 Pod 管理 文件 HTTP API Server 容器健康检查 cAdvisor 资源监控 核心代码 监听 Pod 变化 对多个管道进行遍</description>
     </item>
-    
     <item>
       <title>Kubernetes Services</title>
       <link>https://loulan.me/post/kubernetes-services/</link>
       <pubDate>Mon, 31 Aug 2020 20:52:35 +0800</pubDate>
-      
       <guid>https://loulan.me/post/kubernetes-services/</guid>
       <description>介绍 Kubernetes Services 是将运行在一组 Pod 上的应用程序公开为网络服务的抽象方法。这一组 Pod 能够被 Service 访问到，通常是通过 Labels 和 Selectors 实现的。 当客户端连接到 Kubernetes Service 时，连接会被</description>
     </item>
-    
     <item>
       <title>Golang Channel</title>
       <link>https://loulan.me/post/golang-channel/</link>
       <pubDate>Mon, 17 Aug 2020 11:43:38 +0800</pubDate>
-      
       <guid>https://loulan.me/post/golang-channel/</guid>
       <description>设计原理 Go 语言中最常见的、也是经常被人提及的设计模式就是 —— 不要通过共享内存的方式进行通信，而是应该通过通信的方式共享内存。在很多主流的编程</description>
     </item>
-    
     <item>
       <title>Golang 启动引导</title>
       <link>https://loulan.me/post/golang-boot/</link>
       <pubDate>Mon, 10 Aug 2020 15:11:41 +0800</pubDate>
-      
       <guid>https://loulan.me/post/golang-boot/</guid>
       <description>介绍 Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。 Go 程序启动后需要对自身</description>
     </item>
-    
     <item>
       <title>Golang Context</title>
       <link>https://loulan.me/post/golang-context/</link>
       <pubDate>Wed, 06 May 2020 23:36:47 +0800</pubDate>
-      
       <guid>https://loulan.me/post/golang-context/</guid>
       <description>概要 Go 1.7 标准库引入 context，中文译作”上下文“，Go 语言的 context 包要用来在 Goroutine 之间传递上下文信息，包括：取消信号、超时时间、截止时间、K-V</description>
     </item>
-    
     <item>
       <title>Helm Chart Hook</title>
       <link>https://loulan.me/post/helm-chart-hook/</link>
       <pubDate>Sat, 02 May 2020 18:08:40 +0800</pubDate>
-      
       <guid>https://loulan.me/post/helm-chart-hook/</guid>
       <description>Helm 提供一个 Hook 机制，允许 Chart 开发者在发布的生命周期中的某些时候进行干预。例如，可以使用 Hook 执行以下操作： 在安装期间加载 ConfigMap 或 Secret，然后再加载</description>
     </item>
-    
     <item>
       <title>Kubernetes API Server 深入浅出</title>
       <link>https://loulan.me/post/kube-apiserver/</link>
       <pubDate>Fri, 24 Apr 2020 01:59:01 +0800</pubDate>
-      
       <guid>https://loulan.me/post/kube-apiserver/</guid>
       <description>组件概述 Kubernetes API Server 通过名为 kube-apiserver 进程提供服务，它的核心功能是提供集群管理 RESTful API 接口，将 API 操作的对象存储到持久化存储到 ETCD 后端，本质是集群中所有用户和组件</description>
     </item>
-    
     <item>
       <title>Knative 自定义 Ingress 网关</title>
       <link>https://loulan.me/post/knative-setting-up-custom-ingress-gateway/</link>
       <pubDate>Fri, 11 Oct 2019 22:48:27 +0800</pubDate>
-      
       <guid>https://loulan.me/post/knative-setting-up-custom-ingress-gateway/</guid>
       <description>Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，该服务网格是knative-serving 命名空间下的 knative-ingress-gateway 网关。默认情况下，我们在 istio-system 名</description>
     </item>
-    
     <item>
       <title>Knative Install</title>
       <link>https://loulan.me/post/knative-install/</link>
       <pubDate>Fri, 11 Oct 2019 22:25:37 +0800</pubDate>
-      
       <guid>https://loulan.me/post/knative-install/</guid>
       <description>资源要求 内存 12 GB（全套安装推荐 16GB 资源，可安装部分组件体验） CPU 6 核心 Kube 集群 安装 Helm 安装 3.x 的 beta 版本 1 2 3 wget https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz tar -xvf helm-v3.0.0-beta.3-linux-amd64.tar.gz cp linux-amd64/helm /usr/local/bin/ 安装 Istio 安装 istio 步骤 1 2 3 4</description>
     </item>
-    
     <item>
       <title>Knative Serving Hello World</title>
       <link>https://loulan.me/post/knative-serving-hello-world/</link>
       <pubDate>Fri, 11 Oct 2019 22:22:26 +0800</pubDate>
-      
       <guid>https://loulan.me/post/knative-serving-hello-world/</guid>
       <description>一个 Go 语言编写的极简 web 应用，用于测试。它读取环境变量 TARGET 并打印 Hello ${TARGET}!。如果未指定 TARGET，将 TARGET 内容替换为 World 。 可以按照下面的</description>
     </item>
-    
     <item>
       <title>Golang 优雅退出</title>
       <link>https://loulan.me/post/go-shutdown-signal-gracefully/</link>
       <pubDate>Sun, 04 Aug 2019 00:33:29 +0800</pubDate>
-      
       <guid>https://loulan.me/post/go-shutdown-signal-gracefully/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Git 奇淫巧技</title>
       <link>https://loulan.me/post/git-tips/</link>
       <pubDate>Sun, 04 Aug 2019 00:31:23 +0800</pubDate>
-      
       <guid>https://loulan.me/post/git-tips/</guid>
       <description>回滚 1 2 git reset --hard a1c86bc3 git push origin HEAD --force 遴选 1 git cherry-pick &amp;lt;commit id&amp;gt;</description>
     </item>
-    
     <item>
       <title>Wire 依赖注入指南</title>
       <link>https://loulan.me/post/wire-dependency-injection-for-go-tutorial/</link>
       <pubDate>Sat, 03 Aug 2019 22:14:31 +0800</pubDate>
-      
       <guid>https://loulan.me/post/wire-dependency-injection-for-go-tutorial/</guid>
       <description>基础 Wire 有两个核心概念：providers 和 injectors. Providers 定义 Wire 中的主要机制是 providers: 一个可以产生值的函数。这些函数是普通的 Go 代码。 1 2 3 4 5 6 7 8 9 10 package foobarbaz type</description>
     </item>
-    
   </channel>
 </rss>

@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://loulan.me/post/</loc>
+    <lastmod>2020-12-24T10:53:15+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://loulan.me/</loc>
+    <lastmod>2020-12-24T10:53:15+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://loulan.me/tags/go/</loc>
     <lastmod>2020-10-21T14:36:14+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -16,21 +30,7 @@
   </url>
   
   <url>
-    <loc>https://loulan.me/post/</loc>
-    <lastmod>2020-10-21T14:36:14+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://loulan.me/tags/</loc>
-    <lastmod>2020-10-21T14:36:14+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://loulan.me/</loc>
     <lastmod>2020-10-21T14:36:14+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

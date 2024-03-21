@@ -16,14 +16,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="楼兰" /><meta name="description" content="Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，可以设置自定义入口网关代替 istio-ingressgateway 网关。" /><meta name="keywords" content="楼兰志, loulan, 翟怀楼, loulan.me, 楼兰" />
+<meta name="author" content="" /><meta name="description" content="Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，可以设置自定义入口网关代替 istio-ingressgateway 网关。" /><meta name="keywords" content="楼兰志, loulan, loulan.me, 楼兰" />
 
 
 
 
 
 
-<meta name="generator" content="Hugo 0.74.3 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.124.1 with even 4.0.0" />
 
 
 
@@ -40,37 +40,27 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.27d170b9.min.css" rel="stylesheet">
+
+
+
+<link href="/dist/even.39b54465.min.css" rel="stylesheet">
+
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Knative 自定义 Ingress 网关" />
 <meta property="og:description" content="Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，可以设置自定义入口网关代替 istio-ingressgateway 网关。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://loulan.me/post/knative-setting-up-custom-ingress-gateway/" />
+<meta property="og:url" content="https://loulan.me/post/knative-setting-up-custom-ingress-gateway/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2019-10-11T22:48:27+08:00" />
 <meta property="article:modified_time" content="2019-10-11T22:48:27+08:00" />
 <meta itemprop="name" content="Knative 自定义 Ingress 网关">
-<meta itemprop="description" content="Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，可以设置自定义入口网关代替 istio-ingressgateway 网关。">
-<meta itemprop="datePublished" content="2019-10-11T22:48:27+08:00" />
+<meta itemprop="description" content="Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，可以设置自定义入口网关代替 istio-ingressgateway 网关。"><meta itemprop="datePublished" content="2019-10-11T22:48:27+08:00" />
 <meta itemprop="dateModified" content="2019-10-11T22:48:27+08:00" />
-<meta itemprop="wordCount" content="632">
-
-
-
-<meta itemprop="keywords" content="Knative," />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Knative 自定义 Ingress 网关"/>
+<meta itemprop="wordCount" content="930">
+<meta itemprop="keywords" content="Knative," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Knative 自定义 Ingress 网关"/>
 <meta name="twitter:description" content="Knative 使用共享的 Ingress 网关为 Knative 服务网格内的所有传入流量提供服务，可以设置自定义入口网关代替 istio-ingressgateway 网关。"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
 
 </head>
 <body>
@@ -84,12 +74,12 @@
             </a>
         </li>
         <li class="nav-height">
-                <a href="/post/">归档</a>
-            </li><li class="nav-height">
-                <a href="/tags/">标签</a>
-            </li><li class="nav-height">
-                <a href="/about/">关于</a>
-            </li>
+            <a href="/post/">归档</a>
+        </li><li class="nav-height">
+            <a href="/tags/">标签</a>
+        </li><li class="nav-height">
+            <a href="/about/">关于</a>
+        </li>
     </ul>
 </nav>
   <div class="main main-padding-bottom">
@@ -106,7 +96,7 @@
                                     <a class="topic-tag" href="/tags/knative/">Knative</a>
                                     <span class="post-time post-tag-no-selecte"> 2019-10-11 </span>
                                 
-                                    <span class="more-meta post-tag-no-selecte"> 约 632 字 </span>
+                                    <span class="more-meta post-tag-no-selecte"> 约 930 字 </span>
                                     <span class="more-meta post-tag-no-selecte"> 预计阅读 2 分钟 </span>
                                 
                             </div>
@@ -125,7 +115,7 @@
 <p>这里是一个例子：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">  1
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
 </span><span class="lnt">  3
 </span><span class="lnt">  4
@@ -316,244 +306,244 @@
 </span><span class="lnt">189
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Service<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
-</span><span class="w">  </span><span class="k">namespace</span><span class="p">:</span><span class="w"> </span>istio-system<span class="w">
-</span><span class="w">  </span><span class="k">annotations</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">chart</span><span class="p">:</span><span class="w"> </span>gateways<span class="m">-1.0.1</span><span class="w">
-</span><span class="w">    </span><span class="k">release</span><span class="p">:</span><span class="w"> </span>RELEASE-NAME<span class="w">
-</span><span class="w">    </span><span class="k">heritage</span><span class="p">:</span><span class="w"> </span>Tiller<span class="w">
-</span><span class="w">    </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
-</span><span class="w">    </span><span class="k">custom</span><span class="p">:</span><span class="w"> </span>ingressgateway<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">type</span><span class="p">:</span><span class="w"> </span>LoadBalancer<span class="w">
-</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
-</span><span class="w">    </span><span class="k">custom</span><span class="p">:</span><span class="w"> </span>ingressgateway<span class="w">
-</span><span class="w">  </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>http2<span class="w">
-</span><span class="w">      </span><span class="k">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">32380</span><span class="w">
-</span><span class="w">      </span><span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">      </span><span class="k">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>https<span class="w">
-</span><span class="w">      </span><span class="k">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">32390</span><span class="w">
-</span><span class="w">      </span><span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">443</span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>tcp<span class="w">
-</span><span class="w">      </span><span class="k">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">32400</span><span class="w">
-</span><span class="w">      </span><span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">31400</span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>tcp-pilot-grpc-tls<span class="w">
-</span><span class="w">      </span><span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">15011</span><span class="w">
-</span><span class="w">      </span><span class="k">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">15011</span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>tcp-citadel-grpc-tls<span class="w">
-</span><span class="w">      </span><span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">8060</span><span class="w">
-</span><span class="w">      </span><span class="k">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">8060</span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>tcp-dns-tls<span class="w">
-</span><span class="w">      </span><span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">853</span><span class="w">
-</span><span class="w">      </span><span class="k">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">853</span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>http2-prometheus<span class="w">
-</span><span class="w">      </span><span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">15030</span><span class="w">
-</span><span class="w">      </span><span class="k">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">15030</span><span class="w">
-</span><span class="w">    </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>http2-grafana<span class="w">
-</span><span class="w">      </span><span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">15031</span><span class="w">
-</span><span class="w">      </span><span class="k">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">15031</span><span class="w">
-</span><span class="w"></span>---<span class="w">
-</span><span class="w"></span><span class="c"># This is the corresponding deployment to back the gateway service</span><span class="w">
-</span><span class="w"></span><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>extensions/v1beta1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Deployment<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
-</span><span class="w">  </span><span class="k">namespace</span><span class="p">:</span><span class="w"> </span>istio-system<span class="w">
-</span><span class="w">  </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">chart</span><span class="p">:</span><span class="w"> </span>gateways<span class="m">-1.0.1</span><span class="w">
-</span><span class="w">    </span><span class="k">release</span><span class="p">:</span><span class="w"> </span>RELEASE-NAME<span class="w">
-</span><span class="w">    </span><span class="k">heritage</span><span class="p">:</span><span class="w"> </span>Tiller<span class="w">
-</span><span class="w">    </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
-</span><span class="w">    </span><span class="k">custom</span><span class="p">:</span><span class="w"> </span>ingressgateway<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
-</span><span class="w">      </span><span class="k">custom</span><span class="p">:</span><span class="w"> </span>ingressgateway<span class="w">
-</span><span class="w">  </span><span class="k">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>custom-ingressgateway<span class="w">
-</span><span class="w">        </span><span class="k">custom</span><span class="p">:</span><span class="w"> </span>ingressgateway<span class="w">
-</span><span class="w">      </span><span class="k">annotations</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">sidecar.istio.io/inject</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
-</span><span class="w">        </span><span class="k">scheduler.alpha.kubernetes.io/critical-pod</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">serviceAccountName</span><span class="p">:</span><span class="w"> </span>istio-ingressgateway-service-account<span class="w">
-</span><span class="w">      </span><span class="k">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>istio-proxy<span class="w">
-</span><span class="w">          </span><span class="k">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;docker.io/istio/proxyv2:1.0.2&#34;</span><span class="w">
-</span><span class="w">          </span><span class="k">imagePullPolicy</span><span class="p">:</span><span class="w"> </span>IfNotPresent<span class="w">
-</span><span class="w">          </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">            </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">443</span><span class="w">
-</span><span class="w">            </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">31400</span><span class="w">
-</span><span class="w">            </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">15011</span><span class="w">
-</span><span class="w">            </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">8060</span><span class="w">
-</span><span class="w">            </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">853</span><span class="w">
-</span><span class="w">            </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">15030</span><span class="w">
-</span><span class="w">            </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">15031</span><span class="w">
-</span><span class="w">          </span><span class="k">args</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span>- proxy<span class="w">
-</span><span class="w">            </span>- router<span class="w">
-</span><span class="w">            </span>- -v<span class="w">
-</span><span class="w">            </span>- <span class="s2">&#34;2&#34;</span><span class="w">
-</span><span class="w">            </span>- --discoveryRefreshDelay<span class="w">
-</span><span class="w">            </span>- <span class="s2">&#34;1s&#34;</span><span class="w"> </span><span class="c">#discoveryRefreshDelay</span><span class="w">
-</span><span class="w">            </span>- --drainDuration<span class="w">
-</span><span class="w">            </span>- <span class="s2">&#34;45s&#34;</span><span class="w"> </span><span class="c">#drainDuration</span><span class="w">
-</span><span class="w">            </span>- --parentShutdownDuration<span class="w">
-</span><span class="w">            </span>- <span class="s2">&#34;1m0s&#34;</span><span class="w"> </span><span class="c">#parentShutdownDuration</span><span class="w">
-</span><span class="w">            </span>- --connectTimeout<span class="w">
-</span><span class="w">            </span>- <span class="s2">&#34;10s&#34;</span><span class="w"> </span><span class="c">#connectTimeout</span><span class="w">
-</span><span class="w">            </span>- --serviceCluster<span class="w">
-</span><span class="w">            </span>- custom-ingressgateway<span class="w">
-</span><span class="w">            </span>- --zipkinAddress<span class="w">
-</span><span class="w">            </span>- zipkin<span class="p">:</span><span class="m">9411</span><span class="w">
-</span><span class="w">            </span>- --statsdUdpAddress<span class="w">
-</span><span class="w">            </span>- istio-statsd-prom-bridge<span class="p">:</span><span class="m">9125</span><span class="w">
-</span><span class="w">            </span>- --proxyAdminPort<span class="w">
-</span><span class="w">            </span>- <span class="s2">&#34;15000&#34;</span><span class="w">
-</span><span class="w">            </span>- --controlPlaneAuthPolicy<span class="w">
-</span><span class="w">            </span>- NONE<span class="w">
-</span><span class="w">            </span>- --discoveryAddress<span class="w">
-</span><span class="w">            </span>- istio-pilot<span class="p">:</span><span class="m">8080</span><span class="w">
-</span><span class="w">          </span><span class="k">resources</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">requests</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span><span class="k">cpu</span><span class="p">:</span><span class="w"> </span>10m<span class="w">
-</span><span class="w">          </span><span class="k">env</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>POD_NAME<span class="w">
-</span><span class="w">              </span><span class="k">valueFrom</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="k">fieldRef</span><span class="p">:</span><span class="w">
-</span><span class="w">                  </span><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
-</span><span class="w">                  </span><span class="k">fieldPath</span><span class="p">:</span><span class="w"> </span>metadata.name<span class="w">
-</span><span class="w">            </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>POD_NAMESPACE<span class="w">
-</span><span class="w">              </span><span class="k">valueFrom</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="k">fieldRef</span><span class="p">:</span><span class="w">
-</span><span class="w">                  </span><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
-</span><span class="w">                  </span><span class="k">fieldPath</span><span class="p">:</span><span class="w"> </span>metadata.namespace<span class="w">
-</span><span class="w">            </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>INSTANCE_IP<span class="w">
-</span><span class="w">              </span><span class="k">valueFrom</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="k">fieldRef</span><span class="p">:</span><span class="w">
-</span><span class="w">                  </span><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
-</span><span class="w">                  </span><span class="k">fieldPath</span><span class="p">:</span><span class="w"> </span>status.podIP<span class="w">
-</span><span class="w">            </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>ISTIO_META_POD_NAME<span class="w">
-</span><span class="w">              </span><span class="k">valueFrom</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="k">fieldRef</span><span class="p">:</span><span class="w">
-</span><span class="w">                  </span><span class="k">fieldPath</span><span class="p">:</span><span class="w"> </span>metadata.name<span class="w">
-</span><span class="w">          </span><span class="k">volumeMounts</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>istio-certs<span class="w">
-</span><span class="w">              </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/etc/certs<span class="w">
-</span><span class="w">              </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">            </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>ingressgateway-certs<span class="w">
-</span><span class="w">              </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/etc/istio/ingressgateway-certs&#34;</span><span class="w">
-</span><span class="w">              </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">            </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>ingressgateway-ca-certs<span class="w">
-</span><span class="w">              </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/etc/istio/ingressgateway-ca-certs&#34;</span><span class="w">
-</span><span class="w">              </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">      </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>istio-certs<span class="w">
-</span><span class="w">          </span><span class="k">secret</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">secretName</span><span class="p">:</span><span class="w"> </span>istio.istio-ingressgateway-service-account<span class="w">
-</span><span class="w">            </span><span class="k">optional</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>ingressgateway-certs<span class="w">
-</span><span class="w">          </span><span class="k">secret</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">secretName</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;istio-ingressgateway-certs&#34;</span><span class="w">
-</span><span class="w">            </span><span class="k">optional</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>ingressgateway-ca-certs<span class="w">
-</span><span class="w">          </span><span class="k">secret</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">secretName</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;istio-ingressgateway-ca-certs&#34;</span><span class="w">
-</span><span class="w">            </span><span class="k">optional</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">      </span><span class="k">affinity</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">nodeAffinity</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">requiredDuringSchedulingIgnoredDuringExecution</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">nodeSelectorTerms</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span>- <span class="k">matchExpressions</span><span class="p">:</span><span class="w">
-</span><span class="w">                  </span>- <span class="k">key</span><span class="p">:</span><span class="w"> </span>beta.kubernetes.io/arch<span class="w">
-</span><span class="w">                    </span><span class="k">operator</span><span class="p">:</span><span class="w"> </span>In<span class="w">
-</span><span class="w">                    </span><span class="k">values</span><span class="p">:</span><span class="w">
-</span><span class="w">                      </span>- amd64<span class="w">
-</span><span class="w">                      </span>- ppc64le<span class="w">
-</span><span class="w">                      </span>- s390x<span class="w">
-</span><span class="w">          </span><span class="k">preferredDuringSchedulingIgnoredDuringExecution</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span>- <span class="k">weight</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
-</span><span class="w">              </span><span class="k">preference</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="k">matchExpressions</span><span class="p">:</span><span class="w">
-</span><span class="w">                  </span>- <span class="k">key</span><span class="p">:</span><span class="w"> </span>beta.kubernetes.io/arch<span class="w">
-</span><span class="w">                    </span><span class="k">operator</span><span class="p">:</span><span class="w"> </span>In<span class="w">
-</span><span class="w">                    </span><span class="k">values</span><span class="p">:</span><span class="w">
-</span><span class="w">                      </span>- amd64<span class="w">
-</span><span class="w">            </span>- <span class="k">weight</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
-</span><span class="w">              </span><span class="k">preference</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="k">matchExpressions</span><span class="p">:</span><span class="w">
-</span><span class="w">                  </span>- <span class="k">key</span><span class="p">:</span><span class="w"> </span>beta.kubernetes.io/arch<span class="w">
-</span><span class="w">                    </span><span class="k">operator</span><span class="p">:</span><span class="w"> </span>In<span class="w">
-</span><span class="w">                    </span><span class="k">values</span><span class="p">:</span><span class="w">
-</span><span class="w">                      </span>- ppc64le<span class="w">
-</span><span class="w">            </span>- <span class="k">weight</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
-</span><span class="w">              </span><span class="k">preference</span><span class="p">:</span><span class="w">
-</span><span class="w">                </span><span class="k">matchExpressions</span><span class="p">:</span><span class="w">
-</span><span class="w">                  </span>- <span class="k">key</span><span class="p">:</span><span class="w"> </span>beta.kubernetes.io/arch<span class="w">
-</span><span class="w">                    </span><span class="k">operator</span><span class="p">:</span><span class="w"> </span>In<span class="w">
-</span><span class="w">                    </span><span class="k">values</span><span class="p">:</span><span class="w">
-</span><span class="w">                      </span>- s390x<span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">custom-ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">istio-system</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">chart</span><span class="p">:</span><span class="w"> </span><span class="l">gateways-1.0.1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">release</span><span class="p">:</span><span class="w"> </span><span class="l">RELEASE-NAME</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">heritage</span><span class="p">:</span><span class="w"> </span><span class="l">Tiller</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">custom-ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">custom</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">custom-ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">custom</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">32380</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">https</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">32390</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">443</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tcp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">32400</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">31400</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tcp-pilot-grpc-tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">15011</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">15011</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tcp-citadel-grpc-tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8060</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">8060</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tcp-dns-tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">853</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">853</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http2-prometheus</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">15030</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">15030</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http2-grafana</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">15031</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">15031</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># This is the corresponding deployment to back the gateway service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">extensions/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">custom-ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">istio-system</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">chart</span><span class="p">:</span><span class="w"> </span><span class="l">gateways-1.0.1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">release</span><span class="p">:</span><span class="w"> </span><span class="l">RELEASE-NAME</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">heritage</span><span class="p">:</span><span class="w"> </span><span class="l">Tiller</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">custom-ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">custom</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">custom-ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">custom</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">custom-ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">custom</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">sidecar.istio.io/inject</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;false&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">scheduler.alpha.kubernetes.io/critical-pod</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l">istio-ingressgateway-service-account</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">istio-proxy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;docker.io/istio/proxyv2:1.0.2&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">IfNotPresent</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">443</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">31400</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">15011</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">8060</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">853</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">15030</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">15031</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">args</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">proxy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">router</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- -<span class="l">v</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="s2">&#34;2&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">discoveryRefreshDelay</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="s2">&#34;1s&#34;</span><span class="w"> </span><span class="c">#discoveryRefreshDelay</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">drainDuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="s2">&#34;45s&#34;</span><span class="w"> </span><span class="c">#drainDuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">parentShutdownDuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="s2">&#34;1m0s&#34;</span><span class="w"> </span><span class="c">#parentShutdownDuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">connectTimeout</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="s2">&#34;10s&#34;</span><span class="w"> </span><span class="c">#connectTimeout</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">serviceCluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">custom-ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">zipkinAddress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">zipkin:9411</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">statsdUdpAddress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">istio-statsd-prom-bridge:9125</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">proxyAdminPort</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="s2">&#34;15000&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">controlPlaneAuthPolicy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">NONE</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- --<span class="l">discoveryAddress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">istio-pilot:8080</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">10m</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">env</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">POD_NAME</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">fieldRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">fieldPath</span><span class="p">:</span><span class="w"> </span><span class="l">metadata.name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">POD_NAMESPACE</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">fieldRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">fieldPath</span><span class="p">:</span><span class="w"> </span><span class="l">metadata.namespace</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">INSTANCE_IP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">fieldRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">fieldPath</span><span class="p">:</span><span class="w"> </span><span class="l">status.podIP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">ISTIO_META_POD_NAME</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">fieldRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">fieldPath</span><span class="p">:</span><span class="w"> </span><span class="l">metadata.name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">istio-certs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/etc/certs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway-certs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/etc/istio/ingressgateway-certs&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway-ca-certs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/etc/istio/ingressgateway-ca-certs&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">istio-certs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">secret</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">istio.istio-ingressgateway-service-account</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">optional</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway-certs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">secret</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;istio-ingressgateway-certs&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">optional</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway-ca-certs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">secret</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;istio-ingressgateway-ca-certs&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">optional</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">affinity</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">nodeAffinity</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">requiredDuringSchedulingIgnoredDuringExecution</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">nodeSelectorTerms</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span>- <span class="nt">matchExpressions</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span>- <span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">beta.kubernetes.io/arch</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nt">operator</span><span class="p">:</span><span class="w"> </span><span class="l">In</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nt">values</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                      </span>- <span class="l">amd64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                      </span>- <span class="l">ppc64le</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                      </span>- <span class="l">s390x</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">preferredDuringSchedulingIgnoredDuringExecution</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">preference</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">matchExpressions</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span>- <span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">beta.kubernetes.io/arch</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nt">operator</span><span class="p">:</span><span class="w"> </span><span class="l">In</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nt">values</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                      </span>- <span class="l">amd64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">preference</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">matchExpressions</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span>- <span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">beta.kubernetes.io/arch</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nt">operator</span><span class="p">:</span><span class="w"> </span><span class="l">In</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nt">values</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                      </span>- <span class="l">ppc64le</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">preference</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">matchExpressions</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span>- <span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">beta.kubernetes.io/arch</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nt">operator</span><span class="p">:</span><span class="w"> </span><span class="l">In</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nt">values</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                      </span>- <span class="l">s390x</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="步骤2更新-knative-gateway">步骤2：更新 Knative Gateway</h3>
 <p>在 <code>knative-serving</code> namespace 下更新网关实例 <code>knative-ingress-gateway</code>：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl edit gateway knative-ingress-gateway -n knative-serving
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl edit gateway knative-ingress-gateway -n knative-serving
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>用你的服务 label 替换 label selector：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">istio: ingressgateway
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">istio: ingressgateway
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>对于上述服务，应当更新如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">custom: ingressgateway
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">custom: ingressgateway
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>如果服务端口发生了变化（与 <code>istio-ingressgateway</code> 相比），请相应地更新网关中的端口信息。</p>
 <h3 id="步骤3更新-gateway-configmap">步骤3：更新 Gateway Configmap</h3>
 <p>在 <code>knative-serving</code> namespace 下更新网关 configmap <code>config-istio</code>：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl edit configmap config-istio -n knative-serving
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl edit configmap config-istio -n knative-serving
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>将 <code>ingress-gateway</code> 字段替换为服务的标准网址。对于上述服务，应当更新如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">custom-ingressgateway.istio-system.svc.cluster.local
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">custom-ingressgateway.istio-system.svc.cluster.local
+</span></span></code></pre></td></tr></table>
 </div>
 </div>
                         </div>
@@ -561,7 +551,7 @@
                         <div class="post-copyright">
   <p class="copyright-item">
     <span class="item-title">文章作者</span>
-    <span class="item-content">楼兰</span>
+    <span class="item-content"></span>
   </p>
   <p class="copyright-item">
     <span class="item-title">上次更新</span>
@@ -595,79 +585,20 @@
             </div>
         </section>
     </div>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div id="footer" class="copyright footer">
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
+  <div id="footer" class="copyright footer">
   <span class="copyright-year">
-      All content copyright
-    &copy; 
-    2014 - 
-    2020
-
-
-
-    <span class="author">楼兰</span>
-            .
-      All rights reserved.
+    All content copyright
+    &copy;
+    2014 -
+    2024
+    <span class="author"></span>
+    .
+    All rights reserved.
   </span>
 </div>
   
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.d9a987da.min.js"></script>
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-150398437-1', 'auto');
-	ga('set', 'anonymizeIp', true);
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-
-
 
 
 </body>

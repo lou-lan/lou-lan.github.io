@@ -16,14 +16,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="楼兰" /><meta name="description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。" /><meta name="keywords" content="楼兰志, loulan, 翟怀楼, loulan.me, 楼兰" />
+<meta name="author" content="" /><meta name="description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。" /><meta name="keywords" content="楼兰志, loulan, loulan.me, 楼兰" />
 
 
 
 
 
 
-<meta name="generator" content="Hugo 0.74.3 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.124.1 with even 4.0.0" />
 
 
 
@@ -40,37 +40,27 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.27d170b9.min.css" rel="stylesheet">
+
+
+
+<link href="/dist/even.39b54465.min.css" rel="stylesheet">
+
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Kubernetes API Server 深入浅出" />
 <meta property="og:description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://loulan.me/post/kube-apiserver/" />
+<meta property="og:url" content="https://loulan.me/post/kube-apiserver/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2020-04-24T01:59:01+08:00" />
 <meta property="article:modified_time" content="2020-04-24T01:59:01+08:00" />
 <meta itemprop="name" content="Kubernetes API Server 深入浅出">
-<meta itemprop="description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。">
-<meta itemprop="datePublished" content="2020-04-24T01:59:01+08:00" />
+<meta itemprop="description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。"><meta itemprop="datePublished" content="2020-04-24T01:59:01+08:00" />
 <meta itemprop="dateModified" content="2020-04-24T01:59:01+08:00" />
 <meta itemprop="wordCount" content="2126">
-
-
-
-<meta itemprop="keywords" content="Kubernetes," />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Kubernetes API Server 深入浅出"/>
+<meta itemprop="keywords" content="Kubernetes," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Kubernetes API Server 深入浅出"/>
 <meta name="twitter:description" content="Kubernetes API Server 的核心功能是提供集群管理接口，将 API 操作的对象存储到持久化存储，本质是集群中所有用户和组件的数据交互中心。"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
 
 </head>
 <body>
@@ -84,12 +74,12 @@
             </a>
         </li>
         <li class="nav-height">
-                <a href="/post/">归档</a>
-            </li><li class="nav-height">
-                <a href="/tags/">标签</a>
-            </li><li class="nav-height">
-                <a href="/about/">关于</a>
-            </li>
+            <a href="/post/">归档</a>
+        </li><li class="nav-height">
+            <a href="/tags/">标签</a>
+        </li><li class="nav-height">
+            <a href="/about/">关于</a>
+        </li>
     </ul>
 </nav>
   <div class="main main-padding-bottom">
@@ -136,37 +126,37 @@
 <p>我们以请求正向的方式进行分析，API Server 监听端口的 HTTP 请求会首先打到 FullHandlerChain。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">APIServerHandler</span><span class="p">)</span> <span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">a</span><span class="p">.</span><span class="nx">FullHandlerChain</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">APIServerHandler</span><span class="p">)</span> <span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">a</span><span class="p">.</span><span class="nx">FullHandlerChain</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>FullHandlerChain 是由 DefaultBuildHandlerChain 实际构建出来的处理链。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/config.go
-</span><span class="c1">// filter chain 处理链的注册函数
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">DefaultBuildHandlerChain</span><span class="p">(</span><span class="nx">apiHandler</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">,</span> <span class="nx">c</span> <span class="o">*</span><span class="nx">Config</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
-    <span class="nx">handler</span> <span class="o">:=</span> <span class="nx">genericapifilters</span><span class="p">.</span><span class="nf">WithAuthorization</span><span class="p">(</span><span class="nx">apiHandler</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Authorization</span><span class="p">.</span><span class="nx">Authorizer</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/config.go
+</span></span></span><span class="line"><span class="cl"><span class="c1">// filter chain 处理链的注册函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">DefaultBuildHandlerChain</span><span class="p">(</span><span class="nx">apiHandler</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">,</span> <span class="nx">c</span> <span class="o">*</span><span class="nx">Config</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">handler</span> <span class="o">:=</span> <span class="nx">genericapifilters</span><span class="p">.</span><span class="nf">WithAuthorization</span><span class="p">(</span><span class="nx">apiHandler</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Authorization</span><span class="p">.</span><span class="nx">Authorizer</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>上面代码片段中的 apiHandler 是 director 对象，所以 filter 结束会进入 director 的 http.Handler。导向器 director 根据初始化的配置，如果 goRestfulContainer 的 WebServices 的 RootPath 中是 <code>/apis</code>，或者请求前缀与 RootPath 匹配，则进入 Restful 处理链路，否则进入非 Restful 处理链路。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -186,32 +176,32 @@
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="nx">director</span><span class="p">)</span> <span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">path</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span>
-
-    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ws</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">RegisteredWebServices</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">switch</span> <span class="p">{</span>
-        <span class="k">case</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#34;/apis&#34;</span><span class="p">:</span>
-            <span class="c1">// ...
-</span><span class="c1"></span>            <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">Dispatch</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
-            <span class="k">return</span>
-        <span class="k">case</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">()):</span>
-            <span class="c1">// ...
-</span><span class="c1"></span>            <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">Dispatch</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
-            <span class="k">return</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="nx">d</span><span class="p">.</span><span class="nx">nonGoRestfulMux</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="nx">director</span><span class="p">)</span> <span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">path</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ws</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">RegisteredWebServices</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">switch</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#34;/apis&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">Dispatch</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">ws</span><span class="p">.</span><span class="nf">RootPath</span><span class="p">()):</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">d</span><span class="p">.</span><span class="nx">goRestfulContainer</span><span class="p">.</span><span class="nf">Dispatch</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">d</span><span class="p">.</span><span class="nx">nonGoRestfulMux</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="注册表层">注册表层</h3>
 <p>Kubernetes 把所有资源都保存在注册表（Registry）中，针对注册表中的各种资源对象，都定义了相应的资源对象类型，以及如何创建资源，转换不同版本的资源，编码解码资源。</p>
 <p>InstallREST 函数在启动时候就已经把路由注册进 goRestfulContainer 中，进入 Dispatch 分发路由，会路由到不同的 endpoint handler 中。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -229,37 +219,37 @@
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// k8s.io/apiserver/pkg/endpoints/groupversion.go
-</span><span class="c1">// 注册路由位置
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">g</span> <span class="o">*</span><span class="nx">APIGroupVersion</span><span class="p">)</span> <span class="nf">InstallREST</span><span class="p">(</span><span class="nx">container</span> <span class="o">*</span><span class="nx">restful</span><span class="p">.</span><span class="nx">Container</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-    <span class="nx">prefix</span> <span class="o">:=</span> <span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Root</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">.</span><span class="nx">Group</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">.</span><span class="nx">Version</span><span class="p">)</span>
-    <span class="nx">installer</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">APIInstaller</span><span class="p">{</span>
-        <span class="nx">group</span><span class="p">:</span>             <span class="nx">g</span><span class="p">,</span>
-        <span class="nx">prefix</span><span class="p">:</span>            <span class="nx">prefix</span><span class="p">,</span>
-        <span class="nx">minRequestTimeout</span><span class="p">:</span> <span class="nx">g</span><span class="p">.</span><span class="nx">MinRequestTimeout</span><span class="p">,</span>
-    <span class="p">}</span>
-
-    <span class="nx">apiResources</span><span class="p">,</span> <span class="nx">ws</span><span class="p">,</span> <span class="nx">registrationErrors</span> <span class="o">:=</span> <span class="nx">installer</span><span class="p">.</span><span class="nf">Install</span><span class="p">()</span>
-    <span class="nx">versionDiscoveryHandler</span> <span class="o">:=</span> <span class="nx">discovery</span><span class="p">.</span><span class="nf">NewAPIVersionHandler</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">,</span> <span class="nx">staticLister</span><span class="p">{</span><span class="nx">apiResources</span><span class="p">})</span>
-    <span class="nx">versionDiscoveryHandler</span><span class="p">.</span><span class="nf">AddToWebService</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span>
-    <span class="nx">container</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nx">utilerrors</span><span class="p">.</span><span class="nf">NewAggregate</span><span class="p">(</span><span class="nx">registrationErrors</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// k8s.io/apiserver/pkg/endpoints/groupversion.go
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 注册路由位置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">g</span> <span class="o">*</span><span class="nx">APIGroupVersion</span><span class="p">)</span> <span class="nf">InstallREST</span><span class="p">(</span><span class="nx">container</span> <span class="o">*</span><span class="nx">restful</span><span class="p">.</span><span class="nx">Container</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">prefix</span> <span class="o">:=</span> <span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Root</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">.</span><span class="nx">Group</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">.</span><span class="nx">Version</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">installer</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">APIInstaller</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">group</span><span class="p">:</span>             <span class="nx">g</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">prefix</span><span class="p">:</span>            <span class="nx">prefix</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">minRequestTimeout</span><span class="p">:</span> <span class="nx">g</span><span class="p">.</span><span class="nx">MinRequestTimeout</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">apiResources</span><span class="p">,</span> <span class="nx">ws</span><span class="p">,</span> <span class="nx">registrationErrors</span> <span class="o">:=</span> <span class="nx">installer</span><span class="p">.</span><span class="nf">Install</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">versionDiscoveryHandler</span> <span class="o">:=</span> <span class="nx">discovery</span><span class="p">.</span><span class="nf">NewAPIVersionHandler</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Serializer</span><span class="p">,</span> <span class="nx">g</span><span class="p">.</span><span class="nx">GroupVersion</span><span class="p">,</span> <span class="nx">staticLister</span><span class="p">{</span><span class="nx">apiResources</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">versionDiscoveryHandler</span><span class="p">.</span><span class="nf">AddToWebService</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">container</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">utilerrors</span><span class="p">.</span><span class="nf">NewAggregate</span><span class="p">(</span><span class="nx">registrationErrors</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">DryRunnableStorage</span> <span class="kd">struct</span> <span class="p">{</span>
-    <span class="nx">Storage</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">Interface</span>
-    <span class="nx">Codec</span>   <span class="nx">runtime</span><span class="p">.</span><span class="nx">Codec</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">DryRunnableStorage</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Storage</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">Interface</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Codec</span>   <span class="nx">runtime</span><span class="p">.</span><span class="nx">Codec</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="etcd-数据库">ETCD 数据库</h3>
 <p>通过 KV 持久化存储 Kubernetes 对象，API Server 就是利用 ETCD 的 Watch 特性实现了经典 List-Watch 机制。</p>
@@ -279,7 +269,7 @@
 <p>在 Watch 在进度到注册表层时，前面经过的流程和创建流程一样。首先会解析资源版本，等待 Cacher 对象 ready，通过 newCacheWatcher 初始化对象，进入 Watch 流程。Kubernetes 为了避免后端存储压力，通过缓存资源数据，避免每次都从后端获取，watchCache 是一个固定大小的用于监测缓存数据变化的数组。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -295,26 +285,26 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">newCacheWatcher</span><span class="p">(</span><span class="nx">chanSize</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">filter</span> <span class="nx">filterWithAttrsFunc</span><span class="p">,</span> <span class="nx">forget</span> <span class="kd">func</span><span class="p">(),</span> <span class="nx">versioner</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">Versioner</span><span class="p">,</span> <span class="nx">deadline</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">allowWatchBookmarks</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">objectType</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="o">*</span><span class="nx">cacheWatcher</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">cacheWatcher</span><span class="p">{</span>
-        <span class="nx">input</span><span class="p">:</span>               <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="o">*</span><span class="nx">watchCacheEvent</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">),</span>
-        <span class="nx">result</span><span class="p">:</span>              <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">watch</span><span class="p">.</span><span class="nx">Event</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">),</span>
-        <span class="nx">done</span><span class="p">:</span>                <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{}),</span>
-        <span class="nx">filter</span><span class="p">:</span>              <span class="nx">filter</span><span class="p">,</span>
-        <span class="nx">stopped</span><span class="p">:</span>             <span class="kc">false</span><span class="p">,</span>
-        <span class="nx">forget</span><span class="p">:</span>              <span class="nx">forget</span><span class="p">,</span>
-        <span class="nx">versioner</span><span class="p">:</span>           <span class="nx">versioner</span><span class="p">,</span>
-        <span class="nx">deadline</span><span class="p">:</span>            <span class="nx">deadline</span><span class="p">,</span>
-        <span class="nx">allowWatchBookmarks</span><span class="p">:</span> <span class="nx">allowWatchBookmarks</span><span class="p">,</span>
-        <span class="nx">objectType</span><span class="p">:</span>          <span class="nx">objectType</span><span class="p">,</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">newCacheWatcher</span><span class="p">(</span><span class="nx">chanSize</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">filter</span> <span class="nx">filterWithAttrsFunc</span><span class="p">,</span> <span class="nx">forget</span> <span class="kd">func</span><span class="p">(),</span> <span class="nx">versioner</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">Versioner</span><span class="p">,</span> <span class="nx">deadline</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">allowWatchBookmarks</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">objectType</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="o">*</span><span class="nx">cacheWatcher</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">cacheWatcher</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">input</span><span class="p">:</span>               <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="o">*</span><span class="nx">watchCacheEvent</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">result</span><span class="p">:</span>              <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">watch</span><span class="p">.</span><span class="nx">Event</span><span class="p">,</span> <span class="nx">chanSize</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">done</span><span class="p">:</span>                <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{}),</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">filter</span><span class="p">:</span>              <span class="nx">filter</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">stopped</span><span class="p">:</span>             <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">forget</span><span class="p">:</span>              <span class="nx">forget</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">versioner</span><span class="p">:</span>           <span class="nx">versioner</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">deadline</span><span class="p">:</span>            <span class="nx">deadline</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">allowWatchBookmarks</span><span class="p">:</span> <span class="nx">allowWatchBookmarks</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">objectType</span><span class="p">:</span>          <span class="nx">objectType</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>以下代码块是启动 goroutine 进入处理流程，process 接收 input chan 对象中的信息。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -328,32 +318,32 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cacher</span><span class="p">)</span> <span class="nf">Watch</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">key</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">resourceVersion</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">pred</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">SelectionPredicate</span><span class="p">)</span> <span class="p">(</span><span class="nx">watch</span><span class="p">.</span><span class="nx">Interface</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// ...
-</span><span class="c1"></span>    <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-        <span class="c1">// ...
-</span><span class="c1"></span>        <span class="nx">c</span><span class="p">.</span><span class="nx">watchers</span><span class="p">.</span><span class="nf">addWatcher</span><span class="p">(</span><span class="nx">watcher</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">watcherIdx</span><span class="p">,</span> <span class="nx">triggerValue</span><span class="p">,</span> <span class="nx">triggerSupported</span><span class="p">)</span>
-        <span class="nx">c</span><span class="p">.</span><span class="nx">watcherIdx</span><span class="o">++</span>
-        <span class="c1">// ...
-</span><span class="c1"></span>    <span class="p">}()</span>
-    <span class="c1">// ...
-</span><span class="c1"></span>    <span class="k">go</span> <span class="nx">watcher</span><span class="p">.</span><span class="nf">process</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">initEvents</span><span class="p">,</span> <span class="nx">watchRV</span><span class="p">)</span>
-	<span class="c1">// ...
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cacher</span><span class="p">)</span> <span class="nf">Watch</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">key</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">resourceVersion</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">pred</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">SelectionPredicate</span><span class="p">)</span> <span class="p">(</span><span class="nx">watch</span><span class="p">.</span><span class="nx">Interface</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">c</span><span class="p">.</span><span class="nx">watchers</span><span class="p">.</span><span class="nf">addWatcher</span><span class="p">(</span><span class="nx">watcher</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">watcherIdx</span><span class="p">,</span> <span class="nx">triggerValue</span><span class="p">,</span> <span class="nx">triggerSupported</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">c</span><span class="p">.</span><span class="nx">watcherIdx</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}()</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">go</span> <span class="nx">watcher</span><span class="p">.</span><span class="nf">process</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">initEvents</span><span class="p">,</span> <span class="nx">watchRV</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Cacher 初始化的时候会启动，在 dispatchEvents 函数中将每个事件分发到 cacheWatcher 之中。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Cacher</span> <span class="kd">struct</span> <span class="p">{</span>
-    <span class="nx">incoming</span> <span class="kd">chan</span> <span class="nx">watchCacheEvent</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Cacher</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">incoming</span> <span class="kd">chan</span> <span class="nx">watchCacheEvent</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="扩展文档">扩展文档</h2>
 <h3 id="启动参数">启动参数</h3>
@@ -365,21 +355,21 @@
 <h3 id="经典代码">经典代码</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
-</span><span class="c1">// GenericAPIServer 是构造出来的 API Server 对象
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">GenericAPIServer</span> <span class="kd">struct</span> <span class="p">{</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
+</span></span></span><span class="line"><span class="cl"><span class="c1">// GenericAPIServer 是构造出来的 API Server 对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">GenericAPIServer</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -392,58 +382,58 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
-</span><span class="c1">// 完成启动流程
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="nx">preparedGenericAPIServer</span><span class="p">)</span> <span class="nf">NonBlockingRun</span><span class="p">(</span><span class="nx">stopCh</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span> <span class="kt">error</span> <span class="p">{</span>
-    <span class="c1">// ...
-</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">s</span><span class="p">.</span><span class="nx">SecureServingInfo</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">Handler</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="c1">// ...
-</span><span class="c1"></span>        <span class="nx">stoppedCh</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">SecureServingInfo</span><span class="p">.</span><span class="nf">Serve</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">Handler</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">ShutdownTimeout</span><span class="p">,</span> <span class="nx">internalStopCh</span><span class="p">)</span>
-        <span class="c1">// ...
-</span><span class="c1"></span>    <span class="p">}</span>
-    <span class="c1">// ...
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// staging/src/k8s.io/apiserver/pkg/server/genericapiserver.go
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 完成启动流程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="nx">preparedGenericAPIServer</span><span class="p">)</span> <span class="nf">NonBlockingRun</span><span class="p">(</span><span class="nx">stopCh</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">s</span><span class="p">.</span><span class="nx">SecureServingInfo</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">Handler</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">stoppedCh</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">SecureServingInfo</span><span class="p">.</span><span class="nf">Serve</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">Handler</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">ShutdownTimeout</span><span class="p">,</span> <span class="nx">internalStopCh</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// cmd/kube-apiserver/app/options/options.go  
-</span><span class="c1">// NewServerRunOptions 构造了服务运行所有的对象
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewServerRunOptions</span><span class="p">()</span> <span class="o">*</span><span class="nx">ServerRunOptions</span> <span class="p">{</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// cmd/kube-apiserver/app/options/options.go  
+</span></span></span><span class="line"><span class="cl"><span class="c1">// NewServerRunOptions 构造了服务运行所有的对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">NewServerRunOptions</span><span class="p">()</span> <span class="o">*</span><span class="nx">ServerRunOptions</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 实现具体存储的接口</span>
-pkg/storage/etcd3/store.go
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 实现具体存储的接口</span>
+</span></span><span class="line"><span class="cl">pkg/storage/etcd3/store.go
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Admission Controller 的具体实现位置</span>
-k8s.io/apiserver/pkg/admission/initializer/initializer.go
-
-<span class="c1"># Admission Controller 各个策略的实现位置</span>
-plugin/pkg/admission/*
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Admission Controller 的具体实现位置</span>
+</span></span><span class="line"><span class="cl">k8s.io/apiserver/pkg/admission/initializer/initializer.go
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Admission Controller 各个策略的实现位置</span>
+</span></span><span class="line"><span class="cl">plugin/pkg/admission/*
+</span></span></code></pre></td></tr></table>
 </div>
 </div>
                         </div>
@@ -451,7 +441,7 @@ plugin/pkg/admission/*
                         <div class="post-copyright">
   <p class="copyright-item">
     <span class="item-title">文章作者</span>
-    <span class="item-content">楼兰</span>
+    <span class="item-content"></span>
   </p>
   <p class="copyright-item">
     <span class="item-title">上次更新</span>
@@ -485,79 +475,20 @@ plugin/pkg/admission/*
             </div>
         </section>
     </div>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div id="footer" class="copyright footer">
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
+  <div id="footer" class="copyright footer">
   <span class="copyright-year">
-      All content copyright
-    &copy; 
-    2014 - 
-    2020
-
-
-
-    <span class="author">楼兰</span>
-            .
-      All rights reserved.
+    All content copyright
+    &copy;
+    2014 -
+    2024
+    <span class="author"></span>
+    .
+    All rights reserved.
   </span>
 </div>
   
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.d9a987da.min.js"></script>
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-150398437-1', 'auto');
-	ga('set', 'anonymizeIp', true);
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-
-
 
 
 </body>

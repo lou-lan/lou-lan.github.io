@@ -7,18 +7,13 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sun, 04 Aug 2019 00:31:23 +0800</lastBuildDate>
-    
-	<atom:link href="https://loulan.me/tags/git/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="https://loulan.me/tags/git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git 奇淫巧技</title>
       <link>https://loulan.me/post/git-tips/</link>
       <pubDate>Sun, 04 Aug 2019 00:31:23 +0800</pubDate>
-      
       <guid>https://loulan.me/post/git-tips/</guid>
       <description>回滚 1 2 git reset --hard a1c86bc3 git push origin HEAD --force 遴选 1 git cherry-pick &amp;lt;commit id&amp;gt;</description>
     </item>
-    
   </channel>
 </rss>

@@ -7,54 +7,41 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 21 Oct 2020 14:36:14 +0800</lastBuildDate>
-    
-	<atom:link href="https://loulan.me/tags/go/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="https://loulan.me/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang IO</title>
       <link>https://loulan.me/post/golang-io/</link>
       <pubDate>Wed, 21 Oct 2020 14:36:14 +0800</pubDate>
-      
       <guid>https://loulan.me/post/golang-io/</guid>
       <description>kqueue 是 Unix 下的一个 IO 多路复用库，如下是 Go 语言中 kevent 的对象注释。kevent 可以往 kqueue 里添加事件，或者监听事件，kevent 是阻塞调用的。 1 2 3 4 5 6</description>
     </item>
-    
     <item>
       <title>Golang Channel</title>
       <link>https://loulan.me/post/golang-channel/</link>
       <pubDate>Mon, 17 Aug 2020 11:43:38 +0800</pubDate>
-      
       <guid>https://loulan.me/post/golang-channel/</guid>
       <description>设计原理 Go 语言中最常见的、也是经常被人提及的设计模式就是 —— 不要通过共享内存的方式进行通信，而是应该通过通信的方式共享内存。在很多主流的编程</description>
     </item>
-    
     <item>
       <title>Golang 启动引导</title>
       <link>https://loulan.me/post/golang-boot/</link>
       <pubDate>Mon, 10 Aug 2020 15:11:41 +0800</pubDate>
-      
       <guid>https://loulan.me/post/golang-boot/</guid>
       <description>介绍 Go 程序的一生有编码、编译、汇编、链接、运行、退出等步骤。它的每一步具体如何进行呢？本文就来讲解 Golang 程序启动引导过程。 Go 程序启动后需要对自身</description>
     </item>
-    
     <item>
       <title>Golang Context</title>
       <link>https://loulan.me/post/golang-context/</link>
       <pubDate>Wed, 06 May 2020 23:36:47 +0800</pubDate>
-      
       <guid>https://loulan.me/post/golang-context/</guid>
       <description>概要 Go 1.7 标准库引入 context，中文译作”上下文“，Go 语言的 context 包要用来在 Goroutine 之间传递上下文信息，包括：取消信号、超时时间、截止时间、K-V</description>
     </item>
-    
     <item>
       <title>Golang 优雅退出</title>
       <link>https://loulan.me/post/go-shutdown-signal-gracefully/</link>
       <pubDate>Sun, 04 Aug 2019 00:33:29 +0800</pubDate>
-      
       <guid>https://loulan.me/post/go-shutdown-signal-gracefully/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>
