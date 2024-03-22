@@ -183,9 +183,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="创建-pod">创建 Pod</h4>
-<div style="text-align: center">
-<img src="/img/pod-start.png" style="width: 700px">
-</div>
+<!-- raw HTML omitted -->
 <ol>
 <li>用户请求 APIServer 组件，经过一系列的校验，然后 APIServer 将 Pod 定义存储到 ETCD 后端；</li>
 <li>Scheduler watch 到 Pod 的更新，然后根据策略调度到某个 Node，将信息更新回 APIServer；</li>
@@ -409,13 +407,9 @@
 </div>
 </div><h2 id="container-runtime">Container Runtime</h2>
 <p>目前实现了 CRI 的主流项目有：Docker、containerd、CRI-O、Frakti、Pouch，它们衔接 Kubelet 与运行时方式对比如下：</p>
-<div style="text-align: center">
-<img src="/img/cri-contrast.jpg" style="width: 700px">
-</div>
+<!-- raw HTML omitted -->
 <p>以 Docker 运行时为例：</p>
-<div style="text-align: center">
-<img src="/img/cri.png" style="width: 700px">
-</div>
+<!-- raw HTML omitted -->
 <ol>
 <li>kubelet 通过 CRI 接口 gRPC 调用 dockershim, 请求创建一个容器；</li>
 <li>dockershim 将请求转化成 Docker Daemon 能听懂的请求, 发到 Docker Daemon；</li>
@@ -431,21 +425,7 @@
 
                         </div>
 
-                        <div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">文章作者</span>
-    <span class="item-content"></span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">上次更新</span>
-    <span class="item-content">
-        2020-09-04
-        
-    </span>
-  </p>
-  
-  
-</div>
+                        
 <footer class="post-footer">
                             
                             <nav class="post-nav">
@@ -479,7 +459,5 @@
   </span>
 </div>
   
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
 </body>
 </html>
